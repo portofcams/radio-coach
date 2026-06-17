@@ -203,11 +203,37 @@ export default function LessonPage() {
 
 // ── helpers for feedback text ─────────────────────────────────────────────────
 function correctText(ex: Exercise): string {
-  if (ex.type === 'mc') return ex.choices[ex.answer]
-  return ex.answer.join(' ')
+  if (ex.type === 'mc' || ex.type === 'listen') return ex.choices[ex.answer]
+  if (ex.type === 'spot') return ex.errorIndices.map((i) => ex.words[i]).join(' ')
+  if (ex.type === 'match') return ''
+  return ex.answer.join(' ') // tokens, spell
 }
 function explainOf(ex: Exercise): string | undefined {
   return ex.explain
+}
+
+// ── audio: ElevenLabs via /api/tts, free browser-speech fallback ──────────────
+async function speak(text: string) {
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (!res.ok) throw new Error('tts')
+    const url = URL.createObjectURL(await res.blob())
+    const audio = new Audio(url)
+    audio.onended = () => URL.revokeObjectURL(url)
+    await audio.play()
+  } catch {
+    // offline / no credits → built-in speech synthesis (free)
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+      const u = new SpeechSynthesisUtterance(text)
+      u.rate = 1.05
+      window.speechSynthesis.speak(u)
+    }
+  }
 }
 
 // ── the exercise renderer (resets per exercise via key) ───────────────────────
@@ -220,10 +246,18 @@ function ExerciseView({
   locked: boolean
   onChange: (ready: boolean, correct: boolean) => void
 }) {
-  if (exercise.type === 'mc') {
-    return <MultipleChoiceView exercise={exercise} locked={locked} onChange={onChange} />
+  switch (exercise.type) {
+    case 'mc':
+      return <MultipleChoiceView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'listen':
+      return <ListenView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'match':
+      return <MatchView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'spot':
+      return <SpotView exercise={exercise} locked={locked} onChange={onChange} />
+    default:
+      return <TokenView exercise={exercise} locked={locked} onChange={onChange} />
   }
-  return <TokenView exercise={exercise} locked={locked} onChange={onChange} />
 }
 
 function MultipleChoiceView({
@@ -360,6 +394,213 @@ function TokenView({
               }`}
             >
               {word}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ── listen-and-select: ElevenLabs ATC voice, pick the right answer ────────────
+function ListenView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'listen' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  const [sel, setSel] = useState<number | null>(null)
+
+  // auto-play once when the exercise appears
+  useEffect(() => {
+    speak(exercise.audioText)
+  }, [exercise.id])
+
+  function pick(i: number) {
+    if (locked) return
+    setSel(i)
+    onChange(true, i === exercise.answer)
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-5">{exercise.prompt}</h2>
+      <button
+        onClick={() => speak(exercise.audioText)}
+        className="flex items-center gap-3 w-full px-4 py-4 rounded-xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition-colors mb-6"
+      >
+        <span className="text-2xl">🔊</span>
+        <span className="font-medium text-amber-800">Play transmission</span>
+        <span className="ml-auto text-xs text-amber-600 font-mono">tap to replay</span>
+      </button>
+      <div className="space-y-3">
+        {exercise.choices.map((c, i) => {
+          const isSel = sel === i
+          const showCorrect = locked && i === exercise.answer
+          const showWrong = locked && isSel && i !== exercise.answer
+          return (
+            <button
+              key={i}
+              onClick={() => pick(i)}
+              disabled={locked}
+              className={`w-full text-left px-4 py-3.5 rounded-xl border-2 transition-colors ${
+                showCorrect
+                  ? 'border-green-500 bg-green-50 text-green-800'
+                  : showWrong
+                    ? 'border-red-400 bg-red-50 text-red-700'
+                    : isSel
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 hover:border-gray-400'
+              }`}
+            >
+              {c}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ── match-the-pairs: tap a term, then its meaning ─────────────────────────────
+function MatchView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'match' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  const rights = useMemo(
+    () => seededShuffle(exercise.pairs.map((p, i) => ({ text: p.right, pair: i })), exercise.id),
+    [exercise],
+  )
+  const [selLeft, setSelLeft] = useState<number | null>(null)
+  const [matched, setMatched] = useState<number[]>([])
+  const [wrong, setWrong] = useState<number | null>(null)
+
+  function tapLeft(i: number) {
+    if (locked || matched.includes(i)) return
+    setSelLeft(i)
+    setWrong(null)
+  }
+  function tapRight(pair: number) {
+    if (locked || matched.includes(pair) || selLeft === null) return
+    if (selLeft === pair) {
+      const next = [...matched, pair]
+      setMatched(next)
+      setSelLeft(null)
+      if (next.length === exercise.pairs.length) onChange(true, true)
+    } else {
+      setWrong(pair)
+      setSelLeft(null)
+      setTimeout(() => setWrong((w) => (w === pair ? null : w)), 450)
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-6">{exercise.prompt}</h2>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
+          {exercise.pairs.map((p, i) => {
+            const done = matched.includes(i)
+            const active = selLeft === i
+            return (
+              <button
+                key={i}
+                onClick={() => tapLeft(i)}
+                disabled={locked || done}
+                className={`w-full px-3 py-3 rounded-xl border-2 text-sm text-left transition-colors ${
+                  done
+                    ? 'border-green-300 bg-green-50 text-green-400'
+                    : active
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                {p.left}
+              </button>
+            )
+          })}
+        </div>
+        <div className="space-y-3">
+          {rights.map(({ text, pair }) => {
+            const done = matched.includes(pair)
+            const flash = wrong === pair
+            return (
+              <button
+                key={pair}
+                onClick={() => tapRight(pair)}
+                disabled={locked || done}
+                className={`w-full px-3 py-3 rounded-xl border-2 text-sm text-left transition-colors ${
+                  done
+                    ? 'border-green-300 bg-green-50 text-green-400'
+                    : flash
+                      ? 'border-red-400 bg-red-50'
+                      : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                {text}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── spot-the-error: tap the wrong / out-of-place word(s) ──────────────────────
+function SpotView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'spot' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  const [sel, setSel] = useState<number[]>([])
+
+  function toggle(i: number) {
+    if (locked) return
+    const next = sel.includes(i) ? sel.filter((x) => x !== i) : [...sel, i]
+    setSel(next)
+    const a = [...next].sort((x, y) => x - y).join(',')
+    const b = [...exercise.errorIndices].sort((x, y) => x - y).join(',')
+    onChange(next.length > 0, a === b)
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-6">{exercise.prompt}</h2>
+      <div className="flex flex-wrap gap-2">
+        {exercise.words.map((w, i) => {
+          const picked = sel.includes(i)
+          const isError = exercise.errorIndices.includes(i)
+          const showError = locked && isError
+          const showMiss = locked && picked && !isError
+          return (
+            <button
+              key={i}
+              onClick={() => toggle(i)}
+              disabled={locked}
+              className={`px-3 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${
+                showError
+                  ? 'border-red-500 bg-red-50 text-red-700'
+                  : showMiss
+                    ? 'border-amber-300 bg-amber-50 text-amber-600 line-through'
+                    : picked
+                      ? 'border-gray-900 bg-gray-100'
+                      : 'border-gray-200 hover:border-gray-400'
+              }`}
+            >
+              {w}
             </button>
           )
         })}

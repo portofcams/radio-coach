@@ -37,7 +37,44 @@ export interface SpellCallsign {
   explain?: string
 }
 
-export type Exercise = MultipleChoice | TapTokens | SpellCallsign
+export interface ListenSelect {
+  type: 'listen'
+  id: string
+  prompt: string
+  /** what ATC speaks (ElevenLabs, with a free browser-speech fallback) */
+  audioText: string
+  choices: string[]
+  /** index of the correct choice */
+  answer: number
+  explain?: string
+}
+
+export interface MatchPairs {
+  type: 'match'
+  id: string
+  prompt: string
+  pairs: { left: string; right: string }[]
+  explain?: string
+}
+
+export interface SpotError {
+  type: 'spot'
+  id: string
+  prompt: string
+  /** the readback rendered as tappable word chips */
+  words: string[]
+  /** indices of the wrong / out-of-place word(s) */
+  errorIndices: number[]
+  explain?: string
+}
+
+export type Exercise =
+  | MultipleChoice
+  | TapTokens
+  | SpellCallsign
+  | ListenSelect
+  | MatchPairs
+  | SpotError
 
 export interface GsLesson {
   id: string
@@ -160,6 +197,161 @@ export const units: GsUnit[] = [
           { type: 'tokens', id: 'n3-3', prompt: 'Read back: "contact tower 118.3".', answer: ['contact', 'tower', 'one', 'one', 'eight', 'point', 'three'], distractors: ['eighteen', 'one-eighteen'] },
           { type: 'tokens', id: 'n3-4', prompt: 'Read back: "squawk 7000".', answer: ['squawk', 'seven', 'zero', 'zero', 'zero'], distractors: ['seven-thousand', 'thousand'] },
           { type: 'tokens', id: 'n3-5', prompt: 'Read back: "departure frequency 125.65".', answer: ['departure', 'one', 'two', 'five', 'point', 'six', 'five'], distractors: ['one-twenty-five', 'sixty-five'] },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 3 — GROUND & TAXI ──────────────────────────────────────────────
+  {
+    id: 'ground-taxi',
+    title: 'Ground & Taxi',
+    subtitle: 'Taxi clearances, hold shorts, and runway crossings',
+    icon: '🚕',
+    color: 'text-teal-700 bg-teal-50 border-teal-200',
+    lessons: [
+      {
+        id: 'grd-1',
+        title: 'Taxi Clearances',
+        xp: 10,
+        exercises: [
+          { type: 'listen', id: 'g1-1', prompt: 'Listen to Ground, then pick the runway you were cleared to.', audioText: 'Cessna four sierra uniform, Hilo Ground, taxi to runway two six via Alpha, hold short of runway two one.', choices: ['Runway 26', 'Runway 21', 'Runway 2', 'Runway 6'], answer: 0, explain: 'You taxi TO runway 26 — runway 21 is the hold-short, not your destination.' },
+          { type: 'mc', id: 'g1-2', prompt: 'What must a taxi readback always include?', choices: ['Just "roger"', 'The runway, every taxiway, and every hold-short', 'Only the hold-short', 'Your aircraft type'], answer: 1 },
+          { type: 'spot', id: 'g1-3', prompt: 'Tap the word that does not belong in this readback.', words: ['Copy,', 'taxi', 'to', 'runway', 'two', 'six,', 'four', 'sierra', 'uniform'], errorIndices: [0], explain: 'Never say "Copy" — read the clearance back instead.' },
+          { type: 'tokens', id: 'g1-4', prompt: 'Read back: "taxi to runway 26 via Alpha, hold short of runway 21".', answer: ['runway', 'two', 'six', 'via', 'Alpha', 'hold', 'short', 'runway', 'two', 'one'], distractors: ['cleared', 'Bravo'] },
+        ],
+      },
+      {
+        id: 'grd-2',
+        title: 'Hold Short & Crossings',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'g2-1', prompt: 'Why is a hold-short readback safety-critical?', choices: ['It is optional courtesy', 'It prevents runway incursions', 'It speeds up taxi', 'It tells ATC your fuel'], answer: 1, explain: 'A missed hold-short is the classic cause of a runway incursion — and an automatic checkride fail.' },
+          { type: 'match', id: 'g2-2', prompt: 'Match each instruction to what it means.', pairs: [
+            { left: 'Hold short of 21', right: 'Stop before runway 21, do not enter' },
+            { left: 'Cross runway 14', right: 'Proceed across runway 14' },
+            { left: 'Line up and wait', right: 'Enter the runway, hold for takeoff clearance' },
+            { left: 'Taxi via Alpha', right: 'Use taxiway Alpha' },
+          ] },
+          { type: 'spot', id: 'g2-3', prompt: 'ATC said hold short of runway 21. Tap the wrong word.', words: ['hold', 'short', 'of', 'runway', 'two', 'five'], errorIndices: [5], explain: 'It was runway 21, not 25 — read back the exact runway number.' },
+          { type: 'listen', id: 'g2-4', prompt: 'Listen, then pick the correct action.', audioText: 'Cessna four sierra uniform, cross runway one four at Alpha.', choices: ['Cross runway 14 at Alpha', 'Hold short of runway 14', 'Line up on runway 14', 'Taxi to runway 14'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 4 — TOWER ──────────────────────────────────────────────────────
+  {
+    id: 'tower',
+    title: 'Tower',
+    subtitle: 'Takeoff, landing, and line-up-and-wait clearances',
+    icon: '🗼',
+    color: 'text-sky-700 bg-sky-50 border-sky-200',
+    lessons: [
+      {
+        id: 'twr-1',
+        title: 'Takeoff & Landing',
+        xp: 10,
+        exercises: [
+          { type: 'listen', id: 't1-1', prompt: 'Listen to Tower, then pick what you are cleared to do.', audioText: 'Cessna four sierra uniform, runway two six, cleared for takeoff, wind two five zero at eight.', choices: ['Cleared for takeoff, runway 26', 'Line up and wait', 'Cleared to land', 'Hold short of runway 26'], answer: 0 },
+          { type: 'mc', id: 't1-2', prompt: 'What must your takeoff-clearance readback include?', choices: ['Just "roger"', 'The runway and "cleared for takeoff"', 'Only the wind', 'Just "wilco"'], answer: 1 },
+          { type: 'tokens', id: 't1-3', prompt: 'Read back: "runway 26, cleared for takeoff".', answer: ['runway', 'two', 'six', 'cleared', 'for', 'takeoff'], distractors: ['landing', 'line', 'up'] },
+          { type: 'spot', id: 't1-4', prompt: 'ATC said "cleared to land." Tap the wrong word.', words: ['runway', 'two', 'six,', 'cleared', 'to', 'depart'], errorIndices: [5], explain: 'It should be "land", not "depart". Read back the clearance you were actually given.' },
+        ],
+      },
+      {
+        id: 'twr-2',
+        title: 'Line Up and Wait',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 't2-1', prompt: '"Line up and wait" means:', choices: ['You are cleared for takeoff', 'Taxi onto the runway and hold — NOT cleared for takeoff', 'Hold short of the runway', 'Exit the runway'], answer: 1, explain: 'It replaced "position and hold". You enter the runway and wait for a separate takeoff clearance.' },
+          { type: 'match', id: 't2-2', prompt: 'Match each Tower call to its meaning.', pairs: [
+            { left: 'Cleared for takeoff', right: 'You may depart' },
+            { left: 'Line up and wait', right: 'Enter runway, hold for clearance' },
+            { left: 'Hold short', right: 'Stop before the runway' },
+            { left: 'Go around', right: 'Abort the landing, climb out' },
+          ] },
+          { type: 'listen', id: 't2-3', prompt: 'Listen, then pick the correct readback.', audioText: 'Cessna four sierra uniform, runway two eight left, line up and wait.', choices: ['Line up and wait, runway 28 left', 'Cleared for takeoff, runway 28 left', 'Cleared to land, runway 28 left', 'Cross runway 28 left'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 5 — TRAFFIC PATTERN ────────────────────────────────────────────
+  {
+    id: 'pattern',
+    title: 'Traffic Pattern',
+    subtitle: 'Pattern entry, sequencing, options, and go-arounds',
+    icon: '🔄',
+    color: 'text-violet-700 bg-violet-50 border-violet-200',
+    lessons: [
+      {
+        id: 'pat-1',
+        title: 'Entry & Sequencing',
+        xp: 10,
+        exercises: [
+          { type: 'listen', id: 'pa1-1', prompt: 'Listen to Tower, then pick your instruction.', audioText: 'Cessna four sierra uniform, enter right downwind runway one six, number two, follow the Piper on base.', choices: ['Enter right downwind, number 2', 'Enter left base', 'Cleared to land', 'Extend upwind'], answer: 0 },
+          { type: 'mc', id: 'pa1-2', prompt: 'When do you say "traffic in sight"?', choices: ['Always, to be polite', 'Only when you actually see the aircraft', 'Whenever ATC mentions traffic', 'Never'], answer: 1, explain: 'ATC will not sequence you behind traffic you cannot see. If you do not see it, say "looking for traffic".' },
+          { type: 'match', id: 'pa1-3', prompt: 'Match each phrase to its meaning.', pairs: [
+            { left: 'Traffic in sight', right: 'You see the other aircraft' },
+            { left: 'Looking for traffic', right: 'You do not see it yet' },
+            { left: 'Number two', right: 'Second in the landing sequence' },
+            { left: 'Extend downwind', right: 'Fly past the normal turn point' },
+          ] },
+          { type: 'spot', id: 'pa1-4', prompt: 'You do NOT see the traffic. Tap the wrong words in this readback.', words: ['enter', 'downwind,', 'traffic', 'in', 'sight'], errorIndices: [2, 3, 4], explain: 'If you do not have the traffic, say "looking for traffic" — never claim "traffic in sight".' },
+        ],
+      },
+      {
+        id: 'pat-2',
+        title: 'Options & Go-Arounds',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'pa2-1', prompt: '"Cleared for the option" lets you:', choices: ['Only a full stop', 'Touch-and-go, stop-and-go, low approach, or full stop — your choice', 'Only a touch-and-go', 'Land on any runway'], answer: 1 },
+          { type: 'listen', id: 'pa2-2', prompt: 'Listen, then pick the correct readback.', audioText: 'Cessna four sierra uniform, go around.', choices: ['Going around', 'Cleared to land', 'Cleared for the option', 'Line up and wait'], answer: 0 },
+          { type: 'tokens', id: 'pa2-3', prompt: 'Read back: "runway 28 left, cleared for the option".', answer: ['runway', 'two', 'eight', 'left', 'cleared', 'for', 'the', 'option'], distractors: ['takeoff', 'landing'] },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 6 — EMERGENCIES ────────────────────────────────────────────────
+  {
+    id: 'emergencies',
+    title: 'Emergencies',
+    subtitle: 'Mayday vs pan-pan, and the emergency squawk codes',
+    icon: '🚨',
+    color: 'text-red-700 bg-red-50 border-red-200',
+    lessons: [
+      {
+        id: 'emg-1',
+        title: 'Declaring an Emergency',
+        xp: 15,
+        exercises: [
+          { type: 'mc', id: 'e1-1', prompt: 'Which word declares a distress (life-threatening) emergency?', choices: ['Mayday', 'Pan-pan', 'Help', 'Emergency'], answer: 0, explain: 'Spoken three times — "Mayday, Mayday, Mayday" — for grave and imminent danger.' },
+          { type: 'mc', id: 'e1-2', prompt: 'What does "pan-pan" signal?', choices: ['Distress — grave danger', 'Urgency — a problem, but no immediate danger', 'A fuel request', 'Lost communications'], answer: 1 },
+          { type: 'listen', id: 'e1-3', prompt: 'Listen, then classify the call.', audioText: 'Mayday, Mayday, Mayday, Cessna four sierra uniform, engine failure, ten miles north, two thousand feet.', choices: ['A distress (Mayday) call', 'A routine position report', 'A taxi clearance', 'A pan-pan urgency call'], answer: 0 },
+          { type: 'match', id: 'e1-4', prompt: 'Match each term to its meaning.', pairs: [
+            { left: 'Mayday', right: 'Distress — grave, imminent danger' },
+            { left: 'Pan-pan', right: 'Urgency — a problem, no immediate danger' },
+            { left: 'Squawk 7700', right: 'Emergency transponder code' },
+            { left: 'Souls on board', right: 'Number of people aboard' },
+          ] },
+        ],
+      },
+      {
+        id: 'emg-2',
+        title: 'Emergency Squawk Codes',
+        xp: 15,
+        exercises: [
+          { type: 'mc', id: 'e2-1', prompt: 'Which squawk code means a general emergency?', choices: ['7700', '7600', '7500', '1200'], answer: 0 },
+          { type: 'match', id: 'e2-2', prompt: 'Match each transponder code to its meaning.', pairs: [
+            { left: '7500', right: 'Hijack' },
+            { left: '7600', right: 'Lost communications' },
+            { left: '7700', right: 'General emergency' },
+            { left: '1200', right: 'VFR, no code assigned' },
+          ] },
+          { type: 'spot', id: 'e2-3', prompt: 'You have an engine emergency. Tap the wrong digit in this squawk.', words: ['squawk', 'seven', 'five', 'zero', 'zero'], errorIndices: [2], explain: '7500 means hijack. The general emergency code is 7700 — the digit should be "seven", not "five".' },
+          { type: 'listen', id: 'e2-4', prompt: 'Listen, then pick the correct readback.', audioText: 'Cessna four sierra uniform, squawk seven seven zero zero and ident.', choices: ['Squawk 7700, ident', 'Squawk 7600', 'Squawk 1200', 'Cleared to land'], answer: 0 },
         ],
       },
     ],
