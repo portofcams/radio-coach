@@ -68,6 +68,37 @@ export interface SpotError {
   explain?: string
 }
 
+export interface OrderSequence {
+  type: 'order'
+  id: string
+  prompt: string
+  /** the phrase chips in their correct order (all are used; no distractors) */
+  answer: string[]
+  explain?: string
+}
+
+export interface TypeReadback {
+  type: 'type'
+  id: string
+  prompt: string
+  /** content phrases that must appear in the typed answer (deterministic match) */
+  accept: string[]
+  /** the textbook-correct readback to reveal */
+  correct: string
+  explain?: string
+}
+
+export interface AudioScramble {
+  type: 'scramble'
+  id: string
+  prompt: string
+  /** what ATC speaks (ElevenLabs, free browser-speech fallback) */
+  audioText: string
+  /** correct word order to reconstruct */
+  answer: string[]
+  explain?: string
+}
+
 export type Exercise =
   | MultipleChoice
   | TapTokens
@@ -75,6 +106,9 @@ export type Exercise =
   | ListenSelect
   | MatchPairs
   | SpotError
+  | OrderSequence
+  | TypeReadback
+  | AudioScramble
 
 export interface GsLesson {
   id: string
@@ -352,6 +386,156 @@ export const units: GsUnit[] = [
           ] },
           { type: 'spot', id: 'e2-3', prompt: 'You have an engine emergency. Tap the wrong digit in this squawk.', words: ['squawk', 'seven', 'five', 'zero', 'zero'], errorIndices: [2], explain: '7500 means hijack. The general emergency code is 7700 — the digit should be "seven", not "five".' },
           { type: 'listen', id: 'e2-4', prompt: 'Listen, then pick the correct readback.', audioText: 'Cessna four sierra uniform, squawk seven seven zero zero and ident.', choices: ['Squawk 7700, ident', 'Squawk 7600', 'Squawk 1200', 'Cleared to land'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 7 — CLEARANCE & IFR COPY (CRAFT) ───────────────────────────────
+  {
+    id: 'clearance',
+    title: 'Clearance & IFR Copy',
+    subtitle: 'Copy a full IFR clearance the CRAFT way',
+    icon: 'CLR',
+    color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+    lessons: [
+      {
+        id: 'clr-1',
+        title: 'The CRAFT Format',
+        xp: 15,
+        exercises: [
+          { type: 'mc', id: 'c1-1', prompt: 'CRAFT stands for Cleared, Route, Altitude, Frequency, and what?', choices: ['Transponder (squawk)', 'Time', 'Traffic', 'Taxi'], answer: 0, explain: 'T is Transponder — the squawk code, always last.' },
+          { type: 'match', id: 'c1-2', prompt: 'Match each CRAFT letter to its meaning.', pairs: [
+            { left: 'C — Cleared to', right: 'Destination or clearance limit' },
+            { left: 'R — Route', right: 'The airways and fixes to fly' },
+            { left: 'A — Altitude', right: 'Initial, then expect' },
+            { left: 'T — Transponder', right: 'The squawk code' },
+          ] },
+          { type: 'order', id: 'c1-3', prompt: 'Put this clearance read-back in CRAFT order.', answer: ['Cleared to Boise', 'via the Seattle One departure', 'climb and maintain five thousand', 'departure one two five point six five', 'squawk four two one seven'], explain: 'Cleared → Route → Altitude → Frequency → Transponder.' },
+          { type: 'type', id: 'c1-4', prompt: 'Type your read-back of "squawk 4217".', accept: ['squawk', '4', '2', '1', '7'], correct: 'Squawk four two one seven', explain: 'Squawk codes are read digit by digit.' },
+        ],
+      },
+      {
+        id: 'clr-2',
+        title: 'Copying a Clearance',
+        xp: 15,
+        exercises: [
+          { type: 'scramble', id: 'c2-1', prompt: 'Listen, then rebuild the clearance in order.', audioText: 'Climb and maintain five thousand.', answer: ['climb', 'and', 'maintain', 'five', 'thousand'] },
+          { type: 'type', id: 'c2-2', prompt: 'Type your read-back of "climb and maintain 5,000".', accept: ['climb', 'maintain', '5', 'thousand'], correct: 'Climb and maintain five thousand', explain: 'State the altitude in full: "five thousand".' },
+          { type: 'mc', id: 'c2-3', prompt: 'A clearance says "expect 11,000 ten minutes after departure." Do you read it back?', choices: ['No, it is just information', 'Yes — the entire clearance is read back', 'Only the 11,000', 'Only on request'], answer: 1, explain: 'IFR clearances are read back completely, expect-altitude included.' },
+          { type: 'listen', id: 'c2-4', prompt: 'Listen, then pick the correct read-back.', audioText: 'Cessna four sierra uniform, cleared ILS runway one six right approach, maintain three thousand until established.', choices: ['Cleared ILS 16R, maintain 3,000 until established', 'Cleared to land 16R', 'Cleared for the option', 'Squawk 7700'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 8 — AIRSPACE TRANSITIONS (CLASS B/C/D) ─────────────────────────
+  {
+    id: 'airspace',
+    title: 'Airspace Transitions',
+    subtitle: 'Getting into Class B, C, and D the right way',
+    icon: 'BCD',
+    color: 'text-cyan-700 bg-cyan-50 border-cyan-200',
+    lessons: [
+      {
+        id: 'air-1',
+        title: 'Two-Way Comms',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'a1-1', prompt: 'Before entering Class C, you must have:', choices: ['Just be squawking a code', 'Two-way radio communication established', 'A filed flight plan', 'Ground control permission'], answer: 1 },
+          { type: 'mc', id: 'a1-2', prompt: 'You have "established two-way" when ATC:', choices: ['Says your call sign back to you', 'Keys the mic once', 'Is on frequency at all', 'Squawks you a code'], answer: 0, explain: 'Even "Cessna 4SU, standby" counts — they used your call sign.' },
+          { type: 'listen', id: 'a1-3', prompt: 'Listen, then pick the correct read-back.', audioText: 'Cessna four sierra uniform, Honolulu Approach, squawk three three four one, report five mile final.', choices: ['Squawk 3341, report 5-mile final', 'Cleared to land', 'Hold present position', 'Ident only'], answer: 0 },
+          { type: 'type', id: 'a1-4', prompt: 'Type your read-back of "squawk 3341, report 5 mile final".', accept: ['squawk', '3', '3', '4', '1', 'report', '5', 'final'], correct: 'Squawk 3341, report 5-mile final' },
+        ],
+      },
+      {
+        id: 'air-2',
+        title: 'Into the Bravo',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'a2-1', prompt: 'To enter Class B airspace you need:', choices: ['Just two-way comms', 'The explicit words "cleared into the Bravo"', 'A transponder only', 'Nothing special'], answer: 1, explain: 'Class B requires an explicit clearance — two-way comms is not enough.' },
+          { type: 'match', id: 'a2-2', prompt: 'Match each class to its entry requirement.', pairs: [
+            { left: 'Class B', right: 'Explicit "cleared into the Bravo"' },
+            { left: 'Class C', right: 'Two-way comms established' },
+            { left: 'Class D', right: 'Two-way comms established' },
+            { left: 'Class E (VFR)', right: 'No comms required' },
+          ] },
+          { type: 'listen', id: 'a2-3', prompt: 'Listen, then pick the correct read-back.', audioText: 'Cessna four sierra uniform, cleared into the Class Bravo, maintain VFR at or below four thousand five hundred.', choices: ['Cleared into the Bravo, at or below 4,500', 'Cleared to land', 'Squawk VFR', 'Remain clear of the Bravo'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 9 — FLIGHT FOLLOWING ───────────────────────────────────────────
+  {
+    id: 'following',
+    title: 'Flight Following',
+    subtitle: 'Requesting and working VFR radar advisories',
+    icon: 'FF',
+    color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+    lessons: [
+      {
+        id: 'ff-1',
+        title: 'Requesting Advisories',
+        xp: 10,
+        exercises: [
+          { type: 'order', id: 'f1-1', prompt: 'Put a flight-following request in the right order.', answer: ['Seattle Center', 'Cessna four sierra uniform', 'one two miles south of Paine', 'four thousand five hundred', 'request flight following to Boise'], explain: 'Facility, who you are, where you are, your altitude, then the request.' },
+          { type: 'mc', id: 'f1-2', prompt: 'VFR flight following gives you:', choices: ['Guaranteed separation from all traffic', 'Traffic advisories, workload permitting', 'A clearance to deviate from VFR', 'Priority over IFR traffic'], answer: 1 },
+          { type: 'type', id: 'f1-3', prompt: 'Type your read-back of "squawk 0342, ident".', accept: ['squawk', '0', '3', '4', '2', 'ident'], correct: 'Squawk 0342, ident' },
+          { type: 'listen', id: 'f1-4', prompt: 'Listen, then pick the correct read-back.', audioText: 'Cessna four sierra uniform, radar contact, altimeter two niner niner two.', choices: ['Roger, altimeter 29.92', 'Cleared to land', 'Squawk 7700', 'Negative contact'], answer: 0 },
+        ],
+      },
+      {
+        id: 'ff-2',
+        title: 'Changes & Termination',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'f2-1', prompt: 'ATC says "frequency change approved." You:', choices: ['Must stay on this frequency', 'May switch frequencies', 'Squawk 1200 right away', 'Declare an emergency'], answer: 1 },
+          { type: 'match', id: 'f2-2', prompt: 'Match each call to its meaning.', pairs: [
+            { left: 'Radar contact', right: 'ATC sees you on radar' },
+            { left: 'Radar service terminated', right: 'You are on your own now' },
+            { left: 'Frequency change approved', right: 'You may leave this frequency' },
+            { left: 'Squawk VFR', right: 'Set 1200' },
+          ] },
+          { type: 'listen', id: 'f2-3', prompt: 'Listen, then pick the correct read-back.', audioText: 'Cessna four sierra uniform, radar service terminated, squawk VFR, frequency change approved.', choices: ['Squawk VFR, frequency change approved', 'Cleared for the option', 'Ident', 'Maintain this heading'], answer: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ── UNIT 10 — PHRASEOLOGY: NEVER SAY ────────────────────────────────────
+  {
+    id: 'phraseology',
+    title: 'Phraseology',
+    subtitle: 'What to say, and what never to say',
+    icon: 'PHR',
+    color: 'text-rose-700 bg-rose-50 border-rose-200',
+    lessons: [
+      {
+        id: 'phr-1',
+        title: 'Words That Fail Checkrides',
+        xp: 10,
+        exercises: [
+          { type: 'spot', id: 'r1-1', prompt: 'Tap the non-standard word.', words: ['Copy,', 'traffic', 'in', 'sight,', 'four', 'sierra', 'uniform'], errorIndices: [0], explain: 'Never "copy" — read the instruction back, or say "traffic in sight".' },
+          { type: 'mc', id: 'r1-2', prompt: 'Which is NOT standard radio phraseology?', choices: ['Roger', 'Wilco', '10-4', 'Affirmative'], answer: 2, explain: '"10-4" is CB slang and never used in aviation.' },
+          { type: 'match', id: 'r1-3', prompt: 'Match each word to what it actually means.', pairs: [
+            { left: 'Roger', right: 'I received your message' },
+            { left: 'Wilco', right: 'I will comply' },
+            { left: 'Affirmative', right: 'Yes' },
+            { left: 'Negative', right: 'No' },
+          ] },
+          { type: 'spot', id: 'r1-4', prompt: 'Tap the informal phrase.', words: ['Will', 'do,', 'four', 'sierra', 'uniform'], errorIndices: [0, 1], explain: '"Will do" is non-standard — use "wilco" for instructions.' },
+        ],
+      },
+      {
+        id: 'phr-2',
+        title: 'Say It Right',
+        xp: 10,
+        exercises: [
+          { type: 'mc', id: 'r2-1', prompt: '"Roger" means:', choices: ['Yes', 'I will comply', 'I received your message', 'Say again'], answer: 2, explain: 'Roger does NOT mean "yes" and does NOT mean you will comply.' },
+          { type: 'mc', id: 'r2-2', prompt: 'When may you abbreviate your own call sign?', choices: ['Whenever you like', 'Only after ATC abbreviates it first', 'Never', 'On the initial call'], answer: 1 },
+          { type: 'mc', id: 'r2-3', prompt: 'Which phrase replaced "position and hold"?', choices: ['Line up and wait', 'Hold short', 'Taxi into position', 'Cleared for takeoff'], answer: 0 },
+          { type: 'type', id: 'r2-4', prompt: 'Type a correct read-back of "runway 26, cleared for takeoff".', accept: ['runway', '2', '6', 'cleared', 'takeoff'], correct: 'Runway 26, cleared for takeoff, 4 Sierra Uniform' },
         ],
       },
     ],

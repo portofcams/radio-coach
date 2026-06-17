@@ -1,7 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { GradeResult, Scenario } from './types'
+import { ruleGradeReadback } from './rule-grader'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+// Default is the deterministic $0 rule grader. Set GRADER_MODE=ai (and a funded
+// ANTHROPIC_API_KEY) to use the LLM grader; it falls back to rules on any error.
+function aiEnabled(): boolean {
+  return process.env.GRADER_MODE === 'ai' && !!process.env.ANTHROPIC_API_KEY
+}
 
 const SYSTEM_PROMPT = `You are a strict but encouraging FAA-certified flight instructor grading a student pilot's radio readback.
 
@@ -48,6 +55,11 @@ export async function gradeReadback(
   studentReadback: string,
   hintUsed?: boolean,
 ): Promise<GradeResult> {
+  // $0 default — no LLM spend unless explicitly enabled
+  if (!aiEnabled()) {
+    return ruleGradeReadback(scenario, studentReadback, hintUsed)
+  }
+
   const userMessage = `
 SCENARIO: ${scenario.title}
 ATC TRANSMISSION: "${scenario.atcTransmission}"
@@ -59,16 +71,15 @@ STUDENT READBACK: "${studentReadback}"
 
 Grade this readback.`
 
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 1024,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: userMessage }],
-  })
-
-  const text = response.content[0].type === 'text' ? response.content[0].text : ''
-
   try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userMessage }],
+    })
+
+    const text = response.content[0].type === 'text' ? response.content[0].text : ''
     const result = JSON.parse(text) as GradeResult
     if (hintUsed) {
       result.score = Math.max(0, result.score - 10)
@@ -77,18 +88,7 @@ Grade this readback.`
     }
     return result
   } catch {
-    // If Claude returns something unparseable, return a safe fallback
-    return {
-      score: 0,
-      passFail: 'FAIL',
-      elements: {
-        required: scenario.requiredElements,
-        hit: [],
-        missed: scenario.requiredElements,
-      },
-      phraseologyIssues: [],
-      correctReadback: scenario.correctReadback,
-      feedback: 'Grading error — please try again.',
-    }
+    // API error, no credits, or unparseable output → deterministic grader
+    return ruleGradeReadback(scenario, studentReadback, hintUsed)
   }
 }

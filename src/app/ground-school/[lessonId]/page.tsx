@@ -213,7 +213,8 @@ function correctText(ex: Exercise): string {
   if (ex.type === 'mc' || ex.type === 'listen') return ex.choices[ex.answer]
   if (ex.type === 'spot') return ex.errorIndices.map((i) => ex.words[i]).join(' ')
   if (ex.type === 'match') return ''
-  return ex.answer.join(' ') // tokens, spell
+  if (ex.type === 'type') return ex.correct
+  return ex.answer.join(' ') // tokens, spell, order, scramble
 }
 function explainOf(ex: Exercise): string | undefined {
   return ex.explain
@@ -262,6 +263,12 @@ function ExerciseView({
       return <MatchView exercise={exercise} locked={locked} onChange={onChange} />
     case 'spot':
       return <SpotView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'order':
+      return <OrderView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'scramble':
+      return <ScrambleView exercise={exercise} locked={locked} onChange={onChange} />
+    case 'type':
+      return <TypeView exercise={exercise} locked={locked} onChange={onChange} />
     default:
       return <TokenView exercise={exercise} locked={locked} onChange={onChange} />
   }
@@ -612,6 +619,187 @@ function SpotView({
           )
         })}
       </div>
+    </div>
+  )
+}
+
+// ── shared: tap phrase-chips into the correct order ───────────────────────────
+function OrderChips({
+  answer,
+  seed,
+  locked,
+  onChange,
+}: {
+  answer: string[]
+  seed: string
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  const pool = useMemo(
+    () => seededShuffle(answer.map((phrase, i) => ({ phrase, key: i })), seed),
+    [answer, seed],
+  )
+  const [placed, setPlaced] = useState<number[]>([])
+
+  function fire(next: number[]) {
+    const built = next.map((k) => pool[k].phrase)
+    const correct = built.length === answer.length && built.every((w, i) => w === answer[i])
+    onChange(next.length === answer.length, correct)
+  }
+  function add(key: number) {
+    if (locked || placed.includes(key)) return
+    const next = [...placed, key]
+    setPlaced(next)
+    fire(next)
+  }
+  function remove(key: number) {
+    if (locked) return
+    const next = placed.filter((k) => k !== key)
+    setPlaced(next)
+    fire(next)
+  }
+
+  return (
+    <>
+      <div className="min-h-[3.5rem] border-b-2 border-gray-200 mb-6 flex flex-wrap gap-2 pb-2">
+        {placed.map((key, i) => (
+          <button
+            key={key}
+            onClick={() => remove(key)}
+            disabled={locked}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border-2 border-gray-300 text-sm font-medium shadow-sm"
+          >
+            <span className="text-xs text-gray-400 font-mono">{i + 1}</span>
+            {pool[key].phrase}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-col gap-2">
+        {pool.map(({ phrase, key }) => {
+          const used = placed.includes(key)
+          return (
+            <button
+              key={key}
+              onClick={() => add(key)}
+              disabled={locked || used}
+              className={`text-left px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-colors ${
+                used ? 'border-gray-100 bg-gray-50 text-gray-300' : 'border-gray-300 bg-white hover:border-gray-500'
+              }`}
+            >
+              {phrase}
+            </button>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+// ── order-the-sequence (e.g. CRAFT clearance order) ───────────────────────────
+function OrderView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'order' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-6">{exercise.prompt}</h2>
+      <OrderChips answer={exercise.answer} seed={exercise.id} locked={locked} onChange={onChange} />
+    </div>
+  )
+}
+
+// ── audio-scramble: hear it, then rebuild the word order ──────────────────────
+function ScrambleView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'scramble' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  useEffect(() => {
+    speak(exercise.audioText)
+  }, [exercise.id])
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-5">{exercise.prompt}</h2>
+      <button
+        onClick={() => speak(exercise.audioText)}
+        className="flex items-center gap-3 w-full px-4 py-4 rounded-xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition-colors mb-6"
+      >
+        <SpeakerIcon className="text-2xl text-amber-700 shrink-0" />
+        <span className="font-medium text-amber-800">Play transmission</span>
+        <span className="ml-auto text-xs text-amber-600 font-mono">tap to replay</span>
+      </button>
+      <OrderChips answer={exercise.answer} seed={exercise.id} locked={locked} onChange={onChange} />
+    </div>
+  )
+}
+
+// ── type-the-readback (free text, deterministic match — no LLM) ───────────────
+const TYPE_NUM: Record<string, string> = {
+  zero: '0', oh: '0', one: '1', two: '2', three: '3', tree: '3', four: '4', fower: '4',
+  five: '5', fife: '5', six: '6', seven: '7', eight: '8', ait: '8', nine: '9', niner: '9',
+}
+const TYPE_FILLER = new Set(['of', 'the', 'and', 'to', 'at', 'a', 'for', 'on'])
+function typeNormalize(s: string): string[] {
+  return s
+    .toLowerCase()
+    .replace(/[.,!?;:"'’`]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .map((w) => TYPE_NUM[w] ?? w)
+    .filter((w) => w.length > 0)
+}
+function phraseIn(phrase: string, tokens: string[]): boolean {
+  const need = typeNormalize(phrase).filter((t) => !TYPE_FILLER.has(t))
+  if (need.length === 0) return true
+  const pool = [...tokens]
+  for (const tk of need) {
+    const idx = pool.indexOf(tk)
+    if (idx === -1) return false
+    pool.splice(idx, 1)
+  }
+  return true
+}
+function TypeView({
+  exercise,
+  locked,
+  onChange,
+}: {
+  exercise: Extract<Exercise, { type: 'type' }>
+  locked: boolean
+  onChange: (ready: boolean, correct: boolean) => void
+}) {
+  const [val, setVal] = useState('')
+
+  function update(v: string) {
+    setVal(v)
+    const toks = typeNormalize(v)
+    const allHit = exercise.accept.every((p) => phraseIn(p, toks))
+    onChange(v.trim().length > 0, allHit)
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-5">{exercise.prompt}</h2>
+      <textarea
+        value={val}
+        onChange={(e) => !locked && update(e.target.value)}
+        disabled={locked}
+        rows={3}
+        placeholder="Type your read-back…"
+        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-gray-900 outline-none text-sm resize-none disabled:bg-gray-50"
+      />
+      <p className="text-xs text-gray-400 mt-2">Type it the way you would say it on the radio — numbers as words is fine.</p>
     </div>
   )
 }
