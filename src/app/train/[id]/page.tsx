@@ -40,19 +40,51 @@ export default function ScenarioPage() {
   const [timer, setTimer] = useState<number | null>(null)
   const [metar, setMetar] = useState<string | null>(null)
 
+  const [displayScore, setDisplayScore] = useState(0)
+  useEffect(() => {
+    if (!result) { setDisplayScore(0); return }
+    const target = result.score
+    let cur = 0
+    const step = Math.max(1, Math.ceil(target / 22))
+    const iv = setInterval(() => {
+      cur = Math.min(cur + step, target)
+      setDisplayScore(cur)
+      if (cur >= target) clearInterval(iv)
+    }, 28)
+    return () => clearInterval(iv)
+  }, [result])
+
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const autoPlayedRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const recognitionRef = useRef<unknown>(null)
+  const recognitionRef = useRef<{ stop: () => void } | null>(null)
+  const isNativeRef = useRef(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const nativeListenerRef = useRef<{ remove: () => void } | null>(null)
 
   // Detect voice support + load session/user
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any
-    const hasVoice = !!(w.SpeechRecognition ?? w.webkitSpeechRecognition)
-    setVoiceAvailable(hasVoice)
-    setVoiceMode(hasVoice)
+    const init = async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core')
+        if (Capacitor.isNativePlatform()) {
+          isNativeRef.current = true
+          setVoiceAvailable(true)
+          setVoiceMode(true)
+          // Pre-request mic permission so first tap doesn't feel slow
+          const { SpeechRecognition } = await import('@capacitor-community/speech-recognition')
+          await SpeechRecognition.requestPermissions()
+          return
+        }
+      } catch {}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = window as any
+      const hasVoice = !!(w.SpeechRecognition ?? w.webkitSpeechRecognition)
+      setVoiceAvailable(hasVoice)
+      setVoiceMode(hasVoice)
+    }
+    init()
     setSession(getSession())
     fetch('/api/auth/me').then(r => r.json()).then(d => d.user && setUser(d.user)).catch(() => {})
   }, [])
@@ -82,19 +114,50 @@ export default function ScenarioPage() {
 
   // Stop any active recognition
   const stopRecognition = useCallback(() => {
+    if (nativeListenerRef.current) {
+      try { nativeListenerRef.current.remove() } catch {}
+      nativeListenerRef.current = null
+    }
     if (recognitionRef.current) {
-      try { (recognitionRef.current as { stop(): void }).stop() } catch {}
+      try { recognitionRef.current.stop() } catch {}
       recognitionRef.current = null
     }
   }, [])
 
   // Voice recognition
-  const startListening = useCallback(() => {
+  const startListening = useCallback(async () => {
+    stopRecognition()
+    setInterimText('')
+    setRadioState('listening')
+
+    if (isNativeRef.current) {
+      // ── Native iOS path via Capacitor plugin ──────────────────────────
+      try {
+        const { SpeechRecognition } = await import('@capacitor-community/speech-recognition')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handle = await (SpeechRecognition as any).addListener(
+          'partialResults',
+          (data: { matches?: string[] }) => {
+            if (data.matches?.[0]) setInterimText(data.matches[0])
+          },
+        )
+        nativeListenerRef.current = handle
+        recognitionRef.current = {
+          stop: () => { SpeechRecognition.stop().catch(() => {}) },
+        }
+        await SpeechRecognition.start({ language: 'en-US', maxResults: 1, partialResults: true, popup: false })
+      } catch {
+        setInterimText('')
+        setRadioState('ready')
+      }
+      return
+    }
+
+    // ── Web Speech API path ──────────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const w = window as any
     const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition
-    if (!SR) { setVoiceMode(false); return }
-    stopRecognition()
+    if (!SR) { setVoiceMode(false); setRadioState('ready'); return }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recognition = new SR() as any
@@ -102,9 +165,6 @@ export default function ScenarioPage() {
     recognition.interimResults = true
     recognition.continuous = false
     recognitionRef.current = recognition
-
-    setInterimText('')
-    setRadioState('listening')
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (e: any) => {
@@ -213,6 +273,23 @@ export default function ScenarioPage() {
     if (!voiceMode) setTimeout(() => textareaRef.current?.focus(), 50)
   }, [voiceMode])
 
+  // Keyboard shortcuts — after all callbacks are declared
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return
+      if (e.key === ' ') {
+        e.preventDefault()
+        if (radioState === 'idle' || radioState === 'ready' || radioState === 'done') playTransmission()
+      }
+      if (e.key === 'Enter' && radioState === 'transcribed' && readback.trim()) {
+        e.preventDefault()
+        submitReadback()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [radioState, readback, playTransmission, submitReadback])
+
   if (!scenario) return (
     <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
       Scenario not found. <a href="/train" className="underline">Back to list</a>
@@ -278,28 +355,75 @@ export default function ScenarioPage() {
 
         <p className="text-gray-600 mb-6 leading-relaxed">{scenario.setup}</p>
 
-        {/* ATC block */}
-        <div className={`rounded-xl p-5 mb-4 transition-all ${isAtcActive ? 'bg-gray-950 ring-2 ring-green-500/40' : 'bg-gray-950'}`}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${isAtcActive ? 'bg-green-400 animate-ping' : 'bg-green-400 animate-pulse'}`} />
-              <span className="text-green-400 font-mono text-xs uppercase tracking-widest">
-                {radioState === 'atc_loading' ? 'Loading...' : radioState === 'atc_playing' ? 'Transmitting...' : 'ATC'}
+        {/* Radio Stack Panel */}
+        <div className={`rounded-xl mb-4 overflow-hidden transition-all border ${isAtcActive ? 'border-amber-500/60 shadow-lg shadow-amber-900/20' : 'border-gray-800'}`} style={{ background: '#111214' }}>
+          {/* Avionics header row */}
+          <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-gray-800">
+            <div className="flex items-center gap-3">
+              {/* Facility badge */}
+              <span className={`font-mono text-xs px-2 py-0.5 rounded tracking-widest font-bold border ${
+                scenario.facility === 'GROUND'    ? 'text-amber-400 border-amber-700 bg-amber-950/60' :
+                scenario.facility === 'TOWER'     ? 'text-green-400 border-green-700 bg-green-950/60' :
+                scenario.facility === 'APPROACH'  ? 'text-sky-400 border-sky-700 bg-sky-950/60' :
+                scenario.facility === 'DEPARTURE' ? 'text-violet-400 border-violet-700 bg-violet-950/60' :
+                scenario.facility === 'CENTER'    ? 'text-blue-400 border-blue-700 bg-blue-950/60' :
+                scenario.facility === 'CLEARANCE' ? 'text-orange-400 border-orange-700 bg-orange-950/60' :
+                scenario.facility === 'CTAF'      ? 'text-cyan-400 border-cyan-700 bg-cyan-950/60' :
+                'text-gray-400 border-gray-700 bg-gray-900'
+              }`}>
+                {scenario.facility ?? 'ATC'}
               </span>
+              {/* LCD Frequency */}
+              {scenario.frequency && (
+                <span className="font-mono text-lg tracking-wider leading-none" style={{ color: '#f5a623', textShadow: '0 0 8px rgba(245,166,35,0.5)', fontVariantNumeric: 'tabular-nums' }}>
+                  {scenario.frequency}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-3">
-              {timer !== null && <span className={`font-mono text-sm font-bold ${timerColor}`}>{timer}s</span>}
-              <button onClick={() => setListenMode(v => !v)} className="text-xs text-gray-500 hover:text-gray-300 font-mono">
+              {/* Signal bars */}
+              <div className="flex items-end gap-0.5 h-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className={`w-1 rounded-sm transition-colors ${isAtcActive ? 'bg-green-400' : i <= 2 ? 'bg-gray-600' : 'bg-gray-800'}`}
+                    style={{ height: `${i * 25}%` }} />
+                ))}
+              </div>
+              {/* Status pill */}
+              <span className={`font-mono text-xs tracking-widest font-bold ${isAtcActive ? 'text-green-400' : 'text-gray-600'}`}>
+                {radioState === 'atc_loading' ? '···' : radioState === 'atc_playing' ? 'RX' : 'STBY'}
+              </span>
+            </div>
+          </div>
+
+          {/* Transmission area */}
+          <div className="px-4 py-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2 flex-1 min-w-0">
+                <div className={`mt-1 w-1.5 h-1.5 rounded-full shrink-0 ${isAtcActive ? 'bg-green-400 animate-pulse' : 'bg-gray-700'}`} />
+                <p className={`text-green-400 font-mono text-sm leading-relaxed ${listenMode ? 'blur-md select-none' : ''}`}>
+                  &ldquo;{scenario.atcTransmission}&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer controls */}
+          <div className="flex items-center justify-between px-4 pb-3">
+            <div className="flex items-center gap-2">
+              {timer !== null && <span className={`font-mono text-sm font-bold tabular-nums ${timerColor}`}>{timer}s</span>}
+              {!isAtcActive && timer === null && (
+                <span className="text-xs text-gray-700 font-mono">SPACE to replay</span>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setListenMode(v => !v)} className="text-xs text-gray-600 hover:text-gray-400 font-mono transition-colors">
                 {listenMode ? '👁 show' : '🙈 hide'}
               </button>
-              <button onClick={playTransmission} disabled={isAtcActive} className="text-xs text-gray-400 hover:text-green-400 font-mono disabled:opacity-40">
-                ▶ replay
+              <button onClick={playTransmission} disabled={isAtcActive} className="text-xs text-amber-600 hover:text-amber-400 font-mono disabled:opacity-30 transition-colors tracking-wider">
+                ▶ REPLAY
               </button>
             </div>
           </div>
-          <p className={`text-green-400 font-mono text-sm leading-relaxed ${listenMode ? 'blur-md select-none' : ''}`}>
-            &ldquo;{scenario.atcTransmission}&rdquo;
-          </p>
         </div>
 
         {/* Hint */}
@@ -334,8 +458,21 @@ export default function ScenarioPage() {
               interimText={interimText}
               readback={readback}
               onMicClick={() => {
-                if (radioState === 'listening') { stopRecognition(); setRadioState('ready') }
-                else startListening()
+                if (radioState === 'listening') {
+                  if (isNativeRef.current && interimText) {
+                    // Native: tap-to-stop takes current interim as final
+                    const finalText = interimText
+                    stopRecognition()
+                    setReadback(finalText)
+                    setInterimText('')
+                    setRadioState('transcribed')
+                  } else {
+                    stopRecognition()
+                    setRadioState('ready')
+                  }
+                } else {
+                  startListening()
+                }
               }}
               onSubmit={() => submitReadback()}
               onRerecord={() => { setReadback(''); setInterimText(''); startListening() }}
@@ -359,7 +496,7 @@ export default function ScenarioPage() {
             <div className={`border rounded-xl p-5 ${scoreBg}`}>
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <div className={`text-4xl font-bold ${scoreColor}`}>{result.score}</div>
+                  <div className={`text-4xl font-bold tabular-nums ${scoreColor}`}>{displayScore}</div>
                   <div className={`text-sm font-medium ${scoreColor}`}>
                     {result.passFail}
                     {hintShown && <span className="ml-2 text-xs text-gray-500">(hint used)</span>}

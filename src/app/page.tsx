@@ -192,6 +192,59 @@ export default function Home() {
             <path d="M 790 295 Q 738 292 662 295" />
           </g>
 
+          {/* ── VOR COMPASS ROSE — upper left, very subtle ── */}
+          <g transform="translate(110, 150)" opacity="0.08">
+            {/* Outer ring */}
+            <circle cx="0" cy="0" r="88" fill="none" stroke="#334155" strokeWidth="1.5" />
+            <circle cx="0" cy="0" r="72" fill="none" stroke="#334155" strokeWidth="0.75" />
+
+            {/* Cardinal tick marks */}
+            {Array.from({ length: 36 }, (_, i) => {
+              const angle = i * 10
+              const rad = (angle * Math.PI) / 180
+              const isCardinal = angle % 90 === 0
+              const isMajor = angle % 30 === 0
+              const outer = 88
+              const inner = isCardinal ? 72 : isMajor ? 78 : 83
+              return (
+                <line
+                  key={i}
+                  x1={Math.sin(rad) * inner}
+                  y1={-Math.cos(rad) * inner}
+                  x2={Math.sin(rad) * outer}
+                  y2={-Math.cos(rad) * outer}
+                  stroke="#334155"
+                  strokeWidth={isCardinal ? 2 : isMajor ? 1.5 : 1}
+                />
+              )
+            })}
+
+            {/* N/S/E/W labels */}
+            <text x="0" y="-60" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">N</text>
+            <text x="0" y="62" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">S</text>
+            <text x="62" y="0" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">E</text>
+            <text x="-62" y="0" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">W</text>
+
+            {/* TO/FROM arrow — pointing roughly NE (045°) */}
+            <g transform="rotate(45)">
+              <polygon points="0,-52 6,-38 -6,-38" fill="#334155" />
+              <line x1="0" y1="-38" x2="0" y2="52" stroke="#334155" strokeWidth="1.5" />
+              <polygon points="0,52 6,38 -6,38" fill="none" stroke="#334155" strokeWidth="1.5" />
+            </g>
+
+            {/* Center dot */}
+            <circle cx="0" cy="0" r="4" fill="#334155" />
+
+            {/* VOR identifier */}
+            <text x="0" y="106" textAnchor="middle" fontSize="9" fontFamily="monospace" fill="#334155" letterSpacing="3">HTO</text>
+          </g>
+
+          {/* ── Frequency strip — bottom left corner ── */}
+          <g transform="translate(26, 590)" opacity="0.09" fontFamily="monospace" fill="#1e293b">
+            <rect x="0" y="-18" width="178" height="26" rx="3" fill="#1e293b" fillOpacity="0.15" />
+            <text fontSize="11" letterSpacing="1" y="0">GND 121.700 · TWR 126.200</text>
+          </g>
+
         </svg>
 
         {/* Hero content — sits above the SVG */}
@@ -221,57 +274,93 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Radio mock */}
+      {/* Avionics Radio Stack Demo */}
       <section className="max-w-5xl mx-auto px-6 pb-20">
-        <div className="bg-gray-950 rounded-2xl p-6 sm:p-8 max-w-2xl">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-green-400 font-mono text-xs uppercase tracking-widest">
-              ATC · Ground Control
-            </span>
+        <div className="max-w-2xl">
+
+          {/* Radio Stack Panel */}
+          <div className="rounded-xl overflow-hidden border border-amber-500/40 shadow-lg shadow-amber-900/10 mb-4" style={{ background: '#111214' }}>
+            {/* Avionics header */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-gray-800">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs px-2 py-0.5 rounded tracking-widest font-bold border text-amber-400 border-amber-700 bg-amber-950/60">
+                  GROUND
+                </span>
+                <span className="font-mono text-lg tracking-wider leading-none tabular-nums" style={{ color: '#f5a623', textShadow: '0 0 8px rgba(245,166,35,0.5)' }}>
+                  121.700
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-end gap-0.5 h-4">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-1 rounded-sm bg-green-400" style={{ height: `${i * 25}%` }} />
+                  ))}
+                </div>
+                <span className="font-mono text-xs tracking-widest font-bold text-green-400">RX</span>
+              </div>
+            </div>
+            {/* Transmission */}
+            <div className="px-4 py-4">
+              <div className="flex items-start gap-2">
+                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
+                <p className="text-green-400 font-mono text-sm sm:text-base leading-relaxed">
+                  &ldquo;Cessna Four Sierra Uniform, Hilo Ground, taxi to runway two eight left via Bravo, hold short of runway two eight right, altimeter two niner niner two.&rdquo;
+                </p>
+              </div>
+            </div>
+            {/* Footer */}
+            <div className="flex items-center justify-between px-4 pb-3">
+              <span className="text-xs text-gray-700 font-mono">PHTO · GND</span>
+              <span className="text-xs text-amber-600 font-mono tracking-wider">▶ REPLAY</span>
+            </div>
           </div>
-          <p className="text-green-400 font-mono text-sm sm:text-base leading-relaxed mb-6">
-            &ldquo;Cessna 4 Sierra Uniform, taxi to runway 28 Left via Bravo, hold short of runway 28 Right, altimeter 2 niner niner 2.&rdquo;
-          </p>
-          <div className="border border-gray-800 rounded-lg p-4 mb-4">
-            <div className="text-gray-500 text-xs font-mono mb-2 uppercase tracking-widest">Your readback</div>
+
+          {/* Readback input */}
+          <div className="border border-gray-800 rounded-xl p-4 mb-4" style={{ background: '#111214' }}>
+            <div className="text-gray-500 text-xs font-mono mb-2 uppercase tracking-widest">🎙 Your readback</div>
             <p className="text-white font-mono text-sm">
-              &ldquo;Taxi to 28 Left via Bravo, 4 Sierra Uniform.&rdquo;
+              &ldquo;Taxi to two eight left via Bravo, Four Sierra Uniform.&rdquo;
             </p>
           </div>
+
           {/* Grade result */}
-          <div className="bg-red-950/40 border border-red-900/50 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-red-950/40 border border-red-900/50 rounded-xl p-4">
+            <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="text-3xl font-bold text-red-400">52</div>
-                <div className="text-xs text-red-400 font-semibold">FAIL</div>
+                <div className="text-xs text-red-400 font-semibold tracking-widest">FAIL</div>
               </div>
               <p className="text-xs text-gray-400 max-w-xs text-right leading-relaxed">
-                Missing hold short instruction — a safety-critical element. In Class D airspace this causes a runway incursion.
+                Missing hold short — a safety-critical element. Causes runway incursion in Class D.
               </p>
             </div>
             <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-green-400">✓</span>
-                <span className="text-gray-300">Runway 28 Left</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-green-400">✓</span>
-                <span className="text-gray-300">Taxiway Bravo</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-green-400">✓</span>
-                <span className="text-gray-300">Call sign</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-red-400">✗</span>
-                <span className="text-red-300 font-semibold">Hold short runway 28 Right — MISSING</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-red-400">✗</span>
-                <span className="text-red-300">Altimeter 2 niner niner 2 — not read back</span>
-              </div>
+              {[
+                { hit: true, text: 'Runway two eight left' },
+                { hit: true, text: 'Taxiway Bravo' },
+                { hit: true, text: 'Call sign' },
+                { hit: false, text: 'Hold short runway two eight right — MISSING' },
+                { hit: false, text: 'Altimeter two niner niner two — not read back' },
+              ].map((el) => (
+                <div key={el.text} className="flex items-center gap-2 text-xs font-mono">
+                  <span className={el.hit ? 'text-green-400' : 'text-red-400'}>{el.hit ? '✓' : '✗'}</span>
+                  <span className={el.hit ? 'text-gray-300' : 'text-red-300 font-semibold'}>{el.text}</span>
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Squawk display teaser */}
+          <div className="mt-4 flex items-center gap-4 px-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600 font-mono uppercase tracking-widest">SQUAWK</span>
+              <span className="font-mono text-base tracking-widest tabular-nums" style={{ color: '#f5a623', textShadow: '0 0 6px rgba(245,166,35,0.4)' }}>1200</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600 font-mono uppercase tracking-widest">MODE</span>
+              <span className="font-mono text-xs text-green-500 tracking-widest">C</span>
+            </div>
+            <div className="ml-auto text-xs text-gray-700 font-mono">VFR · KPHTO · RWY 28L</div>
           </div>
         </div>
       </section>

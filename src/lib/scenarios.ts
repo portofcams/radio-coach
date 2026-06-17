@@ -7,6 +7,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 1,
     airport: 'PHTO',
+    facility: 'GROUND',
+    frequency: '121.700',
     setup:
       "You're at Hilo Airport (PHTO), parked on the GA ramp. You've called ground and are ready to taxi. Listen carefully — there's a hold short buried in the instruction.",
     atcTransmission:
@@ -31,6 +33,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 1,
     airport: 'PHTO',
+    facility: 'GROUND',
+    frequency: '121.700',
     setup:
       "You're taxiing and ground has just cleared you to cross an active runway. This is a safety-critical readback — every element is required.",
     atcTransmission:
@@ -55,6 +59,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 2,
     airport: 'KPAE',
+    facility: 'GROUND',
+    frequency: '121.700',
     setup:
       "You're already taxiing when ground calls with a change. Amended clearances are easy to mess up — your brain is still on the old route.",
     atcTransmission:
@@ -78,6 +84,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 1,
     airport: 'KPAE',
+    facility: 'GROUND',
+    frequency: '121.700',
     setup:
       "You're departing IFR and need to copy your clearance and do a run-up. Ground has sent you to the run-up area adjacent to the hold short.",
     atcTransmission:
@@ -102,6 +110,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 2,
     airport: 'PHOG',
+    facility: 'GROUND',
+    frequency: '121.900',
     setup:
       "You've tuned the ATIS and copied Information Bravo. Now you're calling ground to request taxi. This is an initial call, not a readback — but it must include the information identifier.",
     atcTransmission:
@@ -126,6 +136,8 @@ export const scenarios: Scenario[] = [
     phase: 'ground',
     difficulty: 3,
     airport: 'KPAE',
+    facility: 'GROUND',
+    frequency: '121.900',
     setup:
       "This one has got pilots killed. Ground has cleared you to taxi to the runway — but included a hold short at an intersection along the way. Miss it and you could roll onto an active runway.",
     atcTransmission:
@@ -150,6 +162,8 @@ export const scenarios: Scenario[] = [
     phase: 'departure',
     difficulty: 1,
     airport: 'PHTO',
+    facility: 'TOWER',
+    frequency: '126.200',
     setup:
       "You're holding short of runway 3 at a Class D airport. Tower has just cleared you. Read back everything that matters for safety.",
     atcTransmission:
@@ -169,6 +183,8 @@ export const scenarios: Scenario[] = [
     phase: 'departure',
     difficulty: 1,
     airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "Tower isn't ready to clear you for takeoff yet — there's traffic on final. They've told you to position on the runway and wait. This is a critical readback: do NOT say cleared for takeoff.",
     atcTransmission:
@@ -188,6 +204,8 @@ export const scenarios: Scenario[] = [
     phase: 'departure',
     difficulty: 2,
     airport: 'KSEA',
+    facility: 'DEPARTURE',
+    frequency: '124.700',
     setup:
       "You've just lifted off from a Class C airport and approach has given you post-departure instructions. Four elements — get them all.",
     atcTransmission:
@@ -212,6 +230,8 @@ export const scenarios: Scenario[] = [
     phase: 'departure',
     difficulty: 2,
     airport: 'KSEA',
+    facility: 'TOWER',
+    frequency: '119.900',
     setup:
       "You're airborne and tower has given you a specific departure turn to avoid conflicting traffic. The turn and altitude are both required in your readback.",
     atcTransmission:
@@ -235,6 +255,8 @@ export const scenarios: Scenario[] = [
     phase: 'departure',
     difficulty: 2,
     airport: 'KSEA',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "Tower has given you takeoff clearance but included a wake turbulence caution. You must acknowledge the caution explicitly — silence isn't a readback.",
     atcTransmission:
@@ -259,6 +281,8 @@ export const scenarios: Scenario[] = [
     phase: 'pattern',
     difficulty: 1,
     airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "You're inbound VFR and tower has given you your pattern entry. Read back the leg, runway, and the reporting point.",
     atcTransmission:
@@ -283,6 +307,8 @@ export const scenarios: Scenario[] = [
     phase: 'pattern',
     difficulty: 2,
     airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "You're in the pattern and tower has sequenced you behind another aircraft. You need to confirm you have the traffic visually.",
     atcTransmission:
@@ -306,6 +332,8 @@ export const scenarios: Scenario[] = [
     phase: 'pattern',
     difficulty: 2,
     airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "You're on short final and tower has called an immediate go-around. This is urgent — your readback needs to be immediate and crisp. Fly the airplane first, talk second.",
     atcTransmission:
@@ -330,6 +358,8 @@ export const scenarios: Scenario[] = [
     phase: 'pattern',
     difficulty: 2,
     airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
     setup:
       "Tower has cleared you for the option — you can land, touch-and-go, stop-and-go, or go around. This is common during training. Read back the clearance and runway.",
     atcTransmission:
@@ -354,6 +384,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 1,
     airport: 'PHKO',
+    facility: 'APPROACH',
+    frequency: '124.000',
     setup:
       "Approach has called traffic for you. You've looked but can't find it. Your response tells the controller whether to keep issuing advisories.",
     atcTransmission:
@@ -373,6 +405,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 1,
     airport: 'PHKO',
+    facility: 'APPROACH',
+    frequency: '124.000',
     setup:
       "You've requested VFR flight following and approach has assigned you a squawk. Set it and read it back.",
     atcTransmission:
@@ -392,6 +426,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 2,
     airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '124.800',
     setup:
       "You want to pick up VFR flight following for your cross-country. Your initial call to approach must include your position, altitude, destination, and request — all in one transmission.",
     atcTransmission:
@@ -418,6 +454,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 2,
     airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '124.800',
     setup:
       "You're inbound to a Class C airport and have copied ATIS Information Charlie. You need to establish two-way radio contact before entering the 10nm veil. Your call must include specific elements.",
     atcTransmission:
@@ -441,6 +479,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 1,
     airport: 'KPAE',
+    facility: 'CENTER',
+    frequency: '134.700',
     setup:
       "You're in uncontrolled airspace and approach has released you. This is one of the simplest transmissions — but students get it wrong by overthinking it.",
     atcTransmission:
@@ -459,6 +499,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 2,
     airport: 'KPAE',
+    facility: 'APPROACH',
+    frequency: '124.700',
     setup:
       "You're cruising at eight thousand on flight following and approach has started bringing you down for the arrival sequence. Altitude is the critical element — say it back exactly.",
     atcTransmission:
@@ -482,6 +524,8 @@ export const scenarios: Scenario[] = [
     phase: 'enroute',
     difficulty: 1,
     airport: 'PHDH',
+    facility: 'CTAF',
+    frequency: '122.800',
     setup:
       "You're approaching an uncontrolled airport. There's no tower — you make self-announce position calls on CTAF. This isn't a readback scenario, it's a transmission drill. State all required elements.",
     atcTransmission:
@@ -507,6 +551,8 @@ export const scenarios: Scenario[] = [
     phase: 'ifr',
     difficulty: 3,
     airport: 'PHKO',
+    facility: 'CLEARANCE',
+    frequency: '135.000',
     setup:
       "You're IFR, on the ground, calling clearance delivery. They're about to read you your full departure clearance. Use CRAFT: Clearance limit, Route, Altitude, Frequency, Transponder. Write it down — then read it back verbatim.",
     atcTransmission:
@@ -534,6 +580,8 @@ export const scenarios: Scenario[] = [
     phase: 'ifr',
     difficulty: 3,
     airport: 'KSEA',
+    facility: 'APPROACH',
+    frequency: '124.000',
     setup:
       "You're in IMC on an IFR flight plan. Approach has vectored you to the final approach course and is about to clear you for the ILS. Every element must be read back.",
     atcTransmission:
@@ -559,6 +607,8 @@ export const scenarios: Scenario[] = [
     phase: 'ifr',
     difficulty: 3,
     airport: 'KSEA',
+    facility: 'APPROACH',
+    frequency: '119.900',
     setup:
       "You broke out below minimums but the runway environment isn't in sight. You're going missed. ATC has new instructions that differ from the published missed approach — read them back exactly.",
     atcTransmission:
@@ -583,6 +633,8 @@ export const scenarios: Scenario[] = [
     phase: 'ifr',
     difficulty: 3,
     airport: 'PHTO',
+    facility: 'CLEARANCE',
+    frequency: '135.000',
     setup:
       "You're departing a remote non-radar airport IFR. Clearance delivery has given you a void time — if you're not airborne by that time, the clearance is cancelled. The void time is as critical as any element in the clearance.",
     atcTransmission:
@@ -602,6 +654,675 @@ export const scenarios: Scenario[] = [
       'Missing the void time — if you depart after the void, you have no clearance and no separation',
       'Forgetting the "advise intentions" time — required readback element',
       'Not reading back the squawk',
+    ],
+  },
+
+  // ─── GROUND ───────────────────────────────────────────────────────────────
+  {
+    id: 'intersection-departure',
+    title: 'Intersection departure — shortened runway',
+    phase: 'ground',
+    difficulty: 2,
+    airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
+    setup:
+      "Tower is offering you a departure from taxiway Bravo intersection rather than the full runway. You must explicitly acknowledge the intersection — you're giving up runway length.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, runway two eight left at Bravo, intersection departure available, two thousand eight hundred feet available, cleared for takeoff.',
+    requiredElements: [
+      'call sign',
+      'runway two eight left at Bravo',
+      'cleared for takeoff',
+    ],
+    correctReadback:
+      'Runway two eight left at Bravo, cleared for takeoff, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Accepting the clearance without reading back the intersection — you must confirm which intersection',
+      'Saying just "runway two eight left" — the intersection is part of the clearance',
+      'Not knowing your aircraft performance — intersection departures reduce available runway',
+    ],
+  },
+  {
+    id: 'progressive-taxi',
+    title: 'Progressive taxi instructions',
+    phase: 'ground',
+    difficulty: 2,
+    airport: 'KSEA',
+    facility: 'GROUND',
+    frequency: '121.700',
+    setup:
+      "SeaTac is complex. Ground is issuing you turn-by-turn instructions. Read each back precisely — there's no margin for misunderstanding at a major hub.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, progressive taxi — turn left on November, then left on Sierra, hold short of runway one six right.',
+    requiredElements: [
+      'call sign',
+      'left on November',
+      'left on Sierra',
+      'hold short runway one six right',
+    ],
+    correctReadback:
+      'Left on November, left on Sierra, hold short runway one six right, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing one of the taxiway turns — write it down immediately',
+      'Omitting the hold short',
+      'Saying "roger" — always fully read back progressive taxi instructions',
+    ],
+  },
+  {
+    id: 'pushback-approved',
+    title: 'Pushback approval',
+    phase: 'ground',
+    difficulty: 1,
+    airport: 'KPAE',
+    facility: 'GROUND',
+    frequency: '121.700',
+    setup:
+      "You're at a gate and need to push back before taxiing. Your readback confirms direction of pushback and releases the tug when complete.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, pushback approved, face south, advise clear of the gate.',
+    requiredElements: ['call sign', 'pushback approved', 'face south'],
+    correctReadback:
+      'Pushback approved, face south, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Forgetting to state facing direction — it tells ATC where your nose will be',
+      'Not calling "clear of the gate" when done — required before taxi clearance',
+      'Saying "pushing back" without readback — confirm all elements',
+    ],
+  },
+  {
+    id: 'runway-incursion-stop',
+    title: 'STOP instruction — runway incursion alert',
+    phase: 'ground',
+    difficulty: 3,
+    airport: 'KSEA',
+    facility: 'GROUND',
+    frequency: '121.900',
+    setup:
+      "This is the most critical ground transmission. Ground has just told you to STOP — likely because you are about to roll onto an active runway. Immediate, clipped readback, then STOP the aircraft.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, STOP IMMEDIATELY, I say again STOP, confirm your position.',
+    requiredElements: ['call sign', 'stopping', 'position readback'],
+    correctReadback:
+      'Stopping, Cessna One Two Three Four Five, we are holding at Alpha One.',
+    commonMistakes: [
+      'Stopping the aircraft before transmitting — correct! Aviate first, talk after',
+      'Long-winded explanation — keep it short: "stopping, <call sign>"',
+      'Not confirming your position when asked',
+    ],
+  },
+
+  // ─── DEPARTURE ────────────────────────────────────────────────────────────
+  {
+    id: 'vfr-squawk-departure',
+    title: 'VFR departure squawk assignment',
+    phase: 'departure',
+    difficulty: 1,
+    airport: 'PHNL',
+    facility: 'DEPARTURE',
+    frequency: '124.700',
+    setup:
+      "You've just taken off VFR and departure control has assigned you a unique squawk. Set it and read it back — this is how radar identifies you.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, radar contact, squawk five two zero seven, fly heading two seven zero, maintain VFR at or below three thousand.',
+    requiredElements: [
+      'call sign',
+      'squawk five two zero seven',
+      'heading two seven zero',
+      'at or below three thousand',
+    ],
+    correctReadback:
+      'Squawk five two zero seven, heading two seven zero, at or below three thousand, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Reading squawk as "fifty-two oh seven" — each digit separately: "five two zero seven"',
+      'Missing "at or below" — say "at or below three thousand," not just "three thousand"',
+      'Forgetting the heading assignment',
+    ],
+  },
+  {
+    id: 'bravo-transition',
+    title: 'Class Bravo transition clearance',
+    phase: 'departure',
+    difficulty: 3,
+    airport: 'KLAX',
+    facility: 'DEPARTURE',
+    frequency: '135.400',
+    setup:
+      "You're VFR and have been issued a Class Bravo transition clearance. This is a complex readback — altitude, heading, squawk, and explicit Bravo entry authorization all required.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, cleared through the Los Angeles Class Bravo, maintain VFR at or below four thousand five hundred, fly heading zero three zero, squawk six six three two.',
+    requiredElements: [
+      'call sign',
+      'cleared through Class Bravo',
+      'at or below four thousand five hundred',
+      'heading zero three zero',
+      'squawk six six three two',
+    ],
+    correctReadback:
+      'Cleared through the Bravo, at or below four thousand five hundred, heading zero three zero, squawk six six three two, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Not reading back "cleared through the Bravo" — without it you are NOT in the Bravo',
+      'Saying "forty-five hundred" — always say "four thousand five hundred"',
+      'Missing any of the four required elements — all are safety-critical',
+    ],
+  },
+  {
+    id: 'ifr-full-clearance',
+    title: 'Full IFR departure clearance — CRAFT',
+    phase: 'departure',
+    difficulty: 3,
+    airport: 'PHNL',
+    facility: 'CLEARANCE',
+    frequency: '135.000',
+    setup:
+      "You're IFR departing Honolulu. Clearance delivery is reading you a full CRAFT clearance: Clearance limit, Route, Altitude, Frequency, Transponder. Copy everything and read it all back.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, cleared to Hilo Airport via the Diamond Head departure, then direct Hilo, climb and maintain four thousand, expect one zero thousand one zero minutes after departure, departure frequency one two four point seven, squawk three three one five.',
+    requiredElements: [
+      'call sign',
+      'cleared to Hilo',
+      'Diamond Head departure',
+      'four thousand',
+      'one two four point seven',
+      'squawk three three one five',
+    ],
+    correctReadback:
+      'Cleared to Hilo Airport via Diamond Head departure, direct Hilo, climb and maintain four thousand, expect one zero thousand, departure one two four point seven, squawk three three one five, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing the SID name — the route is part of the clearance',
+      'Forgetting "expect altitude" — write it down for emergencies',
+      'Reading squawk digits in pairs — "thirty-three fifteen" instead of "three three one five"',
+    ],
+  },
+  {
+    id: 'void-time-clearance',
+    title: 'Clearance void time — remote airport',
+    phase: 'departure',
+    difficulty: 3,
+    airport: 'PHDH',
+    facility: 'CLEARANCE',
+    frequency: '135.000',
+    setup:
+      "You're IFR departing an airport without a tower. Flight Service has relayed your clearance including a void time — if you're not airborne by that time, your clearance is cancelled automatically.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, IFR clearance to Hilo, as filed, maintain three thousand, departure frequency one three five point zero, squawk four four two one, clearance void if not airborne by zero two one five Zulu, time now zero one five five Zulu.',
+    requiredElements: [
+      'call sign',
+      'maintain three thousand',
+      'squawk four four two one',
+      'void zero two one five Zulu',
+    ],
+    correctReadback:
+      'Cleared to Hilo as filed, maintain three thousand, one three five point zero, squawk four four two one, clearance void zero two one five Zulu, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing the void time readback — if you depart after the void you have no IFR separation',
+      'Not noting the current time — you have 20 minutes, know when the clock started',
+      'Forgetting to advise FSS if you decide not to depart — required by regulation',
+    ],
+  },
+
+  // ─── PATTERN ──────────────────────────────────────────────────────────────
+  {
+    id: 'touch-and-go',
+    title: 'Cleared touch-and-go',
+    phase: 'pattern',
+    difficulty: 1,
+    airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
+    setup:
+      "You're on final for a training flight and tower has cleared you touch-and-go. Read back the runway and clearance — and note the traffic direction for the next pattern.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, runway two two left, cleared touch-and-go, left traffic.',
+    requiredElements: [
+      'call sign',
+      'runway two two left',
+      'cleared touch-and-go',
+      'left traffic',
+    ],
+    correctReadback:
+      'Runway two two left, cleared touch-and-go, left traffic, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Saying "cleared to land" — you were cleared touch-and-go, a different operation',
+      'Missing the traffic direction — you need it for the next pattern',
+      'Forgetting the runway number',
+    ],
+  },
+  {
+    id: 'extend-downwind',
+    title: 'Extend downwind — delay sequence',
+    phase: 'pattern',
+    difficulty: 2,
+    airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
+    setup:
+      "You're on downwind and tower needs you to extend for spacing. They'll call your base turn. Acknowledge and confirm — then fly the airplane.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, extend downwind, I\'ll call your base, traffic is a Boeing Seven Thirty-Seven on a three-mile final.',
+    requiredElements: ['call sign', 'extending downwind', 'will call base'],
+    correctReadback:
+      'Extending downwind, will wait for your call, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Turning base without clearance — you said you\'d wait for the call',
+      'Not acknowledging you understand they will call your base turn',
+      'Worrying about traffic altitude — the controller has separation',
+    ],
+  },
+  {
+    id: 'short-approach-approved',
+    title: 'Short approach approved',
+    phase: 'pattern',
+    difficulty: 2,
+    airport: 'KPAE',
+    facility: 'TOWER',
+    frequency: '132.350',
+    setup:
+      "Tower has approved your request for a short approach — you'll turn final early to keep the pattern moving. Read back the clearance and runway.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, short approach approved, runway two eight left, cleared to land.',
+    requiredElements: [
+      'call sign',
+      'short approach',
+      'runway two eight left',
+      'cleared to land',
+    ],
+    correctReadback:
+      'Short approach, runway two eight left, cleared to land, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Forgetting "short approach" in readback — confirms you understand the modified routing',
+      'Turning final without getting landing clearance first',
+      'Missing the runway designator',
+    ],
+  },
+  {
+    id: 'go-around-wind-shear',
+    title: 'Wind shear escape maneuver — go around',
+    phase: 'pattern',
+    difficulty: 3,
+    airport: 'PHTO',
+    facility: 'TOWER',
+    frequency: '126.200',
+    setup:
+      "Tower has issued you a go-around due to reported wind shear on final. You're on short final. Confirm and execute immediately — this is a safety-of-flight instruction.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, go around, wind shear reported on final, fly runway heading, climb and maintain two thousand five hundred.',
+    requiredElements: [
+      'call sign',
+      'going around',
+      'runway heading',
+      'two thousand five hundred',
+    ],
+    correctReadback:
+      'Going around, runway heading, two thousand five hundred, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Asking why — wind shear is an emergency condition, execute first',
+      'Missing the altitude — fly the airplane to 2,500 immediately',
+      'Saying "go around" instead of "going around" — confirm the action in progress',
+    ],
+  },
+
+  // ─── ENROUTE ──────────────────────────────────────────────────────────────
+  {
+    id: 'climb-to-altitude',
+    title: 'Altitude change — climb to assigned',
+    phase: 'enroute',
+    difficulty: 1,
+    airport: 'PHNL',
+    facility: 'CENTER',
+    frequency: '135.500',
+    setup:
+      "You're cruising VFR on flight following and center has approved your altitude change request. Read back the new altitude clearly.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, climb and maintain eight thousand five hundred, altimeter two niner eight five.',
+    requiredElements: [
+      'call sign',
+      'climb and maintain eight thousand five hundred',
+      'two niner eight five',
+    ],
+    correctReadback:
+      'Climb and maintain eight thousand five hundred, two niner eight five, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Saying "eighty-five hundred" — always "eight thousand five hundred"',
+      'Missing the altimeter setting — two niner eight five',
+      'Saying "climbing to" instead of "climb and maintain"',
+    ],
+  },
+  {
+    id: 'traffic-advisory-confirm',
+    title: 'Traffic in sight — confirm and pass',
+    phase: 'enroute',
+    difficulty: 1,
+    airport: 'PHKO',
+    facility: 'APPROACH',
+    frequency: '124.800',
+    setup:
+      "Approach has called traffic and you have it in sight. Confirm visually and pass it — the controller needs to know if you have separation responsibility.",
+    atcTransmission:
+      "Cessna One Two Three Four Five, traffic, eleven o'clock, five miles, southbound, four thousand, type unknown.",
+    requiredElements: ['call sign', 'traffic in sight'],
+    correctReadback: 'Traffic in sight, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      '"I see it" — not standard phraseology, say "traffic in sight"',
+      'Describing the traffic back to the controller — they know, just confirm you see it',
+      'Not responding — always acknowledge traffic calls immediately',
+    ],
+  },
+  {
+    id: 'weather-deviation-approved',
+    title: 'Weather deviation request approved',
+    phase: 'enroute',
+    difficulty: 2,
+    airport: 'KLAX',
+    facility: 'CENTER',
+    frequency: '132.800',
+    setup:
+      "You've requested a deviation for weather. Center has approved — but with a specific lateral limit. Read back the approved deviation and constraint.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, deviate as necessary, return to course when able, advise when back on course, remain clear of the Bravo.',
+    requiredElements: [
+      'call sign',
+      'deviating',
+      'will advise back on course',
+      'will remain clear of Bravo',
+    ],
+    correctReadback:
+      'Deviating for weather, will advise when back on course, will remain clear of the Bravo, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing "will advise back on course" — the controller needs that call',
+      'Not confirming you will remain clear of the Bravo — it is a hard constraint',
+      'Saying "roger" and nothing else — not sufficient for a deviation clearance',
+    ],
+  },
+  {
+    id: 'center-frequency-change',
+    title: 'Center handoff — frequency change',
+    phase: 'enroute',
+    difficulty: 1,
+    airport: 'KPAE',
+    facility: 'CENTER',
+    frequency: '132.800',
+    setup:
+      "You're IFR enroute and Oakland Center is handing you off to the next sector. New frequency, new controller — read back and switch.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, contact Los Angeles Center on one three two point eight five, good day.',
+    requiredElements: ['call sign', 'one three two point eight five', 'good day'],
+    correctReadback:
+      'One three two point eight five, good day, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Saying "switching to one thirty-two eighty-five" — always use individual digits',
+      'Not saying good day in return — professional standard',
+      'Forgetting to actually switch — check in on the new frequency within 30 seconds',
+    ],
+  },
+
+  // ─── IFR ──────────────────────────────────────────────────────────────────
+  {
+    id: 'ils-full-approach',
+    title: 'ILS approach clearance — full readback',
+    phase: 'ifr',
+    difficulty: 2,
+    airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '124.800',
+    setup:
+      "Honolulu Approach has cleared you for the ILS. You're inbound on the localizer. Read back every element — approach type, runway, and any crossing restriction.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, cleared ILS runway two six left approach, cross MAILE at or above three thousand, report outer marker.',
+    requiredElements: [
+      'call sign',
+      'cleared ILS runway two six left',
+      'cross MAILE at or above three thousand',
+      'will report outer marker',
+    ],
+    correctReadback:
+      'Cleared ILS runway two six left, cross MAILE at or above three thousand, will report outer marker, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Saying "ILS approach" without the runway number — which ILS? Always include the runway',
+      'Missing the MAILE crossing restriction — it is part of the clearance',
+      'Forgetting the outer marker report — confirm you\'ll make the call',
+    ],
+  },
+  {
+    id: 'star-with-restriction',
+    title: 'STAR arrival with speed restriction',
+    phase: 'ifr',
+    difficulty: 3,
+    airport: 'KLAX',
+    facility: 'CENTER',
+    frequency: '135.400',
+    setup:
+      "Center has assigned you a STAR with an altitude and speed restriction. You are IFR. Three elements: STAR name, altitude, and speed — all must be read back.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, descend via the SADDE Six arrival, cross KONZL at one one thousand, speed one eight zero knots.',
+    requiredElements: [
+      'call sign',
+      'descend via SADDE Six arrival',
+      'cross KONZL at one one thousand',
+      'speed one eight zero knots',
+    ],
+    correctReadback:
+      'Descend via SADDE Six arrival, cross KONZL at one one thousand, speed one eight zero knots, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Saying "eleven thousand" instead of "one one thousand" — IFR altitude format',
+      'Omitting the STAR name — "descend via" only works with the procedure name',
+      'Missing the speed restriction — mandatory to read back ATC speed assignments',
+    ],
+  },
+  {
+    id: 'missed-approach-amended',
+    title: 'Missed approach — amended instructions',
+    phase: 'ifr',
+    difficulty: 3,
+    airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '119.900',
+    setup:
+      "You've gone missed approach and approach is giving you amended vectors instead of the published missed approach procedure. Read back immediately — you're in IMC.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, fly heading three six zero, climb and maintain four thousand, expect the ILS runway two six left again, traffic is a seven-thirty-seven on the downwind.',
+    requiredElements: [
+      'call sign',
+      'heading three six zero',
+      'climb and maintain four thousand',
+      'expect ILS runway two six left',
+    ],
+    correctReadback:
+      'Heading three six zero, climb and maintain four thousand, expect ILS two six left, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Flying the published missed instead of amended — ATC instructions override published procedures',
+      'Missing the altitude — four thousand is your obstacle clearance',
+      'Asking "say again" without writing it down first — copy everything, then ask for clarification',
+    ],
+  },
+  {
+    id: 'emergency-mayday',
+    title: 'MAYDAY — engine failure declaration',
+    phase: 'ifr',
+    difficulty: 3,
+    airport: 'PHNL',
+    facility: 'CENTER',
+    frequency: '121.500',
+    setup:
+      "Your engine has quit. You are declaring an emergency. The correct distress call is MAYDAY spoken three times, followed by your call sign, nature of emergency, position, altitude, souls on board, and fuel remaining. This isn't a readback — it's your distress transmission.",
+    atcTransmission:
+      '(No ATC transmission — you are initiating emergency contact on 121.5. Your engine quit 30 miles southwest of Honolulu at 6,000 feet. You have 2 souls on board and 1 hour of fuel.)',
+    requiredElements: [
+      'MAYDAY spoken three times',
+      'call sign',
+      'nature of emergency',
+      'position',
+      'altitude',
+      'souls on board',
+      'fuel remaining',
+    ],
+    correctReadback:
+      'MAYDAY MAYDAY MAYDAY, Cessna One Two Three Four Five, engine failure, thirty miles southwest of Honolulu, six thousand feet, two souls on board, one hour fuel, request immediate assistance.',
+    commonMistakes: [
+      'Saying MAYDAY only once — say it three times so ATC can identify you are in distress',
+      'Skipping souls on board — SAR needs headcount',
+      'Forgetting fuel remaining — critical for search window',
+      'Squawk 7700 and ident as well — the transmission alone is not enough',
+    ],
+  },
+
+  // ─── MORE IFR + ADVANCED ─────────────────────────────────────────────────
+  {
+    id: 'radar-vectors-final',
+    title: 'Radar vectors to final',
+    phase: 'ifr',
+    difficulty: 2,
+    airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '124.800',
+    setup:
+      "Approach is vectoring you for the ILS. You're being turned to intercept the localizer. Read back heading, altitude, and the approach clearance.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, turn left heading two five zero, descend and maintain two thousand, cleared ILS runway two six left approach.',
+    requiredElements: [
+      'call sign',
+      'left heading two five zero',
+      'descend and maintain two thousand',
+      'cleared ILS runway two six left',
+    ],
+    correctReadback:
+      'Left heading two five zero, descend and maintain two thousand, cleared ILS runway two six left, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing the approach clearance — you must read it back to confirm you have the plate',
+      'Saying just "two thousand" instead of "descend and maintain two thousand"',
+      'Missing the runway designator on the approach clearance',
+    ],
+  },
+  {
+    id: 'vor-holding-pattern',
+    title: 'VOR holding pattern entry',
+    phase: 'ifr',
+    difficulty: 3,
+    airport: 'PHNL',
+    facility: 'APPROACH',
+    frequency: '124.800',
+    setup:
+      "Traffic has caused a delay on the approach. Approach has just issued you holding instructions. Four elements: fix, course, direction of turns, and leg length.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, hold northeast of the Maui VOR on the zero four five radial, left turns, five mile legs, expect further clearance at zero two three zero Zulu.',
+    requiredElements: [
+      'call sign',
+      'hold northeast Maui VOR',
+      'zero four five radial',
+      'left turns',
+      'five mile legs',
+      'EFC zero two three zero',
+    ],
+    correctReadback:
+      'Hold northeast of the Maui VOR on the zero four five radial, left turns, five mile legs, expect further clearance zero two three zero, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Missing the EFC — this is your emergency authority to continue if radio contact is lost',
+      'Omitting the radial — which side of the VOR you hold on matters',
+      'Defaulting to "right turns" without confirming — standard is right, but ATC specified left',
+    ],
+  },
+  {
+    id: 'pirep-request',
+    title: 'PIREP — turbulence report',
+    phase: 'enroute',
+    difficulty: 1,
+    airport: 'PHNL',
+    facility: 'CENTER',
+    frequency: '135.500',
+    setup:
+      "Center is asking you for a pilot report after you reported turbulence. Give the full PIREP format: UA, location, altitude, type, sky, weather, temperature, winds.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, say type of turbulence encountered and location.',
+    requiredElements: [
+      'call sign',
+      'location',
+      'altitude',
+      'type of turbulence',
+    ],
+    correctReadback:
+      'Cessna One Two Three Four Five, PIREP, sixty miles east of Hilo, eight thousand, moderate turbulence, clear skies.',
+    commonMistakes: [
+      'Just saying "bumpy" — use FAA turbulence intensity: light, moderate, severe, extreme',
+      'Not giving location and altitude — these are the minimum required elements',
+      'Forgetting "PIREP" at the start — it flags the message as a pilot report for recording',
+    ],
+  },
+  {
+    id: 'special-vfr-request',
+    title: 'Special VFR clearance',
+    phase: 'departure',
+    difficulty: 3,
+    airport: 'PHKO',
+    facility: 'TOWER',
+    frequency: '118.100',
+    setup:
+      "Visibility has dropped to 1.5 miles in fog — below VFR minimums in Class D. You've requested Special VFR. Tower has approved it. Read back all required elements.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, Special VFR clearance approved, maintain Special VFR conditions while in the Kona Class Delta, depart runway one niner, remain clear of clouds, contact departure one two four point seven.',
+    requiredElements: [
+      'call sign',
+      'Special VFR',
+      'remain clear of clouds',
+      'one two four point seven',
+    ],
+    correctReadback:
+      'Special VFR, runway one niner, will remain clear of clouds, one two four point seven, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Forgetting "remain clear of clouds" — you are responsible for cloud clearance under SVFR',
+      'Treating it like a normal VFR departure — SVFR has strict responsibility on the pilot',
+      'Not reading back the departure frequency — you must check in with departure',
+    ],
+  },
+  {
+    id: 'atis-copy-and-report',
+    title: 'ATIS information — copy and report with info',
+    phase: 'ground',
+    difficulty: 2,
+    airport: 'PHNL',
+    facility: 'GROUND',
+    frequency: '121.900',
+    setup:
+      "You've tuned ATIS on 127.900 and copied Information Golf: winds 090 at 12, visibility 10, few clouds at 2,500, altimeter 29.94, expect ILS runway 8R. Now call Ground with information Golf.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, Honolulu Ground, go ahead.',
+    requiredElements: [
+      'aircraft type',
+      'location on field',
+      'VFR or IFR',
+      'destination or intentions',
+      'information Golf',
+    ],
+    correctReadback:
+      'Honolulu Ground, Cessna One Two Three Four Five, Cessna One Seventy Two, Interisland terminal ramp, IFR to Hilo, with information Golf.',
+    commonMistakes: [
+      'Saying "I have the ATIS" without naming the information identifier — always say "Golf"',
+      'Omitting your location — at a big airport ground needs to know where to route you',
+      'Not stating IFR or VFR — this determines your clearance type',
+    ],
+  },
+  {
+    id: 'altitude-block-clearance',
+    title: 'Block altitude clearance',
+    phase: 'enroute',
+    difficulty: 3,
+    airport: 'KLAX',
+    facility: 'CENTER',
+    frequency: '132.800',
+    setup:
+      "You've requested a block altitude for turbulence avoidance. Center has approved a block from six thousand to eight thousand. Read back the full block clearance.",
+    atcTransmission:
+      'Cessna One Two Three Four Five, cleared to maintain block altitude six thousand to eight thousand, advise which altitude you are leaving block.',
+    requiredElements: [
+      'call sign',
+      'block altitude six thousand to eight thousand',
+      'will advise leaving block',
+    ],
+    correctReadback:
+      'Block altitude six thousand to eight thousand, will advise leaving block, Cessna One Two Three Four Five.',
+    commonMistakes: [
+      'Just saying "six to eight thousand" — say full words: "six thousand to eight thousand"',
+      'Missing "will advise leaving block" — ATC needs to know when you exit the block',
+      'Not understanding that you can fly anywhere in the block without further clearance',
     ],
   },
 ]
