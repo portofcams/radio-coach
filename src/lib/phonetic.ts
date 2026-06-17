@@ -8,6 +8,9 @@ const PHONETIC: Record<string, string> = {
   '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Niner',
 }
 
+/** every phonetic word (letters + digits) — used to build drill distractors */
+export const PHONETIC_WORDS: string[] = Object.values(PHONETIC)
+
 export function toPhonetic(callsign: string): string {
   return callsign
     .toUpperCase()

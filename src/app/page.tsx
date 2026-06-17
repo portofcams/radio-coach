@@ -22,6 +22,7 @@ export default function Home() {
             RADIO COACH
           </span>
           <div className="flex items-center gap-5">
+            <Link href="/ground-school" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Ground School</Link>
             <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
             <NavAuth />
           </div>
@@ -261,14 +262,20 @@ export default function Home() {
             <p className="text-xl text-gray-500 leading-relaxed mb-8">
               ATC gives the transmission. You read it back. AI grades every element against FAA AIM standards — missed hold shorts, wrong squawk, non-standard phrases, all of it.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="/train"
                 className="bg-gray-900 text-white px-8 py-3.5 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
               >
                 Try a scenario free
               </Link>
-              <span className="text-sm text-gray-400">No account required</span>
+              <Link
+                href="/ground-school"
+                className="border border-gray-300 text-gray-700 px-8 py-3.5 rounded-lg font-medium text-base hover:border-gray-500 transition-colors"
+              >
+                Start Ground School
+              </Link>
+              <span className="text-sm text-gray-400 w-full sm:w-auto">No account · no mic · works offline</span>
             </div>
           </div>
         </div>
