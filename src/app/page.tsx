@@ -30,27 +30,177 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-6 pt-20 pb-16">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-mono px-3 py-1 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
-            Free during beta
-          </div>
-          <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
-            Your radio calls,<br />
-            <span className="text-gray-400">graded like a CFI.</span>
-          </h1>
-          <p className="text-xl text-gray-500 leading-relaxed mb-8 max-w-xl">
-            ATC gives the transmission. You read it back. AI grades every element against FAA AIM standards — missed hold shorts, wrong squawk, non-standard phrases, all of it.
-          </p>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/train"
-              className="bg-gray-900 text-white px-8 py-3.5 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
-            >
-              Try a scenario free
-            </Link>
-            <span className="text-sm text-gray-400">No account required</span>
+      <section className="relative overflow-hidden pt-20 pb-16">
+
+        {/* Airport scene background */}
+        <svg
+          viewBox="0 0 1400 620"
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#e0f2fe" stopOpacity="0.35" />
+              <stop offset="60%" stopColor="#f0f9ff" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="runwayFade" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#94a3b8" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#94a3b8" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          {/* Sky tint */}
+          <rect x="0" y="0" width="1400" height="620" fill="url(#skyGrad)" />
+
+          {/* Ground / horizon */}
+          <rect x="0" y="430" width="1400" height="190" fill="#f1f5f9" fillOpacity="0.25" />
+          <line x1="0" y1="430" x2="1400" y2="430" stroke="#cbd5e1" strokeWidth="1" strokeOpacity="0.3" />
+
+          {/* Runway — vanishing point at (1200, 390) toward the tower */}
+          <path d="M 550 620 L 1200 390 L 1400 580 Z" fill="url(#runwayFade)" />
+          <line x1="550" y1="620" x2="1200" y2="390" stroke="#94a3b8" strokeWidth="1.5" strokeOpacity="0.18" />
+          <line x1="1400" y1="580" x2="1200" y2="390" stroke="#94a3b8" strokeWidth="1.5" strokeOpacity="0.18" />
+
+          {/* Runway threshold stripes (near end, left side) */}
+          <g fillOpacity="0.10" fill="#64748b">
+            <rect x="580" y="600" width="38" height="13" rx="2" />
+            <rect x="628" y="588" width="33" height="11" rx="2" />
+            <rect x="672" y="576" width="28" height="10" rx="2" />
+            <rect x="1345" y="575" width="35" height="12" rx="2" />
+            <rect x="1310" y="565" width="30" height="10" rx="2" />
+          </g>
+
+          {/* Runway centerline dashes (converging toward tower) */}
+          <g stroke="#94a3b8" strokeOpacity="0.11" strokeWidth="2">
+            <line x1="1010" y1="620" x2="1030" y2="588" />
+            <line x1="1042" y1="558" x2="1058" y2="528" />
+            <line x1="1068" y1="502" x2="1082" y2="475" />
+            <line x1="1090" y1="452" x2="1102" y2="429" />
+            <line x1="1110" y1="410" x2="1118" y2="393" />
+          </g>
+
+          {/* ── CONTROL TOWER — far right ── */}
+          <g fill="#334155" fillOpacity="0.08">
+            {/* Base terminal building */}
+            <rect x="1200" y="390" width="130" height="170" rx="3" />
+            <rect x="1172" y="445" width="185" height="115" rx="3" />
+            {/* Tower shaft */}
+            <rect x="1242" y="185" width="38" height="210" rx="2" />
+            {/* Observation cab — trapezoid */}
+            <path d="M 1215 185 L 1228 148 L 1298 148 L 1310 185 Z" />
+            {/* Cab roof overhang */}
+            <rect x="1209" y="141" width="110" height="10" rx="2" />
+          </g>
+
+          {/* Tower cab windows */}
+          <g fill="#bae6fd" fillOpacity="0.45">
+            <rect x="1222" y="155" width="13" height="20" rx="1.5" />
+            <rect x="1240" y="155" width="13" height="20" rx="1.5" />
+            <rect x="1258" y="155" width="13" height="20" rx="1.5" />
+            <rect x="1276" y="155" width="13" height="20" rx="1.5" />
+            <rect x="1294" y="155" width="13" height="20" rx="1.5" />
+          </g>
+
+          {/* Tower antennas */}
+          <g stroke="#334155" strokeOpacity="0.08">
+            <line x1="1261" y1="141" x2="1261" y2="98" strokeWidth="3" />
+            <line x1="1247" y1="106" x2="1275" y2="106" strokeWidth="1.5" />
+            <line x1="1261" y1="98" x2="1253" y2="108" strokeWidth="1.5" />
+            <line x1="1261" y1="98" x2="1269" y2="108" strokeWidth="1.5" />
+            <line x1="1288" y1="141" x2="1288" y2="118" strokeWidth="2" />
+            <line x1="1232" y1="141" x2="1232" y2="124" strokeWidth="2" />
+          </g>
+          <circle cx="1261" cy="95" r="6" fill="#334155" fillOpacity="0.08" />
+          <circle cx="1261" cy="95" r="3" fill="#fef08a" fillOpacity="0.25" />
+
+          {/* ── AIRPLANE — Cessna-style, takeoff attitude, right side ── */}
+          {/* Centered at (1010, 270), pitched up ~18°, just passing tower */}
+          <g transform="translate(1010, 285) rotate(-18)" fill="#1e293b" fillOpacity="0.09">
+
+            {/* Main fuselage */}
+            <path d="
+              M 162 0
+              Q 146 -10 112 -16
+              Q 62 -20 10 -18
+              Q -60 -16 -116 -10
+              Q -150 -6 -166 0
+              Q -150 6 -116 10
+              Q -60 16 10 18
+              Q 62 20 112 16
+              Q 146 10 162 0 Z
+            " />
+
+            {/* Nose cone */}
+            <path d="M 160 -6 Q 182 -2 190 0 Q 182 2 160 6 Z" />
+
+            {/* Cabin bump / windshield */}
+            <path d="
+              M 22 -18 Q 42 -30 82 -30 Q 116 -29 136 -16
+              L 112 -16 Q 96 -26 76 -26 Q 46 -26 30 -18 Z
+            " />
+
+            {/* Wing (high wing, side view) */}
+            <path d="M 42 -18 L 26 -90 L -18 -86 L -2 -18 Z" />
+
+            {/* Wing strut */}
+            <line x1="30" y1="16" x2="8" y2="-64" stroke="#1e293b" strokeOpacity="0.09" strokeWidth="5" />
+
+            {/* Horizontal stabilizer */}
+            <path d="M -146 -4 L -170 -32 L -180 -30 L -160 -4 Z" />
+            <path d="M -146 4 L -170 32 L -180 30 L -160 4 Z" />
+
+            {/* Vertical fin */}
+            <path d="M -138 -8 Q -150 -28 -160 -58 L -146 -57 Q -136 -28 -124 -8 Z" />
+
+            {/* Propeller arc */}
+            <ellipse cx="192" cy="0" rx="5" ry="46" fillOpacity="0.3" />
+
+            {/* Main gear (trailing, just airborne) */}
+            <line x1="-4" y1="17" x2="-2" y2="38" stroke="#1e293b" strokeOpacity="0.07" strokeWidth="5" />
+            <ellipse cx="-2" cy="41" rx="10" ry="7" fillOpacity="0.07" />
+            <line x1="30" y1="17" x2="32" y2="38" stroke="#1e293b" strokeOpacity="0.07" strokeWidth="5" />
+            <ellipse cx="32" cy="41" rx="10" ry="7" fillOpacity="0.07" />
+
+            {/* Nose gear (retracting) */}
+            <line x1="132" y1="12" x2="134" y2="27" stroke="#1e293b" strokeOpacity="0.06" strokeWidth="4" />
+            <ellipse cx="134" cy="30" rx="7" ry="5" fillOpacity="0.06" />
+          </g>
+
+          {/* Prop wash streaks (trailing behind plane, left of center) */}
+          <g stroke="#94a3b8" strokeOpacity="0.05" strokeWidth="1.5" fill="none">
+            <path d="M 788 270 Q 740 265 670 267" />
+            <path d="M 784 283 Q 730 279 655 281" />
+            <path d="M 790 295 Q 738 292 662 295" />
+          </g>
+
+        </svg>
+
+        {/* Hero content — sits above the SVG */}
+        <div className="relative max-w-5xl mx-auto px-6">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-mono px-3 py-1 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+              Free during beta
+            </div>
+            <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
+              Your radio calls,<br />
+              <span className="text-gray-400">graded like a CFI.</span>
+            </h1>
+            <p className="text-xl text-gray-500 leading-relaxed mb-8">
+              ATC gives the transmission. You read it back. AI grades every element against FAA AIM standards — missed hold shorts, wrong squawk, non-standard phrases, all of it.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/train"
+                className="bg-gray-900 text-white px-8 py-3.5 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
+              >
+                Try a scenario free
+              </Link>
+              <span className="text-sm text-gray-400">No account required</span>
+            </div>
           </div>
         </div>
       </section>
