@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { scenarios } from '@/lib/scenarios'
+import { units } from '@/lib/groundschool'
 import NavAuth from '@/components/NavAuth'
+import LandingMiniDrill from '@/components/LandingMiniDrill'
 
 export default function Home() {
   const total = scenarios.length
@@ -11,6 +13,7 @@ export default function Home() {
     enroute: scenarios.filter((s) => s.phase === 'enroute').length,
     ifr: scenarios.filter((s) => s.phase === 'ifr').length,
   }
+  const gsLessons = units.reduce((n, u) => n + u.lessons.length, 0)
 
   return (
     <main className="min-h-screen bg-white">
@@ -372,10 +375,101 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Stats band */}
+      <section className="border-y border-gray-100 bg-gray-50/60 py-10">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+            {[
+              { n: total, label: 'AI-graded scenarios', sub: 'every phase of flight' },
+              { n: gsLessons, label: 'drill lessons', sub: 'phonetics → emergencies' },
+              { n: 7, label: 'ATC facilities', sub: 'ground to center' },
+              { n: '$0', label: 'to start', sub: 'no card, no mic' },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">{s.n}</div>
+                <div className="text-sm font-medium text-gray-700 mt-1">{s.label}</div>
+                <div className="text-xs text-gray-400">{s.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ground School showcase */}
+      <section className="relative overflow-hidden border-b border-gray-100 py-20 bg-gradient-to-b from-blue-50/40 via-white to-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-mono font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-widest">
+              🎮 New · Ground School
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">Learn the radio like a game</h2>
+            <p className="text-lg text-gray-500 leading-relaxed">
+              Bite-sized drills that make the basics automatic — phonetics, numbers, hold-shorts, emergencies. Build a streak, earn XP, lose a heart when you slip. No mic, no AI, <span className="font-medium text-gray-700">works offline</span>.
+            </p>
+          </div>
+
+          {/* Playable taste */}
+          <div className="max-w-2xl mx-auto mb-16">
+            <LandingMiniDrill />
+          </div>
+
+          {/* Exercise types */}
+          <h3 className="text-center text-sm font-mono uppercase tracking-widest text-gray-400 mb-6">Six ways to drill</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-16">
+            {[
+              { icon: '☑️', name: 'Multiple choice', ex: '"Phonetic for R?" → Romeo' },
+              { icon: '🧩', name: 'Tap-the-tokens', ex: 'Build the read-back in order' },
+              { icon: '📞', name: 'Spell your call sign', ex: 'N42TG → November Four Two…' },
+              { icon: '🔊', name: 'Listen & select', ex: 'Hear ATC, pick the answer' },
+              { icon: '🔗', name: 'Match the pairs', ex: '7700 ↔ general emergency' },
+              { icon: '🎯', name: 'Spot the error', ex: 'Tap the wrong word' },
+            ].map((c) => (
+              <div key={c.name} className="rounded-xl border border-gray-200 bg-white p-4 hover:border-gray-300 hover:shadow-sm transition-all">
+                <div className="text-2xl mb-2">{c.icon}</div>
+                <div className="font-semibold text-sm">{c.name}</div>
+                <div className="text-xs text-gray-400 mt-0.5">{c.ex}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* The path */}
+          <h3 className="text-center text-sm font-mono uppercase tracking-widest text-gray-400 mb-6">
+            The path · {units.length} units, {gsLessons} lessons
+          </h3>
+          <div className="flex flex-wrap justify-center items-center gap-2.5 mb-12">
+            {units.map((u, i) => (
+              <span key={u.id} className="inline-flex items-center gap-2">
+                <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold ${u.color}`}>
+                  <span>{u.icon}</span>{u.title}
+                </span>
+                {i < units.length - 1 && <span className="text-gray-300">→</span>}
+              </span>
+            ))}
+          </div>
+
+          {/* Game mechanics + CTA */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 mb-8">
+            <span className="flex items-center gap-1.5">🔥 <span className="font-medium text-gray-700">Daily streaks</span></span>
+            <span className="flex items-center gap-1.5">⭐ <span className="font-medium text-gray-700">Earn XP</span></span>
+            <span className="flex items-center gap-1.5">❤️ <span className="font-medium text-gray-700">5 hearts per lesson</span></span>
+            <span className="flex items-center gap-1.5">🔒 <span className="font-medium text-gray-700">Unlock as you go</span></span>
+          </div>
+          <div className="text-center">
+            <Link href="/ground-school" className="inline-block bg-green-500 hover:bg-green-600 text-white px-8 py-3.5 rounded-lg font-semibold transition-colors">
+              Start Ground School — it&rsquo;s free
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* How it works (AI grader) */}
       <section className="border-t border-gray-100 py-20">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-2xl font-semibold mb-12">How it works</h2>
+          <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-mono font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-widest">
+            🎙 Live Comms · AI-graded
+          </div>
+          <h2 className="text-2xl font-semibold mb-3">Then key the mic for real</h2>
+          <p className="text-gray-500 mb-12 max-w-lg">When the basics are automatic, step up to the live sim — real ATC, and Claude grades every element of your read-back.</p>
           <div className="grid sm:grid-cols-3 gap-8">
             {[
               {
@@ -447,6 +541,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="py-20 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-2xl font-semibold mb-10">Questions, answered</h2>
+          <div className="space-y-6">
+            {[
+              { q: 'Do I need a microphone?', a: 'Nope. Ground School is all taps and choices. In Live Comms you can type your read-back or use your mic — your call.' },
+              { q: 'Is it actually free?', a: 'Yes. Ground School is free and works offline. Live Comms gives you 5 AI-graded scenarios a day free; unlimited is $15/mo.' },
+              { q: 'Is the content FAA-accurate?', a: 'Every scenario and drill is built against the FAA Aeronautical Information Manual (AIM) Chapter 4 — the same standard your CFI and examiner use.' },
+              { q: 'Will this help on my checkride?', a: 'That’s the point. Radio work trips up more student pilots than almost anything — hold-shorts, read-backs, and phraseology are exactly what gets drilled and graded here.' },
+              { q: 'Does it really work offline?', a: 'Ground School drills run entirely on your device — perfect for the ramp, the run-up area, or a flight with no signal.' },
+            ].map((item) => (
+              <div key={item.q} className="border-b border-gray-100 pb-6">
+                <h3 className="font-semibold mb-2">{item.q}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section className="bg-gray-950 py-20">
         <div className="max-w-5xl mx-auto px-6">
@@ -458,9 +573,9 @@ export default function Home() {
                 name: 'Free',
                 price: '$0',
                 sub: 'forever',
-                features: ['5 scenarios/day', 'Ground & departure phases', 'Text readback only'],
+                features: ['Full Ground School — all drills', 'Works offline · no mic', '5 AI-graded scenarios/day'],
                 cta: 'Start free',
-                href: '/train',
+                href: '/ground-school',
                 highlight: false,
               },
               {
@@ -531,14 +646,22 @@ export default function Home() {
             Ready to stop second-guessing your calls?
           </h2>
           <p className="text-gray-500 mb-8">
-            Start with the scenario that scares you most. Hold short, runway crossing, first IFR clearance.
+            Warm up with a few drills, then key the mic for the scenario that scares you most — hold short, runway crossing, first IFR clearance.
           </p>
-          <Link
-            href="/train"
-            className="inline-block bg-gray-900 text-white px-10 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
-          >
-            Start training — it&rsquo;s free
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/ground-school"
+              className="inline-block bg-green-500 text-white px-9 py-4 rounded-lg font-semibold text-base hover:bg-green-600 transition-colors"
+            >
+              Start Ground School — free
+            </Link>
+            <Link
+              href="/train"
+              className="inline-block bg-gray-900 text-white px-9 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
+            >
+              Try a live scenario
+            </Link>
+          </div>
         </div>
       </section>
 
