@@ -70,6 +70,37 @@ export function completeLesson(lessonId: string, xp: number): GsProgress {
   return p
 }
 
+/**
+ * Push local progress to the server and return the merged result (union of
+ * completed, max xp/streak). For logged-in users this syncs across devices; for
+ * anonymous users the server returns null and local progress is kept as-is.
+ * Best-effort: any failure just returns the local copy unchanged.
+ */
+export async function syncProgress(local?: GsProgress): Promise<GsProgress> {
+  const p = local ?? loadProgress()
+  if (typeof window === 'undefined') return p
+  try {
+    const res = await fetch('/api/gs/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(p),
+    })
+    if (!res.ok) return p
+    const data = await res.json()
+    if (!data?.progress) return p
+    const merged: GsProgress = {
+      completed: Array.isArray(data.progress.completed) ? data.progress.completed : p.completed,
+      xp: typeof data.progress.xp === 'number' ? data.progress.xp : p.xp,
+      streak: typeof data.progress.streak === 'number' ? data.progress.streak : p.streak,
+      lastDay: typeof data.progress.lastDay === 'string' ? data.progress.lastDay : p.lastDay,
+    }
+    save(merged)
+    return merged
+  } catch {
+    return p
+  }
+}
+
 export function isComplete(lessonId: string, p?: GsProgress): boolean {
   return (p ?? loadProgress()).completed.includes(lessonId)
 }

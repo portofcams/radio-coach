@@ -10,7 +10,7 @@ import {
   type Exercise,
 } from '@/lib/groundschool'
 import { PHONETIC_WORDS } from '@/lib/phonetic'
-import { completeLesson, type GsProgress } from '@/lib/gs-progress'
+import { completeLesson, syncProgress, type GsProgress } from '@/lib/gs-progress'
 import { HeartIcon, FlameIcon, CheckIcon, SpeakerIcon } from '@/components/icons'
 
 type Status = 'answering' | 'right' | 'wrong' | 'done' | 'failed'
@@ -33,7 +33,10 @@ export default function LessonPage() {
   // award XP exactly once when the lesson is finished
   useEffect(() => {
     if (status === 'done' && found && !result) {
-      setResult(completeLesson(found.lesson.id, found.lesson.xp))
+      const p = completeLesson(found.lesson.id, found.lesson.xp)
+      setResult(p)
+      // sync to server (logged-in) and reflect the merged streak
+      syncProgress(p).then(setResult)
     }
   }, [status, found, result])
 

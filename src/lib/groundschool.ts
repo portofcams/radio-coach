@@ -125,6 +125,8 @@ export interface GsUnit {
   icon: string
   /** tailwind accent classes for the unit header */
   color: string
+  /** a live-comms scenario unlocked after the unit's lessons — the free AI-sim taste */
+  checkpointScenarioId?: string
   lessons: GsLesson[]
 }
 
@@ -148,6 +150,7 @@ export const units: GsUnit[] = [
     subtitle: 'The 26 letters every pilot must spell by ear',
     icon: 'ABC',
     color: 'text-blue-700 bg-blue-50 border-blue-200',
+    checkpointScenarioId: 'ground-taxi-hold-short',
     lessons: [
       {
         id: 'phon-1',
@@ -197,6 +200,7 @@ export const units: GsUnit[] = [
     subtitle: 'Altitudes, headings, frequencies, and squawks — said the FAA way',
     icon: '123',
     color: 'text-amber-700 bg-amber-50 border-amber-200',
+    checkpointScenarioId: 'class-d-takeoff',
     lessons: [
       {
         id: 'num-1',
@@ -243,6 +247,7 @@ export const units: GsUnit[] = [
     subtitle: 'Taxi clearances, hold shorts, and runway crossings',
     icon: 'GND',
     color: 'text-teal-700 bg-teal-50 border-teal-200',
+    checkpointScenarioId: 'runway-crossing',
     lessons: [
       {
         id: 'grd-1',
@@ -281,6 +286,7 @@ export const units: GsUnit[] = [
     subtitle: 'Takeoff, landing, and line-up-and-wait clearances',
     icon: 'TWR',
     color: 'text-sky-700 bg-sky-50 border-sky-200',
+    checkpointScenarioId: 'line-up-wait',
     lessons: [
       {
         id: 'twr-1',
@@ -318,6 +324,7 @@ export const units: GsUnit[] = [
     subtitle: 'Pattern entry, sequencing, options, and go-arounds',
     icon: 'PAT',
     color: 'text-violet-700 bg-violet-50 border-violet-200',
+    checkpointScenarioId: 'pattern-entry',
     lessons: [
       {
         id: 'pat-1',
@@ -355,6 +362,7 @@ export const units: GsUnit[] = [
     subtitle: 'Mayday vs pan-pan, and the emergency squawk codes',
     icon: 'EMG',
     color: 'text-red-700 bg-red-50 border-red-200',
+    checkpointScenarioId: 'class-c-entry',
     lessons: [
       {
         id: 'emg-1',
@@ -398,6 +406,7 @@ export const units: GsUnit[] = [
     subtitle: 'Copy a full IFR clearance the CRAFT way',
     icon: 'CLR',
     color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+    checkpointScenarioId: 'ifr-clearance',
     lessons: [
       {
         id: 'clr-1',
@@ -436,6 +445,7 @@ export const units: GsUnit[] = [
     subtitle: 'Getting into Class B, C, and D the right way',
     icon: 'BCD',
     color: 'text-cyan-700 bg-cyan-50 border-cyan-200',
+    checkpointScenarioId: 'class-c-entry',
     lessons: [
       {
         id: 'air-1',
@@ -473,6 +483,7 @@ export const units: GsUnit[] = [
     subtitle: 'Requesting and working VFR radar advisories',
     icon: 'FF',
     color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+    checkpointScenarioId: 'vfr-flight-following-initial',
     lessons: [
       {
         id: 'ff-1',
@@ -510,6 +521,7 @@ export const units: GsUnit[] = [
     subtitle: 'What to say, and what never to say',
     icon: 'PHR',
     color: 'text-rose-700 bg-rose-50 border-rose-200',
+    checkpointScenarioId: 'ground-taxi-hold-short',
     lessons: [
       {
         id: 'phr-1',

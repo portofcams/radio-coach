@@ -3,14 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { units, previousLessonId, orderedLessons } from '@/lib/groundschool'
-import { loadProgress, type GsProgress } from '@/lib/gs-progress'
+import { loadProgress, syncProgress, type GsProgress } from '@/lib/gs-progress'
 import { FlameIcon, StarIcon, LockIcon, CheckIcon } from '@/components/icons'
 
 export default function GroundSchoolPage() {
   const [progress, setProgress] = useState<GsProgress | null>(null)
 
   useEffect(() => {
-    setProgress(loadProgress())
+    const local = loadProgress()
+    setProgress(local)
+    // pull + merge server progress (logged-in users sync across devices)
+    syncProgress(local).then(setProgress)
   }, [])
 
   // first not-yet-completed lesson = the "current" node to highlight
@@ -115,6 +118,31 @@ export default function GroundSchoolPage() {
                   )
                 })}
               </div>
+
+              {/* Unit checkpoint — a free live-comms taste, unlocked when the unit is done */}
+              {unit.checkpointScenarioId && (() => {
+                const unitDone = progress
+                  ? unit.lessons.every((l) => progress.completed.includes(l.id))
+                  : false
+                return unitDone ? (
+                  <Link
+                    href={`/train/${unit.checkpointScenarioId}`}
+                    className="mt-8 flex items-center gap-3 border-2 border-gray-900 bg-gray-900 text-white rounded-xl px-4 py-3.5 hover:bg-black transition-colors"
+                  >
+                    <span className="font-mono text-[10px] font-bold tracking-widest border border-gray-600 rounded px-1.5 py-0.5">LIVE</span>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-sm">Live Comms checkpoint</div>
+                      <div className="text-xs text-gray-400">Key the mic — your read-back, graded live</div>
+                    </div>
+                    <span className="ml-auto text-gray-400">→</span>
+                  </Link>
+                ) : (
+                  <div className="mt-8 flex items-center gap-3 border-2 border-dashed border-gray-200 text-gray-400 rounded-xl px-4 py-3.5">
+                    <LockIcon className="text-base shrink-0" />
+                    <div className="text-sm">Live Comms checkpoint — finish the unit to unlock</div>
+                  </div>
+                )
+              })()}
             </section>
           ))}
         </div>

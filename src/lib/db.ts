@@ -44,6 +44,18 @@ export async function initDB(): Promise<void> {
     CREATE INDEX IF NOT EXISTS rc_grades_user_id ON rc_grades(user_id);
     CREATE INDEX IF NOT EXISTS rc_grades_scenario_id ON rc_grades(scenario_id);
   `)
+
+  // Ground School progress — one row per user (synced from localStorage)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_gs_progress (
+      user_id INTEGER PRIMARY KEY REFERENCES rc_users(id) ON DELETE CASCADE,
+      completed JSONB NOT NULL DEFAULT '[]',
+      xp INTEGER NOT NULL DEFAULT 0,
+      streak INTEGER NOT NULL DEFAULT 0,
+      last_day TEXT,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `)
 }
 
 // Run init once on first import in server context
