@@ -20,7 +20,7 @@ export default function LearnPage() {
               href={`/learn/${mod.id}`}
               className={`flex items-center gap-4 p-5 border rounded-xl hover:border-gray-400 transition-colors group ${mod.color}`}
             >
-              <div className="text-2xl shrink-0">{mod.icon}</div>
+              <div className="shrink-0 font-mono text-xs font-bold tracking-widest text-gray-500 border border-gray-300 rounded-md px-2 py-1.5 bg-white/60">{mod.icon}</div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-xs text-gray-400 font-mono">0{i + 1}</span>

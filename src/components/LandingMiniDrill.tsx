@@ -57,7 +57,7 @@ export default function LandingMiniDrill() {
       {answered && (
         <div className="mt-5">
           <div className={`text-sm font-semibold mb-1 ${correct ? 'text-green-600' : 'text-red-600'}`}>
-            {correct ? '🎯 Nailed it!' : '😅 Not quite — the green one is right.'}
+            {correct ? 'Nailed it!' : 'Not quite — the green one is right.'}
           </div>
           <p className="text-sm text-gray-500 mb-4">{q.note}</p>
           <div className="flex items-center gap-3 flex-wrap">

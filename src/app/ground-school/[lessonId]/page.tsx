@@ -11,6 +11,7 @@ import {
 } from '@/lib/groundschool'
 import { PHONETIC_WORDS } from '@/lib/phonetic'
 import { completeLesson, type GsProgress } from '@/lib/gs-progress'
+import { HeartIcon, FlameIcon, CheckIcon, SpeakerIcon } from '@/components/icons'
 
 type Status = 'answering' | 'right' | 'wrong' | 'done' | 'failed'
 const MAX_HEARTS = 5
@@ -84,7 +85,9 @@ export default function LessonPage() {
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="text-center max-w-sm">
-          <div className="text-6xl mb-4">🎉</div>
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-green-500 text-white flex items-center justify-center">
+            <CheckIcon className="text-3xl" />
+          </div>
           <h1 className="text-2xl font-semibold mb-2">Lesson complete!</h1>
           <div className="flex items-center justify-center gap-6 my-6">
             <div>
@@ -92,7 +95,9 @@ export default function LessonPage() {
               <div className="text-xs text-gray-400 uppercase tracking-wide">XP earned</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-orange-500">🔥 {result?.streak ?? 1}</div>
+              <div className="flex items-center justify-center gap-1.5 text-2xl font-bold text-orange-500">
+                <FlameIcon className="text-2xl" /> {result?.streak ?? 1}
+              </div>
               <div className="text-xs text-gray-400 uppercase tracking-wide">Day streak</div>
             </div>
           </div>
@@ -116,7 +121,9 @@ export default function LessonPage() {
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="text-center max-w-sm">
-          <div className="text-6xl mb-4">💔</div>
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center">
+            <HeartIcon className="text-3xl" />
+          </div>
           <h1 className="text-2xl font-semibold mb-2">Out of hearts</h1>
           <p className="text-gray-500 mb-6">No worries — repetition is how radio work gets automatic. Run it back.</p>
           <div className="flex flex-col gap-2">
@@ -145,8 +152,8 @@ export default function LessonPage() {
               style={{ width: `${(idx / exercises.length) * 100}%` }}
             />
           </div>
-          <div className="flex items-center gap-0.5 text-sm font-semibold text-red-500 tabular-nums">
-            ❤️ {hearts}
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-red-500 tabular-nums">
+            <HeartIcon className="text-base" /> {hearts}
           </div>
         </div>
 
@@ -170,7 +177,7 @@ export default function LessonPage() {
           )}
           {status === 'right' && (
             <div className="rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
-              <div className="font-semibold text-green-700 text-sm">Correct! 🎯</div>
+              <div className="font-semibold text-green-700 text-sm">Correct!</div>
               {explainOf(ex) && <div className="text-sm text-green-700/80 mt-1">{explainOf(ex)}</div>}
             </div>
           )}
@@ -432,7 +439,7 @@ function ListenView({
         onClick={() => speak(exercise.audioText)}
         className="flex items-center gap-3 w-full px-4 py-4 rounded-xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition-colors mb-6"
       >
-        <span className="text-2xl">🔊</span>
+        <SpeakerIcon className="text-2xl text-amber-700 shrink-0" />
         <span className="font-medium text-amber-800">Play transmission</span>
         <span className="ml-auto text-xs text-amber-600 font-mono">tap to replay</span>
       </button>

@@ -38,7 +38,6 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit }: Props) {
         </button>
 
         <div className="text-center mb-6">
-          <div className="text-3xl mb-2">🎧</div>
           <h2 className="text-xl font-bold text-gray-900">You&apos;ve used your free scenarios today</h2>
           <p className="text-gray-500 text-sm mt-1">
             {freeUsed}/{freeLimit} free readbacks used today. Resets at midnight.

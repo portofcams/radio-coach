@@ -17,7 +17,7 @@ export default function ChallengePage() {
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="text-xs font-mono uppercase tracking-widest text-gray-400 mb-1">⚡ Daily Challenge</div>
+          <div className="text-xs font-mono uppercase tracking-widest text-gray-400 mb-1">Daily Challenge</div>
           <h1 className="text-2xl font-bold text-gray-900">{today}</h1>
           <p className="text-gray-500 text-sm mt-1">One scenario. One shot. Your best readback.</p>
         </div>

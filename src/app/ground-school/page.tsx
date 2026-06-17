@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { units, previousLessonId, orderedLessons } from '@/lib/groundschool'
 import { loadProgress, type GsProgress } from '@/lib/gs-progress'
+import { FlameIcon, StarIcon, LockIcon, CheckIcon } from '@/components/icons'
 
 export default function GroundSchoolPage() {
   const [progress, setProgress] = useState<GsProgress | null>(null)
@@ -30,11 +31,11 @@ export default function GroundSchoolPage() {
         <div className="flex items-end justify-between mb-1">
           <h1 className="text-2xl font-semibold">Ground School</h1>
           <div className="flex items-center gap-4 text-sm">
-            <span title="Day streak" className="flex items-center gap-1 font-semibold text-orange-500">
-              🔥 {progress?.streak ?? 0}
+            <span title="Day streak" className="flex items-center gap-1.5 font-semibold text-orange-500">
+              <FlameIcon className="text-base" /> {progress?.streak ?? 0}
             </span>
-            <span title="Total XP" className="flex items-center gap-1 font-semibold text-amber-600">
-              ⭐ {progress?.xp ?? 0}
+            <span title="Total XP" className="flex items-center gap-1.5 font-semibold text-amber-600">
+              <StarIcon className="text-base" /> {progress?.xp ?? 0}
             </span>
           </div>
         </div>
@@ -54,7 +55,7 @@ export default function GroundSchoolPage() {
           {units.map((unit) => (
             <section key={unit.id}>
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm font-semibold mb-6 ${unit.color}`}>
-                <span className="text-base">{unit.icon}</span>
+                <span className="font-mono text-xs opacity-70">{unit.icon}</span>
                 {unit.title}
               </div>
               <p className="text-xs text-gray-400 -mt-4 mb-6 ml-1">{unit.subtitle}</p>
@@ -84,9 +85,13 @@ export default function GroundSchoolPage() {
                             : 'bg-gray-100 border-gray-200 text-gray-300'
                       } ${unlocked && !complete ? 'hover:scale-105' : ''}`}
                     >
-                      <span className="text-2xl">
-                        {complete ? '✓' : unlocked ? unit.icon : '🔒'}
-                      </span>
+                      {complete ? (
+                        <CheckIcon className="text-3xl" />
+                      ) : unlocked ? (
+                        <span className="font-mono font-bold text-sm tracking-tight">{unit.icon}</span>
+                      ) : (
+                        <LockIcon className="text-xl" />
+                      )}
                     </div>
                   )
 

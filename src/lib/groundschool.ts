@@ -112,7 +112,7 @@ export const units: GsUnit[] = [
     id: 'phonetics',
     title: 'Phonetic Alphabet',
     subtitle: 'The 26 letters every pilot must spell by ear',
-    icon: '🔤',
+    icon: 'ABC',
     color: 'text-blue-700 bg-blue-50 border-blue-200',
     lessons: [
       {
@@ -161,7 +161,7 @@ export const units: GsUnit[] = [
     id: 'numbers',
     title: 'Aviation Numbers',
     subtitle: 'Altitudes, headings, frequencies, and squawks — said the FAA way',
-    icon: '🔢',
+    icon: '123',
     color: 'text-amber-700 bg-amber-50 border-amber-200',
     lessons: [
       {
@@ -207,7 +207,7 @@ export const units: GsUnit[] = [
     id: 'ground-taxi',
     title: 'Ground & Taxi',
     subtitle: 'Taxi clearances, hold shorts, and runway crossings',
-    icon: '🚕',
+    icon: 'GND',
     color: 'text-teal-700 bg-teal-50 border-teal-200',
     lessons: [
       {
@@ -245,7 +245,7 @@ export const units: GsUnit[] = [
     id: 'tower',
     title: 'Tower',
     subtitle: 'Takeoff, landing, and line-up-and-wait clearances',
-    icon: '🗼',
+    icon: 'TWR',
     color: 'text-sky-700 bg-sky-50 border-sky-200',
     lessons: [
       {
@@ -282,7 +282,7 @@ export const units: GsUnit[] = [
     id: 'pattern',
     title: 'Traffic Pattern',
     subtitle: 'Pattern entry, sequencing, options, and go-arounds',
-    icon: '🔄',
+    icon: 'PAT',
     color: 'text-violet-700 bg-violet-50 border-violet-200',
     lessons: [
       {
@@ -319,7 +319,7 @@ export const units: GsUnit[] = [
     id: 'emergencies',
     title: 'Emergencies',
     subtitle: 'Mayday vs pan-pan, and the emergency squawk codes',
-    icon: '🚨',
+    icon: 'EMG',
     color: 'text-red-700 bg-red-50 border-red-200',
     lessons: [
       {

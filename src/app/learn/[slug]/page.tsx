@@ -58,7 +58,7 @@ export default async function ModulePage({ params }: { params: Promise<{ slug: s
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-3xl">{mod.icon}</span>
+            <span className="font-mono text-sm font-bold tracking-widest text-gray-500 border border-gray-300 rounded-md px-2.5 py-1.5">{mod.icon}</span>
             <div>
               <div className="text-xs text-gray-400 font-mono uppercase tracking-widest">Module {String(moduleIndex + 1).padStart(2, '0')} · {mod.estimatedMinutes} min</div>
               <h1 className="text-2xl font-semibold">{mod.title}</h1>

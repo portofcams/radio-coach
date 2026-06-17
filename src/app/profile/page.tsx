@@ -180,7 +180,6 @@ export default function ProfilePage() {
           </>
         ) : (
           <div className="text-center py-12 text-gray-400">
-            <div className="text-4xl mb-3">📡</div>
             <div className="text-sm">No scenarios graded yet.</div>
             <a href="/train" className="text-blue-600 text-sm hover:underline mt-1 block">Start training →</a>
           </div>

@@ -1,10 +1,13 @@
 import Link from 'next/link'
+import { CheckIcon } from '@/components/icons'
 
 export default function SuccessPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="text-center max-w-sm">
-        <div className="text-5xl mb-4">✈️</div>
+        <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center">
+          <CheckIcon className="text-2xl" />
+        </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">You&apos;re cleared for takeoff</h1>
         <p className="text-gray-500 mb-8">
           Solo Pilot unlocked. Unlimited scenarios, all airport classes, all phases of flight.

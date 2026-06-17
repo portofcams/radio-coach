@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { getSession as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
+import { CheckIcon } from '@/components/icons'
 
 export default function FlightSessionPage() {
   const { id } = useParams<{ id: string }>()
@@ -103,7 +104,9 @@ export default function FlightSessionPage() {
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
-          <div className="text-5xl mb-4">{passed === total ? '✈️' : passed >= total / 2 ? '🛫' : '📋'}</div>
+          <div className={`mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center ${passed >= total / 2 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <CheckIcon className="text-2xl" />
+          </div>
           <h1 className="text-2xl font-bold mb-2">{session.title} — Complete</h1>
           <p className="text-gray-500 mb-6">{passed}/{total} passed · avg score {avg}</p>
           <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left space-y-2">

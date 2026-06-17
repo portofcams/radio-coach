@@ -417,7 +417,7 @@ export default function ScenarioPage() {
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => setListenMode(v => !v)} className="text-xs text-gray-600 hover:text-gray-400 font-mono transition-colors">
-                {listenMode ? '👁 show' : '🙈 hide'}
+                {listenMode ? 'show' : 'hide'}
               </button>
               <button onClick={playTransmission} disabled={isAtcActive} className="text-xs text-amber-600 hover:text-amber-400 font-mono disabled:opacity-30 transition-colors tracking-wider">
                 ▶ REPLAY
@@ -429,7 +429,7 @@ export default function ScenarioPage() {
         {/* Hint */}
         {radioState !== 'done' && !hintShown && (
           <button onClick={() => setHintShown(true)} className="text-xs text-gray-400 hover:text-gray-600 mb-4 border border-dashed border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
-            💡 Required elements (−10 pts)
+            Required elements (−10 pts)
           </button>
         )}
         {hintShown && radioState !== 'done' && (
@@ -612,7 +612,7 @@ function VoiceInput({
             }`}
             aria-label={isListening ? 'Stop recording' : 'Start recording'}
           >
-            {isListening ? '■' : isGrading ? '…' : '🎙'}
+            {isListening ? '■' : isGrading ? '…' : 'REC'}
           </button>
         </div>
 
@@ -695,7 +695,7 @@ function TextInput({
           <span className="text-xs text-gray-400">⌘ + Enter to submit</span>
           {onSwitchToVoice && (
             <button onClick={onSwitchToVoice} className="text-xs text-gray-400 hover:text-gray-600 underline">
-              🎙 Use voice
+              Use voice
             </button>
           )}
         </div>

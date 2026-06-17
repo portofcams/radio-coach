@@ -3,6 +3,7 @@ import { scenarios } from '@/lib/scenarios'
 import { units } from '@/lib/groundschool'
 import NavAuth from '@/components/NavAuth'
 import LandingMiniDrill from '@/components/LandingMiniDrill'
+import { FlameIcon, StarIcon, HeartIcon, LockIcon } from '@/components/icons'
 
 export default function Home() {
   const total = scenarios.length
@@ -327,7 +328,7 @@ export default function Home() {
 
           {/* Readback input */}
           <div className="border border-gray-800 rounded-xl p-4 mb-4" style={{ background: '#111214' }}>
-            <div className="text-gray-500 text-xs font-mono mb-2 uppercase tracking-widest">🎙 Your readback</div>
+            <div className="text-gray-500 text-xs font-mono mb-2 uppercase tracking-widest">Your readback</div>
             <p className="text-white font-mono text-sm">
               &ldquo;Taxi to two eight left via Bravo, Four Sierra Uniform.&rdquo;
             </p>
@@ -400,7 +401,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-mono font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-widest">
-              🎮 New · Ground School
+              New · Ground School
             </div>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">Learn the radio like a game</h2>
             <p className="text-lg text-gray-500 leading-relaxed">
@@ -417,15 +418,15 @@ export default function Home() {
           <h3 className="text-center text-sm font-mono uppercase tracking-widest text-gray-400 mb-6">Six ways to drill</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-16">
             {[
-              { icon: '☑️', name: 'Multiple choice', ex: '"Phonetic for R?" → Romeo' },
-              { icon: '🧩', name: 'Tap-the-tokens', ex: 'Build the read-back in order' },
-              { icon: '📞', name: 'Spell your call sign', ex: 'N42TG → November Four Two…' },
-              { icon: '🔊', name: 'Listen & select', ex: 'Hear ATC, pick the answer' },
-              { icon: '🔗', name: 'Match the pairs', ex: '7700 ↔ general emergency' },
-              { icon: '🎯', name: 'Spot the error', ex: 'Tap the wrong word' },
+              { tag: 'MC', name: 'Multiple choice', ex: '"Phonetic for R?" → Romeo' },
+              { tag: 'SEQ', name: 'Tap-the-tokens', ex: 'Build the read-back in order' },
+              { tag: 'C/S', name: 'Spell your call sign', ex: 'N42TG → November Four Two…' },
+              { tag: 'RX', name: 'Listen & select', ex: 'Hear ATC, pick the answer' },
+              { tag: 'PAIR', name: 'Match the pairs', ex: '7700 ↔ general emergency' },
+              { tag: 'ERR', name: 'Spot the error', ex: 'Tap the wrong word' },
             ].map((c) => (
               <div key={c.name} className="rounded-xl border border-gray-200 bg-white p-4 hover:border-gray-300 hover:shadow-sm transition-all">
-                <div className="text-2xl mb-2">{c.icon}</div>
+                <div className="inline-block font-mono text-[10px] font-bold tracking-widest text-gray-400 border border-gray-200 rounded px-1.5 py-0.5 mb-2">{c.tag}</div>
                 <div className="font-semibold text-sm">{c.name}</div>
                 <div className="text-xs text-gray-400 mt-0.5">{c.ex}</div>
               </div>
@@ -449,10 +450,10 @@ export default function Home() {
 
           {/* Game mechanics + CTA */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 mb-8">
-            <span className="flex items-center gap-1.5">🔥 <span className="font-medium text-gray-700">Daily streaks</span></span>
-            <span className="flex items-center gap-1.5">⭐ <span className="font-medium text-gray-700">Earn XP</span></span>
-            <span className="flex items-center gap-1.5">❤️ <span className="font-medium text-gray-700">5 hearts per lesson</span></span>
-            <span className="flex items-center gap-1.5">🔒 <span className="font-medium text-gray-700">Unlock as you go</span></span>
+            <span className="flex items-center gap-1.5"><FlameIcon className="text-base text-orange-500" /> <span className="font-medium text-gray-700">Daily streaks</span></span>
+            <span className="flex items-center gap-1.5"><StarIcon className="text-base text-amber-500" /> <span className="font-medium text-gray-700">Earn XP</span></span>
+            <span className="flex items-center gap-1.5"><HeartIcon className="text-base text-red-500" /> <span className="font-medium text-gray-700">5 hearts per lesson</span></span>
+            <span className="flex items-center gap-1.5"><LockIcon className="text-base text-gray-400" /> <span className="font-medium text-gray-700">Unlock as you go</span></span>
           </div>
           <div className="text-center">
             <Link href="/ground-school" className="inline-block bg-green-500 hover:bg-green-600 text-white px-8 py-3.5 rounded-lg font-semibold transition-colors">
@@ -466,7 +467,7 @@ export default function Home() {
       <section className="border-t border-gray-100 py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-mono font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-widest">
-            🎙 Live Comms · AI-graded
+            Live Comms · AI-graded
           </div>
           <h2 className="text-2xl font-semibold mb-3">Then key the mic for real</h2>
           <p className="text-gray-500 mb-12 max-w-lg">When the basics are automatic, step up to the live sim — real ATC, and Claude grades every element of your read-back.</p>
