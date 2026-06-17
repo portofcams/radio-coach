@@ -638,8 +638,9 @@ function OrderChips({
   locked: boolean
   onChange: (ready: boolean, correct: boolean) => void
 }) {
+  // assign keys AFTER shuffling so pool[key] is consistent (key = pool index)
   const pool = useMemo(
-    () => seededShuffle(answer.map((phrase, i) => ({ phrase, key: i })), seed),
+    () => seededShuffle(answer, seed).map((phrase, i) => ({ phrase, key: i })),
     [answer, seed],
   )
   const [placed, setPlaced] = useState<number[]>([])

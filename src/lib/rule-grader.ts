@@ -45,6 +45,19 @@ function elementPresent(element: string, readbackTokens: string[]): boolean {
   return true
 }
 
+// the abstract element "call sign" can't be token-matched — detect a real one
+const PHONETIC_SET = new Set([
+  'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot', 'golf', 'hotel',
+  'india', 'juliett', 'juliet', 'kilo', 'lima', 'mike', 'november', 'oscar',
+  'papa', 'quebec', 'romeo', 'sierra', 'tango', 'uniform', 'victor', 'whiskey',
+  'xray', 'x-ray', 'yankee', 'zulu', 'cessna', 'piper', 'cirrus',
+])
+function looksLikeCallSign(readback: string, tokens: string[]): boolean {
+  if (tokens.some((t) => PHONETIC_SET.has(t))) return true
+  // a registration-like token, e.g. n42tg / 4su
+  return /\b[a-z]?\d{1,4}[a-z]{1,3}\b/i.test(readback)
+}
+
 const BAD_PHRASES: { re: RegExp; label: string }[] = [
   { re: /\bcopy(\s+that)?\b/, label: '"copy" is not a standard readback' },
   { re: /\b10[-\s]?4\b/, label: '"10-4" is CB slang — never in aviation' },
@@ -64,7 +77,11 @@ export function ruleGradeReadback(
   const hit: string[] = []
   const missed: string[] = []
   for (const el of required) {
-    ;(elementPresent(el, rbTokens) ? hit : missed).push(el)
+    const isCallSign = /call\s?sign/i.test(el)
+    const present = isCallSign
+      ? looksLikeCallSign(readback, rbTokens)
+      : elementPresent(el, rbTokens)
+    ;(present ? hit : missed).push(el)
   }
 
   const lower = ' ' + readback.toLowerCase() + ' '
