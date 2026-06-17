@@ -21,7 +21,10 @@ export default function Home() {
           <span className="font-mono text-sm font-semibold tracking-widest text-gray-900">
             RADIO COACH
           </span>
-          <NavAuth />
+          <div className="flex items-center gap-5">
+            <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
+            <NavAuth />
+          </div>
         </div>
       </nav>
 
@@ -112,9 +115,26 @@ export default function Home() {
           <circle cx="1261" cy="95" r="6" fill="#334155" fillOpacity="0.08" />
           <circle cx="1261" cy="95" r="3" fill="#fef08a" fillOpacity="0.25" />
 
-          {/* ── AIRPLANE — Cessna-style, takeoff attitude, right side ── */}
-          {/* Centered at (1010, 270), pitched up ~18°, just passing tower */}
-          <g transform="translate(1010, 285) rotate(-18)" fill="#1e293b" fillOpacity="0.09">
+          {/* Animated airplane */}
+          <style>{`
+            @keyframes planefly {
+              0%   { transform: translate(-320px, 588px) rotate(0deg);   opacity: 0; }
+              4%   { opacity: 1; }
+              12%  { transform: translate(60px,  572px) rotate(-2deg);  opacity: 1; }
+              28%  { transform: translate(400px, 530px) rotate(-8deg); }
+              48%  { transform: translate(740px, 450px) rotate(-16deg); }
+              66%  { transform: translate(1010px,310px) rotate(-20deg); }
+              84%  { transform: translate(1310px,165px) rotate(-22deg); }
+              96%  { transform: translate(1620px, 40px) rotate(-20deg); opacity: 1; }
+              100% { transform: translate(1750px,-20px) rotate(-18deg); opacity: 0; }
+            }
+            #plane-anim {
+              animation: planefly 11s cubic-bezier(0.22, 0.1, 0.58, 1) infinite;
+            }
+          `}</style>
+
+          {/* ── AIRPLANE — Cessna-style, takeoff attitude ── */}
+          <g id="plane-anim" fill="#1e293b" fillOpacity="0.09">
 
             {/* Main fuselage */}
             <path d="

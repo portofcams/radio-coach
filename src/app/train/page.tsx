@@ -60,9 +60,12 @@ export default function TrainPage() {
             <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← back</Link>
             <h1 className="text-2xl font-semibold">Training</h1>
           </div>
-          <Link href="/challenge" className="text-sm text-blue-600 hover:underline font-medium">
-            ⚡ Today&apos;s challenge →
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">📖 Learn</Link>
+            <Link href="/challenge" className="text-sm text-blue-600 hover:underline font-medium">
+              ⚡ Today&apos;s challenge →
+            </Link>
+          </div>
         </div>
 
         {/* Tabs */}
