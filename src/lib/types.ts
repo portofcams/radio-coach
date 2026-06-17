@@ -12,6 +12,7 @@ export interface Scenario {
   title: string
   phase: Phase
   difficulty: Difficulty
+  airport: string
   /** What the student needs to know about the situation before the transmission */
   setup: string
   /** Exactly what ATC says — what plays over ElevenLabs */

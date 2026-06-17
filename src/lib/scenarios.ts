@@ -6,6 +6,7 @@ export const scenarios: Scenario[] = [
     title: 'Ground taxi with hold short',
     phase: 'ground',
     difficulty: 1,
+    airport: 'PHTO',
     setup:
       "You're at Hilo Airport (PHTO), parked on the GA ramp. You've called ground and are ready to taxi. Listen carefully — there's a hold short buried in the instruction.",
     atcTransmission:
@@ -29,6 +30,7 @@ export const scenarios: Scenario[] = [
     title: 'Runway crossing clearance',
     phase: 'ground',
     difficulty: 1,
+    airport: 'PHTO',
     setup:
       "You're taxiing and ground has just cleared you to cross an active runway. This is a safety-critical readback — every element is required.",
     atcTransmission:
@@ -52,6 +54,7 @@ export const scenarios: Scenario[] = [
     title: 'Amended taxi instruction',
     phase: 'ground',
     difficulty: 2,
+    airport: 'KPAE',
     setup:
       "You're already taxiing when ground calls with a change. Amended clearances are easy to mess up — your brain is still on the old route.",
     atcTransmission:
@@ -74,6 +77,7 @@ export const scenarios: Scenario[] = [
     title: 'Taxi to run-up area',
     phase: 'ground',
     difficulty: 1,
+    airport: 'KPAE',
     setup:
       "You're departing IFR and need to copy your clearance and do a run-up. Ground has sent you to the run-up area adjacent to the hold short.",
     atcTransmission:
@@ -97,6 +101,7 @@ export const scenarios: Scenario[] = [
     title: 'Copying ATIS — initial ground call',
     phase: 'ground',
     difficulty: 2,
+    airport: 'PHOG',
     setup:
       "You've tuned the ATIS and copied Information Bravo. Now you're calling ground to request taxi. This is an initial call, not a readback — but it must include the information identifier.",
     atcTransmission:
@@ -120,6 +125,7 @@ export const scenarios: Scenario[] = [
     title: 'Hold short — runway incursion scenario',
     phase: 'ground',
     difficulty: 3,
+    airport: 'KPAE',
     setup:
       "This one has got pilots killed. Ground has cleared you to taxi to the runway — but included a hold short at an intersection along the way. Miss it and you could roll onto an active runway.",
     atcTransmission:
@@ -143,6 +149,7 @@ export const scenarios: Scenario[] = [
     title: 'Class D takeoff clearance',
     phase: 'departure',
     difficulty: 1,
+    airport: 'PHTO',
     setup:
       "You're holding short of runway 3 at a Class D airport. Tower has just cleared you. Read back everything that matters for safety.",
     atcTransmission:
@@ -161,6 +168,7 @@ export const scenarios: Scenario[] = [
     title: 'Line up and wait',
     phase: 'departure',
     difficulty: 1,
+    airport: 'KPAE',
     setup:
       "Tower isn't ready to clear you for takeoff yet — there's traffic on final. They've told you to position on the runway and wait. This is a critical readback: do NOT say cleared for takeoff.",
     atcTransmission:
@@ -179,6 +187,7 @@ export const scenarios: Scenario[] = [
     title: 'Departure with squawk, heading, and altitude',
     phase: 'departure',
     difficulty: 2,
+    airport: 'KSEA',
     setup:
       "You've just lifted off from a Class C airport and approach has given you post-departure instructions. Four elements — get them all.",
     atcTransmission:
@@ -202,6 +211,7 @@ export const scenarios: Scenario[] = [
     title: 'After-departure turn instruction',
     phase: 'departure',
     difficulty: 2,
+    airport: 'KSEA',
     setup:
       "You're airborne and tower has given you a specific departure turn to avoid conflicting traffic. The turn and altitude are both required in your readback.",
     atcTransmission:
@@ -224,6 +234,7 @@ export const scenarios: Scenario[] = [
     title: 'Wake turbulence caution before takeoff',
     phase: 'departure',
     difficulty: 2,
+    airport: 'KSEA',
     setup:
       "Tower has given you takeoff clearance but included a wake turbulence caution. You must acknowledge the caution explicitly — silence isn't a readback.",
     atcTransmission:
@@ -247,6 +258,7 @@ export const scenarios: Scenario[] = [
     title: 'Pattern entry instruction',
     phase: 'pattern',
     difficulty: 1,
+    airport: 'KPAE',
     setup:
       "You're inbound VFR and tower has given you your pattern entry. Read back the leg, runway, and the reporting point.",
     atcTransmission:
@@ -270,6 +282,7 @@ export const scenarios: Scenario[] = [
     title: 'Sequence with traffic in sight',
     phase: 'pattern',
     difficulty: 2,
+    airport: 'KPAE',
     setup:
       "You're in the pattern and tower has sequenced you behind another aircraft. You need to confirm you have the traffic visually.",
     atcTransmission:
@@ -292,6 +305,7 @@ export const scenarios: Scenario[] = [
     title: 'Immediate go-around',
     phase: 'pattern',
     difficulty: 2,
+    airport: 'KPAE',
     setup:
       "You're on short final and tower has called an immediate go-around. This is urgent — your readback needs to be immediate and crisp. Fly the airplane first, talk second.",
     atcTransmission:
@@ -315,6 +329,7 @@ export const scenarios: Scenario[] = [
     title: 'Cleared for the option',
     phase: 'pattern',
     difficulty: 2,
+    airport: 'KPAE',
     setup:
       "Tower has cleared you for the option — you can land, touch-and-go, stop-and-go, or go around. This is common during training. Read back the clearance and runway.",
     atcTransmission:
@@ -338,6 +353,7 @@ export const scenarios: Scenario[] = [
     title: 'Traffic advisory — not in sight',
     phase: 'enroute',
     difficulty: 1,
+    airport: 'PHKO',
     setup:
       "Approach has called traffic for you. You've looked but can't find it. Your response tells the controller whether to keep issuing advisories.",
     atcTransmission:
@@ -356,6 +372,7 @@ export const scenarios: Scenario[] = [
     title: 'VFR flight following — squawk and ident',
     phase: 'enroute',
     difficulty: 1,
+    airport: 'PHKO',
     setup:
       "You've requested VFR flight following and approach has assigned you a squawk. Set it and read it back.",
     atcTransmission:
@@ -374,6 +391,7 @@ export const scenarios: Scenario[] = [
     title: 'Requesting VFR flight following',
     phase: 'enroute',
     difficulty: 2,
+    airport: 'PHNL',
     setup:
       "You want to pick up VFR flight following for your cross-country. Your initial call to approach must include your position, altitude, destination, and request — all in one transmission.",
     atcTransmission:
@@ -399,6 +417,7 @@ export const scenarios: Scenario[] = [
     title: 'Class C airspace — initial contact',
     phase: 'enroute',
     difficulty: 2,
+    airport: 'PHNL',
     setup:
       "You're inbound to a Class C airport and have copied ATIS Information Charlie. You need to establish two-way radio contact before entering the 10nm veil. Your call must include specific elements.",
     atcTransmission:
@@ -421,6 +440,7 @@ export const scenarios: Scenario[] = [
     title: 'Frequency change approved',
     phase: 'enroute',
     difficulty: 1,
+    airport: 'KPAE',
     setup:
       "You're in uncontrolled airspace and approach has released you. This is one of the simplest transmissions — but students get it wrong by overthinking it.",
     atcTransmission:
@@ -438,6 +458,7 @@ export const scenarios: Scenario[] = [
     title: 'Descent clearance — enroute',
     phase: 'enroute',
     difficulty: 2,
+    airport: 'KPAE',
     setup:
       "You're cruising at eight thousand on flight following and approach has started bringing you down for the arrival sequence. Altitude is the critical element — say it back exactly.",
     atcTransmission:
@@ -460,6 +481,7 @@ export const scenarios: Scenario[] = [
     title: 'CTAF position announcement — uncontrolled airport',
     phase: 'enroute',
     difficulty: 1,
+    airport: 'PHDH',
     setup:
       "You're approaching an uncontrolled airport. There's no tower — you make self-announce position calls on CTAF. This isn't a readback scenario, it's a transmission drill. State all required elements.",
     atcTransmission:
@@ -484,6 +506,7 @@ export const scenarios: Scenario[] = [
     title: 'IFR departure clearance (CRAFT)',
     phase: 'ifr',
     difficulty: 3,
+    airport: 'PHKO',
     setup:
       "You're IFR, on the ground, calling clearance delivery. They're about to read you your full departure clearance. Use CRAFT: Clearance limit, Route, Altitude, Frequency, Transponder. Write it down — then read it back verbatim.",
     atcTransmission:
@@ -510,6 +533,7 @@ export const scenarios: Scenario[] = [
     title: 'ILS approach clearance',
     phase: 'ifr',
     difficulty: 3,
+    airport: 'KSEA',
     setup:
       "You're in IMC on an IFR flight plan. Approach has vectored you to the final approach course and is about to clear you for the ILS. Every element must be read back.",
     atcTransmission:
@@ -534,6 +558,7 @@ export const scenarios: Scenario[] = [
     title: 'Missed approach instructions',
     phase: 'ifr',
     difficulty: 3,
+    airport: 'KSEA',
     setup:
       "You broke out below minimums but the runway environment isn't in sight. You're going missed. ATC has new instructions that differ from the published missed approach — read them back exactly.",
     atcTransmission:
@@ -557,6 +582,7 @@ export const scenarios: Scenario[] = [
     title: 'IFR clearance with void time (non-radar)',
     phase: 'ifr',
     difficulty: 3,
+    airport: 'PHTO',
     setup:
       "You're departing a remote non-radar airport IFR. Clearance delivery has given you a void time — if you're not airborne by that time, the clearance is cancelled. The void time is as critical as any element in the clearance.",
     atcTransmission:

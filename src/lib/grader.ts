@@ -46,6 +46,7 @@ Return ONLY valid JSON with this exact structure (no markdown, no explanation):
 export async function gradeReadback(
   scenario: Scenario,
   studentReadback: string,
+  hintUsed?: boolean,
 ): Promise<GradeResult> {
   const userMessage = `
 SCENARIO: ${scenario.title}
@@ -69,6 +70,11 @@ Grade this readback.`
 
   try {
     const result = JSON.parse(text) as GradeResult
+    if (hintUsed) {
+      result.score = Math.max(0, result.score - 10)
+      if (result.score < 70 && result.passFail === 'PARTIAL') result.passFail = 'FAIL'
+      if (result.score < 90 && result.passFail === 'PASS') result.passFail = 'PARTIAL'
+    }
     return result
   } catch {
     // If Claude returns something unparseable, return a safe fallback

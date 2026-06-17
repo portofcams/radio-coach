@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { scenarios } from '@/lib/scenarios'
+import NavAuth from '@/components/NavAuth'
 
 export default function Home() {
   const total = scenarios.length
@@ -20,12 +21,7 @@ export default function Home() {
           <span className="font-mono text-sm font-semibold tracking-widest text-gray-900">
             RADIO COACH
           </span>
-          <Link
-            href="/train"
-            className="bg-gray-900 text-white text-sm px-4 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors"
-          >
-            Start training →
-          </Link>
+          <NavAuth />
         </div>
       </nav>
 
