@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Radio Coach — ATC readback trainer',
+  title: 'Wilco — Clearspar Radio Training',
   description:
-    'Built by a student pilot who kept screwing up radio calls. Practice ATC readbacks until they\'re second nature.',
+    'Wilco by Clearspar — learn aviation radio comms like a game. Free Ground School drills plus live, graded ATC readbacks. No mic, works offline.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

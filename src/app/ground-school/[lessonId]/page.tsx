@@ -6,39 +6,69 @@ import { useParams } from 'next/navigation'
 import {
   getLesson,
   nextLessonId,
+  previousLessonId,
   seededShuffle,
   type Exercise,
 } from '@/lib/groundschool'
 import { PHONETIC_WORDS } from '@/lib/phonetic'
-import { completeLesson, syncProgress, type GsProgress } from '@/lib/gs-progress'
-import { HeartIcon, FlameIcon, CheckIcon, SpeakerIcon } from '@/components/icons'
+import {
+  completeLesson, syncProgress, loadProgress, isComplete,
+  effectiveHearts, loseHeart, msToNextHeart, MAX_HEARTS, type GsProgress,
+} from '@/lib/gs-progress'
+import { HeartIcon, FlameIcon, CheckIcon, SpeakerIcon, LockIcon } from '@/components/icons'
 
 type Status = 'answering' | 'right' | 'wrong' | 'done' | 'failed'
-const MAX_HEARTS = 5
+
+function fmtCountdown(ms: number): string {
+  const s = Math.max(0, Math.ceil(ms / 1000))
+  const m = Math.floor(s / 60)
+  return `${m}:${String(s % 60).padStart(2, '0')}`
+}
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const found = getLesson(lessonId)
 
-  const [idx, setIdx] = useState(0)
-  const [hearts, setHearts] = useState(MAX_HEARTS)
+  const exercises = useMemo(() => found?.lesson.exercises ?? [], [found])
+  const total = exercises.length
+
+  const [remaining, setRemaining] = useState<number[]>(() => exercises.map((_, i) => i))
   const [status, setStatus] = useState<Status>('answering')
   const [ans, setAns] = useState<{ ready: boolean; correct: boolean }>({ ready: false, correct: false })
+  const [hearts, setHearts] = useState(MAX_HEARTS)
+  const [heartsLost, setHeartsLost] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [, setTick] = useState(0)
   const [result, setResult] = useState<GsProgress | null>(null)
 
-  const exercises = found?.lesson.exercises ?? []
-  const ex = exercises[idx]
+  const ex = exercises[remaining[0]]
   const nextId = found ? nextLessonId(found.lesson.id) : null
+  const prevId = found ? previousLessonId(found.lesson.id) : null
 
-  // award XP exactly once when the lesson is finished
+  // hydrate hearts + unlock state from localStorage after mount (avoids SSR mismatch)
+  useEffect(() => {
+    setHearts(effectiveHearts(loadProgress()))
+    setMounted(true)
+  }, [])
+
+  const unlocked = !mounted || !prevId || isComplete(prevId, loadProgress())
+  const outOfHearts = status === 'failed' || (mounted && unlocked && hearts <= 0 && status === 'answering')
+
+  // live countdown while blocked on hearts
+  useEffect(() => {
+    if (!outOfHearts) return
+    const t = setInterval(() => setTick((n) => n + 1), 1000)
+    return () => clearInterval(t)
+  }, [outOfHearts])
+
+  // record completion once
   useEffect(() => {
     if (status === 'done' && found && !result) {
-      const p = completeLesson(found.lesson.id, found.lesson.xp)
+      const p = completeLesson(found.lesson.id, found.lesson.xp, !heartsLost)
       setResult(p)
-      // sync to server (logged-in) and reflect the merged streak
       syncProgress(p).then(setResult)
     }
-  }, [status, found, result])
+  }, [status, found, result, heartsLost])
 
   if (!found) {
     return (
@@ -56,31 +86,58 @@ export default function LessonPage() {
     if (ans.correct) {
       setStatus('right')
     } else {
-      setHearts((h) => h - 1)
+      setHearts(effectiveHearts(loseHeart()))
+      setHeartsLost(true)
       setStatus('wrong')
     }
   }
 
   function advance() {
-    if (hearts <= 0) {
-      setStatus('failed')
-      return
-    }
-    if (idx < exercises.length - 1) {
-      setIdx((i) => i + 1)
-      setAns({ ready: false, correct: false })
+    setAns({ ready: false, correct: false })
+    if (status === 'wrong') {
+      if (hearts <= 0) {
+        setStatus('failed')
+        return
+      }
+      // re-queue the missed exercise to the end of the lesson
+      setRemaining(([cur, ...rest]) => [...rest, cur])
       setStatus('answering')
     } else {
-      setStatus('done')
+      const rest = remaining.slice(1)
+      if (rest.length === 0) {
+        setStatus('done')
+        return
+      }
+      setRemaining(rest)
+      setStatus('answering')
     }
   }
 
   function retry() {
-    setIdx(0)
-    setHearts(MAX_HEARTS)
+    setRemaining(exercises.map((_, i) => i))
+    setHearts(effectiveHearts(loadProgress()))
+    setHeartsLost(false)
     setAns({ ready: false, correct: false })
     setResult(null)
     setStatus('answering')
+  }
+
+  // ── locked: reached by direct URL before the previous lesson is done ────────
+  if (mounted && !unlocked) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-6">
+        <div className="text-center max-w-sm">
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center">
+            <LockIcon className="text-3xl" />
+          </div>
+          <h1 className="text-2xl font-semibold mb-2">Locked</h1>
+          <p className="text-gray-500 mb-6">Finish the lessons before this one first — the path builds on itself.</p>
+          <Link href="/ground-school" className="inline-block bg-gray-900 hover:bg-black text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+            Back to the path
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   // ── completion screen ─────────────────────────────────────────────────────
@@ -119,8 +176,9 @@ export default function LessonPage() {
     )
   }
 
-  // ── out of hearts ─────────────────────────────────────────────────────────
-  if (status === 'failed') {
+  // ── out of hearts (refills over time; clean practice earns one back) ────────
+  if (outOfHearts) {
+    const wait = msToNextHeart(loadProgress())
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="text-center max-w-sm">
@@ -128,11 +186,20 @@ export default function LessonPage() {
             <HeartIcon className="text-3xl" />
           </div>
           <h1 className="text-2xl font-semibold mb-2">Out of hearts</h1>
-          <p className="text-gray-500 mb-6">No worries — repetition is how radio work gets automatic. Run it back.</p>
+          {wait > 0 ? (
+            <p className="text-gray-500 mb-6">
+              Next heart in <span className="font-mono font-semibold text-gray-700 tabular-nums">{fmtCountdown(wait)}</span>.
+              Or earn one now by acing a lesson you have already cleared.
+            </p>
+          ) : (
+            <p className="text-gray-500 mb-6">Take a breath, then run it back.</p>
+          )}
           <div className="flex flex-col gap-2">
-            <button onClick={retry} className="bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-xl transition-colors">
-              Try again
-            </button>
+            {hearts > 0 ? (
+              <button onClick={retry} className="bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-xl transition-colors">
+                Try again
+              </button>
+            ) : null}
             <Link href="/ground-school" className="text-gray-500 hover:text-gray-800 py-2 text-sm">
               Back to the path
             </Link>
@@ -152,7 +219,7 @@ export default function LessonPage() {
           <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
             <div
               className="h-full bg-green-500 transition-all duration-300"
-              style={{ width: `${(idx / exercises.length) * 100}%` }}
+              style={{ width: `${total ? ((total - remaining.length) / total) * 100 : 0}%` }}
             />
           </div>
           <div className="flex items-center gap-1.5 text-sm font-semibold text-red-500 tabular-nums">

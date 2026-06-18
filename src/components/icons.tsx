@@ -88,6 +88,23 @@ export function EyeIcon(props: IconProps) {
   )
 }
 
+export function CrownIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} fill="currentColor">
+      <path d="M3 7l4 4 5-6 5 6 4-4-2 12H5L3 7z" />
+    </svg>
+  )
+}
+
+export function SnowflakeIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v20M4.2 7l15.6 10M19.8 7L4.2 17" />
+      <path d="M12 6l2-2-2-2-2 2 2 2zM12 18l2 2-2 2-2-2 2-2z" />
+    </svg>
+  )
+}
+
 export function EyeOffIcon(props: IconProps) {
   return (
     <svg {...base(props)} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

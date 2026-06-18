@@ -3,17 +3,32 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { units, previousLessonId, orderedLessons } from '@/lib/groundschool'
-import { loadProgress, syncProgress, type GsProgress } from '@/lib/gs-progress'
-import { FlameIcon, StarIcon, LockIcon, CheckIcon } from '@/components/icons'
+import {
+  loadProgress, syncProgress, effectiveHearts, msToNextHeart, countCrowns,
+  MAX_HEARTS, DAILY_GOAL_XP, type GsProgress,
+} from '@/lib/gs-progress'
+import { FlameIcon, StarIcon, LockIcon, CheckIcon, HeartIcon, CrownIcon, SnowflakeIcon } from '@/components/icons'
+
+function fmtCountdown(ms: number): string {
+  const s = Math.max(0, Math.ceil(ms / 1000))
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+}
 
 export default function GroundSchoolPage() {
   const [progress, setProgress] = useState<GsProgress | null>(null)
+  const [, setTick] = useState(0)
 
   useEffect(() => {
     const local = loadProgress()
     setProgress(local)
     // pull + merge server progress (logged-in users sync across devices)
     syncProgress(local).then(setProgress)
+  }, [])
+
+  // tick once a second so the heart-refill countdown stays live
+  useEffect(() => {
+    const t = setInterval(() => setTick((n) => n + 1), 1000)
+    return () => clearInterval(t)
   }, [])
 
   // first not-yet-completed lesson = the "current" node to highlight
@@ -24,6 +39,14 @@ export default function GroundSchoolPage() {
   const total = orderedLessons.length
   const done = progress?.completed.length ?? 0
 
+  const hearts = progress ? effectiveHearts(progress) : MAX_HEARTS
+  const heartWait = progress ? msToNextHeart(progress) : 0
+  const crowns = progress ? countCrowns(progress) : 0
+  const freezes = progress?.freezes ?? 0
+  const dailyXp = progress?.dailyXp ?? 0
+  const dailyPct = Math.min(100, (dailyXp / DAILY_GOAL_XP) * 100)
+  const ringC = 2 * Math.PI * 15.5
+
   return (
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-12">
@@ -31,27 +54,65 @@ export default function GroundSchoolPage() {
           <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← back</Link>
         </div>
 
-        <div className="flex items-end justify-between mb-1">
+        <div className="flex items-start justify-between gap-4 mb-1">
           <h1 className="text-2xl font-semibold">Ground School</h1>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-3 text-sm flex-wrap justify-end">
+            <span title="Hearts" className={`flex items-center gap-1.5 font-semibold ${hearts > 0 ? 'text-red-500' : 'text-gray-300'}`}>
+              <HeartIcon className="text-base" /> {hearts}
+            </span>
             <span title="Day streak" className="flex items-center gap-1.5 font-semibold text-orange-500">
               <FlameIcon className="text-base" /> {progress?.streak ?? 0}
             </span>
             <span title="Total XP" className="flex items-center gap-1.5 font-semibold text-amber-600">
               <StarIcon className="text-base" /> {progress?.xp ?? 0}
             </span>
+            <span title="Crowns (units mastered)" className="flex items-center gap-1.5 font-semibold text-yellow-500">
+              <CrownIcon className="text-base" /> {crowns}
+            </span>
+            {freezes > 0 && (
+              <span title="Streak freezes" className="flex items-center gap-1.5 font-semibold text-sky-400">
+                <SnowflakeIcon className="text-base" /> {freezes}
+              </span>
+            )}
           </div>
         </div>
         <p className="text-gray-500 text-sm mb-6">
-          Bite-sized radio drills — no mic required. {done}/{total} lessons complete.
+          Bite-sized radio drills — no mic required.{' '}
+          {hearts < MAX_HEARTS && heartWait > 0 && (
+            <span className="text-gray-400">Next heart in <span className="font-mono tabular-nums">{fmtCountdown(heartWait)}</span>. </span>
+          )}
+          {done}/{total} lessons complete.
         </p>
 
-        {/* progress bar */}
-        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-10">
-          <div
-            className="h-full bg-green-500 transition-all duration-500"
-            style={{ width: `${total ? (done / total) * 100 : 0}%` }}
-          />
+        {/* daily goal ring + overall progress */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="relative w-14 h-14 shrink-0" title="Daily goal">
+            <svg viewBox="0 0 36 36" className="w-14 h-14 -rotate-90">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+              <circle
+                cx="18" cy="18" r="15.5" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round"
+                strokeDasharray={ringC} strokeDashoffset={ringC * (1 - dailyPct / 100)}
+                className="transition-all duration-500"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <StarIcon className={`text-base ${dailyPct >= 100 ? 'text-green-500' : 'text-gray-300'}`} />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-baseline justify-between mb-1">
+              <span className="text-xs font-medium text-gray-500">
+                Daily goal · {Math.min(dailyXp, DAILY_GOAL_XP)}/{DAILY_GOAL_XP} XP {dailyPct >= 100 && '· done!'}
+              </span>
+              <span className="text-xs text-gray-400">{done}/{total} lessons</span>
+            </div>
+            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500 transition-all duration-500"
+                style={{ width: `${total ? (done / total) * 100 : 0}%` }}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="space-y-12">

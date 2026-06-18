@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.binnacleai.radiocoach',
-  appName: 'Radio Coach',
+  appName: 'Wilco',
   webDir: 'public',
   server: {
     url: 'https://radiocoach.binnacleai.com',
