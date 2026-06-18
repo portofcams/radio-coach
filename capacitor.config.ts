@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Wilco',
   webDir: 'public',
   server: {
-    url: 'https://radiocoach.binnacleai.com',
+    url: 'https://wilco.binnacleai.com',
   },
   ios: {
     contentInset: 'automatic',
