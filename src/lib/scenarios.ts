@@ -30,7 +30,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'runway-crossing',
-    diagram: { airport: 'PHTO', kind: 'crossing', taxiways: ['Alpha'], crossRunway: '22L' },
+    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 52, y: 30, heading: 0 }, kind: 'crossing', taxiways: ['Alpha'], crossRunway: '26' },
     title: 'Runway crossing clearance',
     phase: 'ground',
     difficulty: 1,
@@ -40,24 +40,24 @@ export const scenarios: Scenario[] = [
     setup:
       "You're taxiing and ground has just cleared you to cross an active runway. This is a safety-critical readback — every element is required.",
     atcTransmission:
-      'Cessna One Two Three Four Five, cross runway two two left at Alpha, contact tower one one eight point three when clear.',
+      'Cessna One Two Three Four Five, cross runway two six at Alpha, contact tower one one eight point three when clear.',
     requiredElements: [
       'call sign',
-      'cross runway two two left',
+      'cross runway two six',
       'at Alpha',
       'one one eight point three',
     ],
     correctReadback:
-      'Cross runway two two left at Alpha, one one eight point three, Cessna One Two Three Four Five.',
+      'Cross runway two six at Alpha, one one eight point three, Cessna One Two Three Four Five.',
     commonMistakes: [
-      'Saying "two two" instead of "two two left" — runway designators matter',
+      'Saying "cross 26" without "runway" — say "cross runway two six"',
       'Skipping the taxiway intersection',
       'Missing the tower frequency',
     ],
   },
   {
     id: 'amended-taxi',
-    diagram: { airport: 'KPAE', kind: 'taxi-hold-short', taxiways: ['Bravo'], holdShortRunway: '8L' },
+    diagram: { airport: 'KPAE', chart: '/charts/kpae.png', aircraft: { x: 42, y: 42, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['Bravo'], holdShortRunway: '16R' },
     title: 'Amended taxi instruction',
     phase: 'ground',
     difficulty: 2,
@@ -67,14 +67,14 @@ export const scenarios: Scenario[] = [
     setup:
       "You're already taxiing when ground calls with a change. Amended clearances are easy to mess up — your brain is still on the old route.",
     atcTransmission:
-      'Cessna One Two Three Four Five, amended clearance — turn left on Bravo, hold short of runway eight left.',
+      'Cessna One Two Three Four Five, amended clearance — turn left on Bravo, hold short of runway one six right.',
     requiredElements: [
       'call sign',
       'left on Bravo',
-      'hold short runway eight left',
+      'hold short runway one six right',
     ],
     correctReadback:
-      'Left on Bravo, hold short runway eight left, Cessna One Two Three Four Five.',
+      'Left on Bravo, hold short runway one six right, Cessna One Two Three Four Five.',
     commonMistakes: [
       'Repeating the original taxi clearance instead of the amendment',
       'Missing the hold short point',
@@ -688,7 +688,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'progressive-taxi',
-    diagram: { airport: 'KSEA', kind: 'taxi-hold-short', taxiways: ['November', 'Sierra'], holdShortRunway: '16R' },
+    diagram: { airport: 'KSEA', chart: '/charts/ksea.png', aircraft: { x: 55, y: 74, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['November', 'Sierra'], holdShortRunway: '16R' },
     title: 'Progressive taxi instructions',
     phase: 'ground',
     difficulty: 2,
