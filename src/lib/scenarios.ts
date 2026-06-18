@@ -3,6 +3,7 @@ import type { Scenario } from './types'
 export const scenarios: Scenario[] = [
   {
     id: 'ground-taxi-hold-short',
+    diagram: { airport: 'PHTO', kind: 'taxi-hold-short', taxiways: ['Alpha'], destRunway: '3', holdShortRunway: '26' },
     title: 'Ground taxi with hold short',
     phase: 'ground',
     difficulty: 1,
@@ -29,6 +30,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'runway-crossing',
+    diagram: { airport: 'PHTO', kind: 'crossing', taxiways: ['Alpha'], crossRunway: '22L' },
     title: 'Runway crossing clearance',
     phase: 'ground',
     difficulty: 1,
@@ -55,6 +57,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'amended-taxi',
+    diagram: { airport: 'KPAE', kind: 'taxi-hold-short', taxiways: ['Bravo'], holdShortRunway: '8L' },
     title: 'Amended taxi instruction',
     phase: 'ground',
     difficulty: 2,
@@ -685,6 +688,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'progressive-taxi',
+    diagram: { airport: 'KSEA', kind: 'taxi-hold-short', taxiways: ['November', 'Sierra'], holdShortRunway: '16R' },
     title: 'Progressive taxi instructions',
     phase: 'ground',
     difficulty: 2,

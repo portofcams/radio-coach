@@ -6,6 +6,7 @@ import { scenarios, getScenario } from '@/lib/scenarios'
 import { getSession, incrementFreeUsed, FREE_DAILY_LIMIT } from '@/lib/session'
 import { toPhonetic } from '@/lib/phonetic'
 import PaywallModal from '@/components/PaywallModal'
+import AirportDiagram from '@/components/AirportDiagram'
 import type { GradeResult } from '@/lib/types'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
@@ -425,6 +426,13 @@ export default function ScenarioPage() {
             </div>
           </div>
         </div>
+
+        {/* Airport diagram — schematic taxi chart; reveals the cleared route after grading */}
+        {scenario.diagram && (
+          <div className="mb-4">
+            <AirportDiagram diagram={scenario.diagram} revealed={!!result} />
+          </div>
+        )}
 
         {/* Hint */}
         {radioState !== 'done' && !hintShown && (

@@ -17,12 +17,32 @@ export type Facility =
   | 'UNICOM'
   | 'CTAF'
 
+/**
+ * A lightweight, NOT-to-scale schematic of the taxi clearance — a concept
+ * diagram, not a real airport chart. Scenarios supply only the labels; the
+ * <AirportDiagram> component draws a standard layout and highlights the route.
+ */
+export interface AirportDiagram {
+  airport: string
+  kind: 'taxi-hold-short' | 'crossing'
+  /** taxiway(s) named in the clearance, e.g. ["Alpha"] or ["Echo", "Alpha"] */
+  taxiways: string[]
+  /** the runway you are cleared TO (taxi-hold-short) */
+  destRunway?: string
+  /** the runway you must hold short of (taxi-hold-short) */
+  holdShortRunway?: string
+  /** the runway being crossed (crossing) */
+  crossRunway?: string
+}
+
 export interface Scenario {
   id: string
   title: string
   phase: Phase
   difficulty: Difficulty
   airport: string
+  /** optional taxi-diagram schematic, shown on the training screen */
+  diagram?: AirportDiagram
   /** COM frequency for this facility, e.g. "121.900" */
   frequency?: string
   /** The ATC facility type */
