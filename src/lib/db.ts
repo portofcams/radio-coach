@@ -56,6 +56,16 @@ export async function initDB(): Promise<void> {
       updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `)
+
+  // Subscription / entitlement columns on the user (driven by the Stripe webhook)
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT,
+      ADD COLUMN IF NOT EXISTS stripe_subscription_id TEXT,
+      ADD COLUMN IF NOT EXISTS subscription_status TEXT,
+      ADD COLUMN IF NOT EXISTS plan TEXT,
+      ADD COLUMN IF NOT EXISTS current_period_end TIMESTAMPTZ
+  `)
 }
 
 // Run init once on first import in server context

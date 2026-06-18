@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
+import { getEntitlement } from '@/lib/entitlement'
 
 export async function GET() {
   const user = await getAuthUser()
@@ -16,5 +17,9 @@ export async function GET() {
   const row = result.rows[0]
   if (!row) return NextResponse.json({ user: null })
 
-  return NextResponse.json({ user: { id: row.id, email: row.email, callsign: row.callsign } })
+  const entitlement = await getEntitlement(row.id)
+  return NextResponse.json({
+    user: { id: row.id, email: row.email, callsign: row.callsign },
+    entitlement,
+  })
 }

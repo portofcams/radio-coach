@@ -3,6 +3,7 @@ import { gradeReadback } from '@/lib/grader'
 import { getScenario } from '@/lib/scenarios'
 import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
+import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitlement'
 
 export async function POST(req: NextRequest) {
   const { scenarioId, readback, hintUsed } = await req.json()
@@ -16,11 +17,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
   }
 
-  const result = await gradeReadback(scenario, readback.trim(), hintUsed)
-
-  // Save to DB if user is authenticated
   const user = await getAuthUser()
   const db = getPool()
+
+  // Free-tier daily cap — server-enforced for logged-in users (pro = unlimited).
+  if (user && db) {
+    const ent = await getEntitlement(user.userId)
+    if (!ent.pro && (await dailyGradeCount(user.userId)) >= FREE_DAILY_LIMIT) {
+      return NextResponse.json(
+        { error: 'daily_limit', limit: FREE_DAILY_LIMIT },
+        { status: 402 },
+      )
+    }
+  }
+
+  const result = await gradeReadback(scenario, readback.trim(), hintUsed)
+
+  // Save to score history if the user is authenticated
   if (user && db) {
     db.query(
       `INSERT INTO rc_grades

@@ -31,6 +31,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [callsign, setCallsign] = useState('')
   const [saving, setSaving] = useState(false)
+  const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
+  const [billing, setBilling] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -41,6 +43,7 @@ export default function ProfilePage() {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
+        setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
       })
       .finally(() => setLoading(false))
@@ -66,6 +69,20 @@ export default function ProfilePage() {
     router.push('/')
   }
 
+  async function billingAction(endpoint: string, body?: object) {
+    setBilling(true)
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined,
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else { alert('Could not open billing — please try again.'); setBilling(false) }
+    } catch { setBilling(false) }
+  }
+
   if (loading) return <div className="max-w-2xl mx-auto px-6 py-16 text-gray-400">Loading...</div>
   if (!user) return null
 
@@ -82,6 +99,35 @@ export default function ProfilePage() {
 
         {/* Email */}
         <div className="text-sm text-gray-500 mb-6">{user.email}</div>
+
+        {/* Subscription */}
+        <div className="border border-gray-200 rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Plan</div>
+              {ent?.pro ? (
+                <div className="text-sm">
+                  <span className="font-semibold text-gray-900">{ent.plan === 'cfi' ? 'CFI Pro' : 'Solo Pilot'}</span>
+                  <span className="text-green-600"> · active</span>
+                  {ent.periodEnd && <span className="text-gray-400"> · renews {new Date(ent.periodEnd).toLocaleDateString()}</span>}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">Free — 5 Live Comms scenarios a day</div>
+              )}
+            </div>
+            {ent?.pro ? (
+              <button onClick={() => billingAction('/api/portal')} disabled={billing}
+                className="shrink-0 text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors disabled:opacity-60">
+                Manage
+              </button>
+            ) : (
+              <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
+                className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">
+                Go unlimited · $15/mo
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Callsign */}
         <div className="border border-gray-200 rounded-xl p-5 mb-6">

@@ -6,9 +6,10 @@ interface Props {
   onClose: () => void
   freeUsed: number
   freeLimit: number
+  isLoggedIn?: boolean
 }
 
-export default function PaywallModal({ onClose, freeUsed, freeLimit }: Props) {
+export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false }: Props) {
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
 
   async function checkout(plan: 'solo' | 'cfi') {
@@ -44,6 +45,19 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit }: Props) {
           </p>
         </div>
 
+        {!isLoggedIn ? (
+          <div className="space-y-3">
+            <a
+              href="/login"
+              className="block w-full bg-gray-900 text-white rounded-xl px-5 py-4 text-center font-semibold hover:bg-gray-800 transition-colors"
+            >
+              Sign up free to keep going
+            </a>
+            <p className="text-center text-sm text-gray-500">
+              A free account gives you 5 scenarios a day, synced across devices. Upgrade to unlimited anytime.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-3">
           {/* Solo Pilot */}
           <button
@@ -87,9 +101,10 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit }: Props) {
             )}
           </button>
         </div>
+        )}
 
         <p className="text-center text-xs text-gray-400 mt-5">
-          Cancel anytime · Secure checkout via Stripe
+          {isLoggedIn ? 'Cancel anytime · Secure checkout via Stripe' : 'No card needed to sign up'}
         </p>
       </div>
     </div>

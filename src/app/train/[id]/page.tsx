@@ -36,6 +36,7 @@ export default function ScenarioPage() {
     freeUsed: 0, freeLimit: FREE_DAILY_LIMIT, isPaid: false, canGrade: true, remaining: FREE_DAILY_LIMIT,
   })
   const [user, setUser] = useState<UserProfile | null>(null)
+  const [pro, setPro] = useState(false)
   const [hintShown, setHintShown] = useState(false)
   const [timerEnabled, setTimerEnabled] = useState(false)
   const [timer, setTimer] = useState<number | null>(null)
@@ -87,7 +88,7 @@ export default function ScenarioPage() {
     }
     init()
     setSession(getSession())
-    fetch('/api/auth/me').then(r => r.json()).then(d => d.user && setUser(d.user)).catch(() => {})
+    fetch('/api/auth/me').then(r => r.json()).then(d => { if (d.user) setUser(d.user); if (d.entitlement?.pro) setPro(true) }).catch(() => {})
   }, [])
 
   // METAR
@@ -250,10 +251,16 @@ export default function ScenarioPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown }),
       })
+      // server-enforced daily cap (logged-in free users) → show the paywall
+      if (res.status === 402) {
+        setShowPaywall(true)
+        setRadioState('transcribed')
+        return
+      }
       const data = await res.json()
       setResult(data)
       setRadioState('done')
-      if (!current.isPaid && !user) { incrementFreeUsed(); setSession(getSession()) }
+      if (!pro && !user) { incrementFreeUsed(); setSession(getSession()) }
     } catch {
       setRadioState('transcribed')
     }
@@ -299,7 +306,7 @@ export default function ScenarioPage() {
 
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
-  const freeRemaining = (session.isPaid || user) ? null : session.remaining
+  const freeRemaining = (pro || user) ? null : session.remaining
   const callsignDisplay = user?.callsign ? toPhonetic(user.callsign) : null
   const timerColor = timer === null ? '' : timer <= 3 ? 'text-red-600' : timer <= 7 ? 'text-yellow-600' : 'text-gray-400'
   const isAtcActive = radioState === 'atc_loading' || radioState === 'atc_playing'
@@ -307,7 +314,7 @@ export default function ScenarioPage() {
   return (
     <main className="min-h-screen">
       <audio ref={audioRef} />
-      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} />}
+      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} isLoggedIn={!!user} />}
 
       <div className="max-w-2xl mx-auto px-6 py-10">
         {/* Header */}
