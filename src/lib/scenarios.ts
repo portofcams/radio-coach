@@ -3,7 +3,7 @@ import type { Scenario } from './types'
 export const scenarios: Scenario[] = [
   {
     id: 'ground-taxi-hold-short',
-    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 10, y: 58, heading: 35 }, kind: 'taxi-hold-short', taxiways: ['Alpha'], destRunway: '3', holdShortRunway: '26' },
+    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 15, y: 54, heading: 45 }, kind: 'taxi-hold-short', taxiways: ['Alpha'], destRunway: '3', holdShortRunway: '26' },
     title: 'Ground taxi with hold short',
     phase: 'ground',
     difficulty: 1,
@@ -30,7 +30,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'runway-crossing',
-    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 52, y: 30, heading: 0 }, kind: 'crossing', taxiways: ['Alpha'], crossRunway: '26' },
+    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 42, y: 32, heading: 260 }, kind: 'crossing', taxiways: ['Alpha'], crossRunway: '3' },
     title: 'Runway crossing clearance',
     phase: 'ground',
     difficulty: 1,
@@ -40,24 +40,24 @@ export const scenarios: Scenario[] = [
     setup:
       "You're taxiing and ground has just cleared you to cross an active runway. This is a safety-critical readback — every element is required.",
     atcTransmission:
-      'Cessna One Two Three Four Five, cross runway two six at Alpha, contact tower one one eight point three when clear.',
+      'Cessna One Two Three Four Five, cross runway three at Alpha, contact tower one one eight point one when clear.',
     requiredElements: [
       'call sign',
-      'cross runway two six',
+      'cross runway three',
       'at Alpha',
-      'one one eight point three',
+      'one one eight point one',
     ],
     correctReadback:
-      'Cross runway two six at Alpha, one one eight point three, Cessna One Two Three Four Five.',
+      'Cross runway three at Alpha, one one eight point one, Cessna One Two Three Four Five.',
     commonMistakes: [
-      'Saying "cross 26" without "runway" — say "cross runway two six"',
+      'Saying "cross 3" without "runway" — say "cross runway three"',
       'Skipping the taxiway intersection',
       'Missing the tower frequency',
     ],
   },
   {
     id: 'amended-taxi',
-    diagram: { airport: 'KPAE', chart: '/charts/kpae.png', aircraft: { x: 42, y: 42, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['Bravo'], holdShortRunway: '16R' },
+    diagram: { airport: 'KPAE', chart: '/charts/kpae.png', aircraft: { x: 46, y: 53, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['Bravo'], holdShortRunway: '16R' },
     title: 'Amended taxi instruction',
     phase: 'ground',
     difficulty: 2,
@@ -688,7 +688,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'progressive-taxi',
-    diagram: { airport: 'KSEA', chart: '/charts/ksea.png', aircraft: { x: 55, y: 74, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['November', 'Sierra'], holdShortRunway: '16R' },
+    diagram: { airport: 'KSEA', chart: '/charts/ksea.png', aircraft: { x: 84, y: 55, heading: 270 }, kind: 'taxi-hold-short', taxiways: ['November', 'Sierra'], holdShortRunway: '16R' },
     title: 'Progressive taxi instructions',
     phase: 'ground',
     difficulty: 2,
