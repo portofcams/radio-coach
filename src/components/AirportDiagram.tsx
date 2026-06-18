@@ -115,7 +115,46 @@ function Crossing({ d, revealed }: { d: Diagram; revealed: boolean }) {
   )
 }
 
+// ── ownship marker for the real chart ────────────────────────────────────────
+function Ownship({ heading }: { heading: number }) {
+  return (
+    <div className="relative" style={{ width: 0, height: 0 }}>
+      {/* pulse ring (not rotated) */}
+      <span className="absolute rounded-full" style={{ left: -13, top: -13, width: 26, height: 26, background: 'rgba(34,211,238,0.25)', animation: 'rcPing 1.8s cubic-bezier(0,0,0.2,1) infinite' }} />
+      <style>{`@keyframes rcPing{0%{transform:scale(.5);opacity:.9}80%,100%{transform:scale(1.8);opacity:0}}`}</style>
+      {/* aircraft symbol, points up at heading 0 */}
+      <svg width="24" height="24" viewBox="0 0 24 24" style={{ position: 'absolute', left: -12, top: -12, transform: `rotate(${heading}deg)`, filter: 'drop-shadow(0 0 3px rgba(34,211,238,0.9))' }}>
+        <path d="M12 1.5 L13.6 9 L22 13.5 L22 15.5 L13 12.8 L13 19 L15.5 21 L15.5 22.2 L12 20.6 L8.5 22.2 L8.5 21 L11 19 L11 12.8 L2 15.5 L2 13.5 L10.4 9 Z" fill="#22d3ee" stroke="#0e3a44" strokeWidth="0.8" />
+      </svg>
+    </div>
+  )
+}
+
+function RealChart({ diagram }: { diagram: Diagram }) {
+  const a = diagram.aircraft
+  return (
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor: '#2a2f37', background: '#0d0f12' }}>
+      <div className="flex items-center justify-between px-3 pt-2 pb-1.5 border-b" style={{ borderColor: '#1c2128' }}>
+        <span className="font-mono text-[10px] tracking-widest text-gray-500">FAA AIRPORT DIAGRAM · {diagram.airport}</span>
+        <span className="font-mono text-[10px] text-gray-600">NOT FOR NAVIGATION</span>
+      </div>
+      <div className="relative bg-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={diagram.chart} alt={`${diagram.airport} airport diagram`} className="w-full block select-none" draggable={false} />
+        {a && (
+          <div className="absolute" style={{ left: `${a.x}%`, top: `${a.y}%` }}>
+            <Ownship heading={a.heading} />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function AirportDiagram({ diagram, revealed }: { diagram: Diagram; revealed: boolean }) {
+  // real FAA chart with the aircraft's position takes precedence
+  if (diagram.chart) return <RealChart diagram={diagram} />
+
   return (
     <div className="rounded-xl overflow-hidden border" style={{ background: '#0d0f12', borderColor: '#2a2f37' }}>
       <div className="flex items-center justify-between px-3 pt-2 pb-1.5 border-b" style={{ borderColor: '#1c2128' }}>

@@ -3,7 +3,7 @@ import type { Scenario } from './types'
 export const scenarios: Scenario[] = [
   {
     id: 'ground-taxi-hold-short',
-    diagram: { airport: 'PHTO', kind: 'taxi-hold-short', taxiways: ['Alpha'], destRunway: '3', holdShortRunway: '26' },
+    diagram: { airport: 'PHTO', chart: '/charts/phto.png', aircraft: { x: 10, y: 58, heading: 35 }, kind: 'taxi-hold-short', taxiways: ['Alpha'], destRunway: '3', holdShortRunway: '26' },
     title: 'Ground taxi with hold short',
     phase: 'ground',
     difficulty: 1,

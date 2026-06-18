@@ -24,6 +24,10 @@ export type Facility =
  */
 export interface AirportDiagram {
   airport: string
+  /** real FAA airport-diagram image (public domain); takes precedence over the schematic */
+  chart?: string
+  /** ownship position on the real chart — % of image width/height + heading in degrees */
+  aircraft?: { x: number; y: number; heading: number }
   kind: 'taxi-hold-short' | 'crossing'
   /** taxiway(s) named in the clearance, e.g. ["Alpha"] or ["Echo", "Alpha"] */
   taxiways: string[]
