@@ -21,7 +21,7 @@ interface User {
 }
 
 const PHASE_LABELS: Record<string, string> = {
-  ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR',
+  ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergency',
 }
 
 export default function ProfilePage() {

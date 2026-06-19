@@ -19,11 +19,16 @@ export async function POST(req: NextRequest) {
 
   const user = await getAuthUser()
   const db = getPool()
+  const ent = user && db ? await getEntitlement(user.userId) : null
+
+  // Advanced library (emergencies, CRAFT, Class B) is Solo Pilot only.
+  if (scenario.tier === 'pro' && !ent?.pro) {
+    return NextResponse.json({ error: 'pro_scenario' }, { status: 402 })
+  }
 
   // Free-tier daily cap — server-enforced for logged-in users (pro = unlimited).
-  if (user && db) {
-    const ent = await getEntitlement(user.userId)
-    if (!ent.pro && (await dailyGradeCount(user.userId)) >= FREE_DAILY_LIMIT) {
+  if (user && db && !ent?.pro) {
+    if ((await dailyGradeCount(user.userId)) >= FREE_DAILY_LIMIT) {
       return NextResponse.json(
         { error: 'daily_limit', limit: FREE_DAILY_LIMIT },
         { status: 402 },

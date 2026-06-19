@@ -32,6 +32,7 @@ export default function ScenarioPage() {
 
   // Extras
   const [showPaywall, setShowPaywall] = useState(false)
+  const [paywallReason, setPaywallReason] = useState<'daily' | 'pro'>('daily')
   const [session, setSession] = useState({
     freeUsed: 0, freeLimit: FREE_DAILY_LIMIT, isPaid: false, canGrade: true, remaining: FREE_DAILY_LIMIT,
   })
@@ -251,8 +252,10 @@ export default function ScenarioPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown }),
       })
-      // server-enforced daily cap (logged-in free users) → show the paywall
+      // server-enforced gate (daily cap, or a Pro-only advanced scenario) → paywall
       if (res.status === 402) {
+        const body = await res.json().catch(() => ({}))
+        setPaywallReason(body?.error === 'pro_scenario' ? 'pro' : 'daily')
         setShowPaywall(true)
         setRadioState('transcribed')
         return
@@ -314,7 +317,7 @@ export default function ScenarioPage() {
   return (
     <main className="min-h-screen">
       <audio ref={audioRef} />
-      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} isLoggedIn={!!user} />}
+      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} isLoggedIn={!!user} reason={paywallReason} />}
 
       <div className="max-w-2xl mx-auto px-6 py-10">
         {/* Header */}

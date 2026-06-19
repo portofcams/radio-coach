@@ -13,6 +13,7 @@ export default function Home() {
     pattern: scenarios.filter((s) => s.phase === 'pattern').length,
     enroute: scenarios.filter((s) => s.phase === 'enroute').length,
     ifr: scenarios.filter((s) => s.phase === 'ifr').length,
+    emergency: scenarios.filter((s) => s.phase === 'emergency').length,
   }
   const gsLessons = units.reduce((n, u) => n + u.lessons.length, 0)
 
@@ -533,7 +534,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-2xl font-semibold mb-2">{total} scenarios across every phase of flight</h2>
           <p className="text-gray-500 mb-10">From first radio call to IFR clearance delivery.</p>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 max-w-xl">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 max-w-2xl">
             {Object.entries(byPhase).map(([phase, count]) => (
               <div key={phase} className="border border-gray-200 rounded-xl p-4 text-center">
                 <div className="text-2xl font-semibold">{count}</div>

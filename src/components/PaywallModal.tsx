@@ -7,9 +7,10 @@ interface Props {
   freeUsed: number
   freeLimit: number
   isLoggedIn?: boolean
+  reason?: 'daily' | 'pro'
 }
 
-export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false }: Props) {
+export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false, reason = 'daily' }: Props) {
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
 
   async function checkout(plan: 'solo' | 'cfi') {
@@ -39,10 +40,21 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
         </button>
 
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">You&apos;ve used your free scenarios today</h2>
-          <p className="text-gray-500 text-sm mt-1">
-            {freeUsed}/{freeLimit} free readbacks used today. Resets at midnight.
-          </p>
+          {reason === 'pro' ? (
+            <>
+              <h2 className="text-xl font-bold text-gray-900">This is an advanced scenario</h2>
+              <p className="text-gray-500 text-sm mt-1">
+                Emergencies, IFR clearances, and Class B transitions are part of Solo Pilot.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold text-gray-900">You&apos;ve used your free scenarios today</h2>
+              <p className="text-gray-500 text-sm mt-1">
+                {freeUsed}/{freeLimit} free readbacks used today. Resets at midnight.
+              </p>
+            </>
+          )}
         </div>
 
         {!isLoggedIn ? (

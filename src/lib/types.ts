@@ -4,6 +4,7 @@ export type Phase =
   | 'pattern'
   | 'enroute'
   | 'ifr'
+  | 'emergency'
 
 export type Difficulty = 1 | 2 | 3
 
@@ -45,6 +46,8 @@ export interface Scenario {
   phase: Phase
   difficulty: Difficulty
   airport: string
+  /** 'pro' scenarios are part of the advanced library — Solo Pilot only */
+  tier?: 'pro'
   /** optional taxi-diagram schematic, shown on the training screen */
   diagram?: AirportDiagram
   /** COM frequency for this facility, e.g. "121.900" */

@@ -13,6 +13,7 @@ const PHASE_LABELS: Record<string, string> = {
   pattern: 'Pattern',
   enroute: 'En route',
   ifr: 'IFR',
+  emergency: 'Emergencies & advanced',
 }
 
 const DIFF_LABELS: Record<number, { label: string; color: string }> = {
@@ -37,7 +38,7 @@ interface CompletedMap {
 }
 
 export default function TrainPage() {
-  const phases = ['ground', 'departure', 'pattern', 'enroute', 'ifr'] as const
+  const phases = ['ground', 'departure', 'pattern', 'enroute', 'ifr', 'emergency'] as const
   const router = useRouter()
   const [completed, setCompleted] = useState<CompletedMap>({})
   const [activeTab, setActiveTab] = useState<'scenarios' | 'sessions'>('scenarios')
@@ -189,6 +190,9 @@ export default function TrainPage() {
                             <div className="min-w-0">
                               <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
                               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                {s.tier === 'pro' && (
+                                  <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-gray-900 text-white leading-4 tracking-wide">PRO</span>
+                                )}
                                 {s.airport && <span className="font-mono text-xs text-blue-600">{s.airport}</span>}
                                 {s.facility && (
                                   <span className={`font-mono text-xs px-1.5 py-0 rounded border leading-4 ${
