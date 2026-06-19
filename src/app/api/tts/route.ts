@@ -3,8 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb'
 
+/** ElevenLabs voice speed is valid in [0.7, 1.2] and preserves pitch. */
+function clampSpeed(s: unknown): number {
+  const n = typeof s === 'number' && isFinite(s) ? s : 1.0
+  return Math.max(0.7, Math.min(1.2, n))
+}
+
 export async function POST(req: NextRequest) {
-  const { text } = await req.json()
+  const { text, speed } = await req.json()
   if (!text) return NextResponse.json({ error: 'Missing text' }, { status: 400 })
 
   if (!ELEVENLABS_API_KEY) {
@@ -22,7 +28,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         text,
         model_id: 'eleven_flash_v2_5',
-        voice_settings: { stability: 0.85, similarity_boost: 0.75 },
+        voice_settings: { stability: 0.85, similarity_boost: 0.75, speed: clampSpeed(speed) },
       }),
     },
   )

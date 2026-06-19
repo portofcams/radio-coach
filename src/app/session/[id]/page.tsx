@@ -6,6 +6,7 @@ import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
 import { CheckIcon } from '@/components/icons'
+import { attachRadioFx, getRadioFx, ttsSpeed, type RadioFxController } from '@/lib/radio-fx'
 
 export default function FlightSessionPage() {
   const { id } = useParams<{ id: string }>()
@@ -31,6 +32,7 @@ export default function FlightSessionPage() {
   }, [])
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const fxRef = useRef<RadioFxController | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const autoPlayedRef = useRef(false)
 
@@ -42,16 +44,21 @@ export default function FlightSessionPage() {
     if (!scenario) return
     setTtsLoading(true)
     try {
+      const fx = getRadioFx()
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: scenario.atcTransmission }),
+        body: JSON.stringify({ text: scenario.atcTransmission, speed: ttsSpeed(fx.speed) }),
       })
       if (!res.ok) return
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       if (audioRef.current) {
+        if (!fxRef.current) fxRef.current = attachRadioFx(audioRef.current, fx.mode)
+        else fxRef.current.setMode(fx.mode)
         audioRef.current.src = url
+        audioRef.current.onended = () => fxRef.current?.release()
+        fxRef.current?.cue()
         await audioRef.current.play().catch(() => {})
       }
     } finally {

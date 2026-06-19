@@ -8,6 +8,7 @@ import { toPhonetic } from '@/lib/phonetic'
 import PaywallModal from '@/components/PaywallModal'
 import AirportDiagram from '@/components/AirportDiagram'
 import type { GradeResult } from '@/lib/types'
+import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
@@ -58,6 +59,9 @@ export default function ScenarioPage() {
   }, [result])
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const fxRef = useRef<RadioFxController | null>(null)
+  const [fx, setFx] = useState<RadioFxSettings>({ mode: 'radio', speed: 'normal' })
+  const fxValueRef = useRef(fx)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const autoPlayedRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -193,6 +197,17 @@ export default function ScenarioPage() {
     recognition.start()
   }, [stopRecognition])
 
+  // Load saved comms-FX preference
+  useEffect(() => { const v = getRadioFx(); fxValueRef.current = v; setFx(v) }, [])
+
+  const updateFx = useCallback((patch: Partial<RadioFxSettings>) => {
+    const next = { ...fxValueRef.current, ...patch }
+    fxValueRef.current = next
+    setFx(next)
+    setRadioFx(next)
+    fxRef.current?.setMode(next.mode)
+  }, [])
+
   // Play ATC
   const playTransmission = useCallback(async () => {
     if (!scenario) return
@@ -207,26 +222,31 @@ export default function ScenarioPage() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: scenario.atcTransmission }),
+        body: JSON.stringify({ text: scenario.atcTransmission, speed: ttsSpeed(fx.speed) }),
       })
       if (!res.ok) { setRadioState('ready'); return }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const audio = audioRef.current
       if (!audio) { setRadioState('ready'); return }
+      // Route the ATC voice through the radio FX graph (attach once per element)
+      if (!fxRef.current) fxRef.current = attachRadioFx(audio, fx.mode)
+      else fxRef.current.setMode(fx.mode)
       audio.src = url
       audio.onended = () => {
+        fxRef.current?.release()
         setRadioState('ready')
         startTimer()
         // Auto-mic after ATC finishes
         if (voiceMode) setTimeout(() => startListening(), 700)
       }
       setRadioState('atc_playing')
+      fxRef.current?.cue()
       await audio.play().catch(() => setRadioState('ready'))
     } catch {
       setRadioState('ready')
     }
-  }, [scenario, voiceMode, startTimer, startListening, stopRecognition])
+  }, [scenario, voiceMode, fx, startTimer, startListening, stopRecognition])
 
   // Auto-play on mount
   useEffect(() => {
@@ -335,7 +355,7 @@ export default function ScenarioPage() {
               onClick={() => setTimerEnabled(v => !v)}
               className={`text-xs px-2 py-1 rounded border transition-colors ${timerEnabled ? 'border-orange-300 text-orange-700 bg-orange-50' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
             >
-              ⏱ {timerEnabled ? 'timer on' : 'timer off'}
+              {timerEnabled ? 'timer on' : 'timer off'}
             </button>
             {freeRemaining !== null && (
               <span className="text-xs text-gray-400">
@@ -435,6 +455,31 @@ export default function ScenarioPage() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Comms realism — radio filter + controller pace (saved per device) */}
+        <div className="flex items-center flex-wrap gap-x-2 gap-y-1.5 mb-4 text-xs font-mono">
+          <span className="text-gray-400 tracking-wider">COMMS</span>
+          {(['clean', 'radio', 'busy'] as RadioMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => updateFx({ mode: m })}
+              className={`px-2 py-0.5 rounded border transition-colors capitalize ${fx.mode === m ? 'border-amber-400 text-amber-700 bg-amber-50' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
+            >
+              {m}
+            </button>
+          ))}
+          <span className="text-gray-300 mx-1">·</span>
+          <span className="text-gray-400 tracking-wider">PACE</span>
+          {(['normal', 'fast', 'real'] as RadioSpeed[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => updateFx({ speed: s })}
+              className={`px-2 py-0.5 rounded border transition-colors capitalize ${fx.speed === s ? 'border-amber-400 text-amber-700 bg-amber-50' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
+            >
+              {s === 'real' ? 'real-time' : s}
+            </button>
+          ))}
         </div>
 
         {/* Airport diagram — schematic taxi chart; reveals the cleared route after grading */}
