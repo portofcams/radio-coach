@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { getSession as getFlightSession } from '@/lib/flight-sessions'
+import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
 import { CheckIcon } from '@/components/icons'

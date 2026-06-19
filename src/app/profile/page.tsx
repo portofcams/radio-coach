@@ -33,18 +33,21 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
   const [billing, setBilling] = useState(false)
+  const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
 
   useEffect(() => {
     Promise.all([
       fetch('/api/auth/me').then((r) => r.json()),
       fetch('/api/user/stats').then((r) => r.json()),
+      fetch('/api/user/weakspots').then((r) => r.json()),
     ])
-      .then(([me, s]) => {
+      .then(([me, s, w]) => {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
+        if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
       })
       .finally(() => setLoading(false))
   }, [router])
@@ -128,6 +131,31 @@ export default function ProfilePage() {
             )}
           </div>
         </div>
+
+        {/* Weak spots — adaptive, mined from graded scenarios */}
+        {weakspots.length > 0 && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Your weak spots</div>
+            <div className="space-y-4">
+              {weakspots.map((w) => (
+                <div key={w.key} className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">{w.label}</span>
+                      <span className={`text-xs font-mono font-bold ${w.rate >= 0.5 ? 'text-red-600' : w.rate >= 0.25 ? 'text-amber-600' : 'text-gray-500'}`}>{Math.round(w.rate * 100)}% missed</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">{w.tip}</div>
+                    <div className="mt-1.5 h-1.5 w-40 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: `${Math.round(w.rate * 100)}%` }} />
+                    </div>
+                  </div>
+                  <a href={`/session/drill-${w.key}`} className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors">Drill</a>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-4">Ranked from your graded scenarios. Targeted drills are a Solo Pilot feature.</p>
+          </div>
+        )}
 
         {/* Callsign */}
         <div className="border border-gray-200 rounded-xl p-5 mb-6">

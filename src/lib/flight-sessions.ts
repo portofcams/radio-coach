@@ -1,3 +1,5 @@
+import { CATEGORIES, drillScenariosFor } from './weakspots'
+
 export interface FlightSession {
   id: string
   title: string
@@ -89,4 +91,23 @@ export const FLIGHT_SESSIONS: FlightSession[] = [
 
 export function getSession(id: string): FlightSession | undefined {
   return FLIGHT_SESSIONS.find((s) => s.id === id)
+}
+
+// Resolve a predefined checkride, OR a dynamic weak-spot drill (`drill-<category>`).
+export function getSessionOrDrill(id: string): FlightSession | undefined {
+  if (id.startsWith('drill-')) {
+    const key = id.slice('drill-'.length)
+    const cat = CATEGORIES.find((c) => c.key === key)
+    const scenarioIds = drillScenariosFor(key)
+    if (!cat || scenarioIds.length === 0) return undefined
+    return {
+      id,
+      title: `${cat.label} — focused drill`,
+      description: 'Targeted practice on your weakest area.',
+      airport: '',
+      difficulty: 'intermediate',
+      scenarioIds,
+    }
+  }
+  return getSession(id)
 }
