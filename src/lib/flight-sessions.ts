@@ -9,6 +9,24 @@ export interface FlightSession {
 
 export const FLIGHT_SESSIONS: FlightSession[] = [
   {
+    id: 'ppl-full-vfr-checkride',
+    title: 'Private Pilot Checkride — Full VFR Flight',
+    description: 'The whole flight, one continuous run: ATIS → taxi → hold short → takeoff → departure → flight following → pattern → sequence → land. Miss a hold-short and you fail, just like the real thing.',
+    airport: 'KPHTO',
+    difficulty: 'advanced',
+    scenarioIds: [
+      'atis-initial-call',
+      'ground-taxi-hold-short',
+      'hold-short-critical',
+      'class-d-takeoff',
+      'departure-turn-instruction',
+      'vfr-flight-following-initial',
+      'pattern-entry',
+      'sequence-traffic-in-sight',
+      'cleared-for-option',
+    ],
+  },
+  {
     id: 'vfr-class-d-pattern',
     title: 'VFR Class D — Full Pattern',
     description: 'ATIS → Ground → Hold short → Takeoff → Pattern → Cleared option',

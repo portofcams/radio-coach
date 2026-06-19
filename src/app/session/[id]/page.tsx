@@ -16,9 +16,19 @@ export default function FlightSessionPage() {
   const [readback, setReadback] = useState('')
   const [grading, setGrading] = useState(false)
   const [result, setResult] = useState<GradeResult | null>(null)
-  const [results, setResults] = useState<Array<{ scenarioId: string; score: number; passed: boolean }>>([])
+  const [results, setResults] = useState<Array<{ scenarioId: string; score: number; passed: boolean; missed: string[] }>>([])
   const [ttsLoading, setTtsLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const [pro, setPro] = useState(false)
+  const [entLoaded, setEntLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => setPro(!!d.entitlement?.pro))
+      .catch(() => {})
+      .finally(() => setEntLoaded(true))
+  }, [])
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -78,7 +88,7 @@ export default function FlightSessionPage() {
 
   const advance = useCallback(() => {
     if (!result || !scenario) return
-    const newResults = [...results, { scenarioId: scenario.id, score: result.score, passed: result.passFail === 'PASS' }]
+    const newResults = [...results, { scenarioId: scenario.id, score: result.score, passed: result.passFail === 'PASS', missed: result.elements?.missed ?? [] }]
     setResults(newResults)
     if (step + 1 >= totalSteps) {
       setDone(true)
@@ -97,24 +107,53 @@ export default function FlightSessionPage() {
     )
   }
 
+  // Checkrides are a Solo Pilot feature — free users get sent to the launcher to upgrade
+  if (entLoaded && !pro) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-sm w-full text-center">
+          <h1 className="text-2xl font-semibold mb-2">Checkride mode</h1>
+          <p className="text-gray-500 mb-6">Full-flight checkrides are a Solo Pilot feature. Go unlimited to fly them and see your readiness verdict.</p>
+          <a href="/checkride" className="inline-block bg-gray-900 hover:bg-black text-white font-semibold px-6 py-3 rounded-xl transition-colors">View checkrides</a>
+        </div>
+      </main>
+    )
+  }
+
   if (done) {
     const total = results.length
     const passed = results.filter((r) => r.passed).length
+    const failed = results.filter((r) => !r.passed)
     const avg = Math.round(results.reduce((s, r) => s + r.score, 0) / total)
+    // checkride-style verdict: any failed leg is a "below standard" item
+    const verdict =
+      failed.length === 0 ? { label: 'CHECKRIDE READY', tone: 'green', line: 'Every leg to standard — your radio work is checkride-ready.' }
+      : failed.length === 1 && avg >= 80 ? { label: 'ALMOST THERE', tone: 'amber', line: 'One leg below standard. Clean that up and you are ready.' }
+      : { label: 'NOT YET', tone: 'red', line: `${failed.length} legs below standard. Drill these, then re-fly.` }
+    const toneBg = verdict.tone === 'green' ? 'bg-green-500' : verdict.tone === 'amber' ? 'bg-amber-500' : 'bg-red-500'
+    const toneText = verdict.tone === 'green' ? 'text-green-600' : verdict.tone === 'amber' ? 'text-amber-600' : 'text-red-600'
+
     return (
-      <main className="min-h-screen flex items-center justify-center px-6">
+      <main className="min-h-screen flex items-center justify-center px-6 py-10">
         <div className="max-w-md w-full text-center">
-          <div className={`mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center ${passed >= total / 2 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
+          <div className={`mx-auto mb-3 w-14 h-14 rounded-full flex items-center justify-center text-white ${toneBg}`}>
             <CheckIcon className="text-2xl" />
           </div>
-          <h1 className="text-2xl font-bold mb-2">{session.title} — Complete</h1>
-          <p className="text-gray-500 mb-6">{passed}/{total} passed · avg score {avg}</p>
-          <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left space-y-2">
+          <div className="font-mono text-[11px] uppercase tracking-widest text-gray-400 mb-1">Checkride report · {session.title}</div>
+          <h1 className={`text-3xl font-bold mb-1 ${toneText}`}>{verdict.label}</h1>
+          <p className="text-gray-500 text-sm mb-5">{verdict.line}</p>
+
+          <div className="flex items-center justify-center gap-6 mb-6">
+            <div><div className="text-2xl font-bold">{passed}/{total}</div><div className="text-xs text-gray-400 uppercase tracking-wide">legs to standard</div></div>
+            <div><div className="text-2xl font-bold">{avg}</div><div className="text-xs text-gray-400 uppercase tracking-wide">avg score</div></div>
+          </div>
+
+          <div className="bg-gray-50 rounded-xl p-4 mb-4 text-left space-y-2">
             {results.map((r, i) => {
               const s = getScenario(r.scenarioId)
               return (
                 <div key={i} className="flex items-center justify-between text-sm">
-                  <span className="text-gray-700">{s?.title ?? r.scenarioId}</span>
+                  <span className="text-gray-700">{i + 1}. {s?.title ?? r.scenarioId}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs text-gray-500">{r.score}</span>
                     <span className={r.passed ? 'text-green-600' : 'text-red-500'}>{r.passed ? '✓' : '✗'}</span>
@@ -123,12 +162,25 @@ export default function FlightSessionPage() {
               )
             })}
           </div>
+
+          {failed.length > 0 && (
+            <div className="text-left border border-red-100 bg-red-50/50 rounded-xl p-4 mb-6">
+              <div className="text-xs font-semibold uppercase tracking-widest text-red-500 mb-2">Focus before your checkride</div>
+              <ul className="text-sm text-gray-700 space-y-1">
+                {failed.map((r, i) => {
+                  const s = getScenario(r.scenarioId)
+                  return <li key={i}>· <span className="font-medium">{s?.title}</span>{r.missed.length > 0 && <span className="text-gray-500"> — missed: {r.missed.slice(0, 2).join(', ')}</span>}</li>
+                })}
+              </ul>
+            </div>
+          )}
+
           <div className="flex gap-3">
             <button onClick={() => { setStep(0); setResults([]); setResult(null); setReadback(''); setDone(false) }} className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm font-medium hover:border-gray-400">
-              Fly again
+              Re-fly
             </button>
-            <a href="/train" className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 text-sm font-medium text-center hover:bg-gray-800">
-              Back to training
+            <a href="/checkride" className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 text-sm font-medium text-center hover:bg-gray-800">
+              All checkrides
             </a>
           </div>
         </div>

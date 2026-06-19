@@ -27,6 +27,7 @@ export default function Home() {
           </span>
           <div className="flex items-center gap-5">
             <Link href="/ground-school" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Ground School</Link>
+            <Link href="/checkride" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Checkrides</Link>
             <Link href="/cheatsheet" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Cheat Sheet</Link>
             <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
             <NavAuth />
