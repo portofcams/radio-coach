@@ -210,8 +210,11 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="mt-4 flex items-center justify-between">
-              <a href="/checkride" className="text-sm text-blue-600 hover:underline">Run a checkride →</a>
-              <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share your score card</a>
+              <a href="/progress" className="text-sm text-blue-600 hover:underline">Full progress →</a>
+              <div className="flex items-center gap-3">
+                <a href="/checkride" className="text-xs text-gray-400 hover:text-gray-600">Checkride</a>
+                <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share card</a>
+              </div>
             </div>
           </div>
         )}

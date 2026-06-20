@@ -61,6 +61,18 @@ export async function GET() {
     [user.userId]
   )
 
+  // 30-day daily trend (avg score + count) for the analytics dashboard
+  const trend = await db.query(
+    `SELECT to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS day,
+            COUNT(*) AS n,
+            ROUND(AVG(score)) AS avg,
+            COUNT(*) FILTER (WHERE passed) AS passed
+     FROM rc_grades
+     WHERE user_id = $1 AND created_at > now() - interval '30 days'
+     GROUP BY 1 ORDER BY 1`,
+    [user.userId]
+  )
+
   const o = overall.rows[0]
   return NextResponse.json({
     total: parseInt(o.total),
@@ -70,5 +82,6 @@ export async function GET() {
     byPhase: byPhase.rows,
     topMistakes: mistakes.rows,
     recent: recent.rows,
+    trend: trend.rows,
   })
 }

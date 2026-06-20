@@ -173,7 +173,39 @@ export default function ScenarioPage() {
       return
     }
 
-    // ── Web Speech API path ──────────────────────────────────────────────
+    // ── Web: high-accuracy path via ElevenLabs Scribe (record → transcribe) ──
+    const canScribe = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== 'undefined'
+    if (canScribe) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const mr = new MediaRecorder(stream)
+        const chunks: BlobPart[] = []
+        mr.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data) }
+        mr.onstop = async () => {
+          stream.getTracks().forEach((t) => t.stop())
+          setInterimText('Transcribing…')
+          try {
+            const blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' })
+            const fd = new FormData()
+            fd.append('audio', blob, 'readback.webm')
+            const res = await fetch('/api/stt', { method: 'POST', body: fd })
+            const data = await res.json()
+            if (res.ok && data.text) { setReadback(data.text); setInterimText(''); setRadioState('transcribed') }
+            else { setInterimText(''); setRadioState('ready') }
+          } catch {
+            setInterimText(''); setRadioState('ready')
+          }
+          recognitionRef.current = null
+        }
+        recognitionRef.current = { stop: () => { try { mr.stop() } catch {} } }
+        mr.start()
+        return
+      } catch {
+        // mic blocked / unavailable — fall through to Web Speech
+      }
+    }
+
+    // ── Web Speech API fallback ──────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const w = window as any
     const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition
@@ -561,8 +593,9 @@ export default function ScenarioPage() {
                     setInterimText('')
                     setRadioState('transcribed')
                   } else {
+                    // web (Scribe record→transcribe, or Web Speech): stopping lets
+                    // the recorder's onstop/onend drive transcription + next state
                     stopRecognition()
-                    setRadioState('ready')
                   }
                 } else {
                   startListening()

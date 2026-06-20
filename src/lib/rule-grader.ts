@@ -20,6 +20,9 @@ function normalize(s: string): string[] {
   return s
     .toLowerCase()
     .replace(/[.,!?;:"'’`]/g, ' ')
+    // collapse compounds speech-to-text often splits, so voice readbacks aren't
+    // dinged for a transcription quirk (e.g. "take off" → "takeoff").
+    .replace(/\btake\s+off\b/g, 'takeoff')
     .replace(/\s+/g, ' ')
     .trim()
     .split(' ')

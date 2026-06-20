@@ -189,9 +189,12 @@ export default function TrainPage() {
             )}
             {homeList.length > 0 && !facilityFilter && !diffFilter && (
               <div id="home-field">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
-                  Your home field
-                </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                    Your home field
+                  </h2>
+                  <Link href="/diagram" className="text-xs text-blue-600 hover:underline">Diagram drill →</Link>
+                </div>
                 <div className="space-y-2">
                   {homeList.map((s) => {
                     const c = completed[s.id]
