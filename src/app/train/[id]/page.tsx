@@ -9,6 +9,7 @@ import PaywallModal from '@/components/PaywallModal'
 import AirportDiagram from '@/components/AirportDiagram'
 import type { GradeResult } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
+import { personalizeText } from '@/lib/personalize'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
@@ -222,7 +223,7 @@ export default function ScenarioPage() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: scenario.atcTransmission, speed: ttsSpeed(fx.speed) }),
+        body: JSON.stringify({ text: personalizeText(scenario.atcTransmission, user?.callsign ?? null), speed: ttsSpeed(fx.speed) }),
       })
       if (!res.ok) { setRadioState('ready'); return }
       const blob = await res.blob()
@@ -246,7 +247,7 @@ export default function ScenarioPage() {
     } catch {
       setRadioState('ready')
     }
-  }, [scenario, voiceMode, fx, startTimer, startListening, stopRecognition])
+  }, [scenario, voiceMode, fx, user, startTimer, startListening, stopRecognition])
 
   // Auto-play on mount
   useEffect(() => {
@@ -330,6 +331,7 @@ export default function ScenarioPage() {
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
   const freeRemaining = (pro || user) ? null : session.remaining
+  const callsign = user?.callsign ?? null
   const callsignDisplay = user?.callsign ? toPhonetic(user.callsign) : null
   const timerColor = timer === null ? '' : timer <= 3 ? 'text-red-600' : timer <= 7 ? 'text-yellow-600' : 'text-gray-400'
   const isAtcActive = radioState === 'atc_loading' || radioState === 'atc_playing'
@@ -432,7 +434,7 @@ export default function ScenarioPage() {
               <div className="flex items-start gap-2 flex-1 min-w-0">
                 <div className={`mt-1 w-1.5 h-1.5 rounded-full shrink-0 ${isAtcActive ? 'bg-green-400 animate-pulse' : 'bg-gray-700'}`} />
                 <p className={`text-green-400 font-mono text-sm leading-relaxed ${listenMode ? 'blur-md select-none' : ''}`}>
-                  &ldquo;{scenario.atcTransmission}&rdquo;
+                  &ldquo;{personalizeText(scenario.atcTransmission, callsign)}&rdquo;
                 </p>
               </div>
             </div>
@@ -579,7 +581,7 @@ export default function ScenarioPage() {
               </div>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Standard readback</div>
-                <p className="text-sm font-mono text-green-800 bg-green-50 rounded px-3 py-2">&ldquo;{result.correctReadback}&rdquo;</p>
+                <p className="text-sm font-mono text-green-800 bg-green-50 rounded px-3 py-2">&ldquo;{personalizeText(result.correctReadback, callsign)}&rdquo;</p>
               </div>
             </div>
 

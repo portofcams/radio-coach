@@ -7,6 +7,7 @@ import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
 import { CheckIcon } from '@/components/icons'
 import { attachRadioFx, getRadioFx, ttsSpeed, type RadioFxController } from '@/lib/radio-fx'
+import { personalizeText } from '@/lib/personalize'
 
 export default function FlightSessionPage() {
   const { id } = useParams<{ id: string }>()
@@ -22,11 +23,12 @@ export default function FlightSessionPage() {
   const [done, setDone] = useState(false)
   const [pro, setPro] = useState(false)
   const [entLoaded, setEntLoaded] = useState(false)
+  const [callsign, setCallsign] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/auth/me')
       .then((r) => r.json())
-      .then((d) => setPro(!!d.entitlement?.pro))
+      .then((d) => { setPro(!!d.entitlement?.pro); setCallsign(d.user?.callsign ?? null) })
       .catch(() => {})
       .finally(() => setEntLoaded(true))
   }, [])
@@ -48,7 +50,7 @@ export default function FlightSessionPage() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: scenario.atcTransmission, speed: ttsSpeed(fx.speed) }),
+        body: JSON.stringify({ text: personalizeText(scenario.atcTransmission, callsign), speed: ttsSpeed(fx.speed) }),
       })
       if (!res.ok) return
       const blob = await res.blob()
@@ -64,7 +66,7 @@ export default function FlightSessionPage() {
     } finally {
       setTtsLoading(false)
     }
-  }, [scenario])
+  }, [scenario, callsign])
 
   useEffect(() => {
     autoPlayedRef.current = false
@@ -234,7 +236,7 @@ export default function FlightSessionPage() {
             </button>
           </div>
           <p className="text-green-400 font-mono text-sm leading-relaxed">
-            &ldquo;{scenario.atcTransmission}&rdquo;
+            &ldquo;{personalizeText(scenario.atcTransmission, callsign)}&rdquo;
           </p>
         </div>
 
@@ -281,7 +283,7 @@ export default function FlightSessionPage() {
               </div>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Standard readback</div>
-                <p className="text-sm font-mono bg-green-50 text-green-800 px-3 py-2 rounded">&ldquo;{result.correctReadback}&rdquo;</p>
+                <p className="text-sm font-mono bg-green-50 text-green-800 px-3 py-2 rounded">&ldquo;{personalizeText(result.correctReadback, callsign)}&rdquo;</p>
               </div>
             </div>
 
