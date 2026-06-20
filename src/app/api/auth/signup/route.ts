@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   const db = getPool()
   if (!db) return NextResponse.json({ error: 'Auth not available' }, { status: 503 })
 
-  const { email, password } = await req.json()
+  const { email, password, ref } = await req.json()
 
   if (!email?.includes('@') || !password || password.length < 6) {
     return NextResponse.json({ error: 'Valid email and password (6+ chars) required' }, { status: 400 })
@@ -30,6 +30,32 @@ export async function POST(req: NextRequest) {
      WHERE student_email = $2 AND student_user_id IS NULL`,
     [user.id, user.email],
   ).catch(() => {})
+
+  // Referral: a friend's code grants the new user a 7-day Solo trial, and the
+  // referrer 7 trial days (only if they're not on a paid Stripe sub).
+  if (ref && typeof ref === 'string') {
+    try {
+      const refRow = await db.query('SELECT id, stripe_subscription_id, subscription_status, current_period_end FROM rc_users WHERE referral_code = $1', [ref.trim()])
+      const referrer = refRow.rows[0]
+      if (referrer && referrer.id !== user.id) {
+        await db.query(
+          `UPDATE rc_users SET referred_by = $1, plan = 'solo', subscription_status = 'trialing',
+             current_period_end = now() + interval '7 days' WHERE id = $2`,
+          [referrer.id, user.id],
+        )
+        if (!referrer.stripe_subscription_id) {
+          // extend the referrer's trial from the later of now / their current end, capped at +60d
+          await db.query(
+            `UPDATE rc_users SET plan = COALESCE(plan, 'solo'), subscription_status = 'trialing',
+               current_period_end = LEAST(now() + interval '60 days',
+                 GREATEST(COALESCE(current_period_end, now()), now()) + interval '7 days')
+             WHERE id = $1`,
+            [referrer.id],
+          )
+        }
+      }
+    } catch { /* referral best-effort */ }
+  }
 
   await setAuthCookie({ userId: user.id, email: user.email })
   return NextResponse.json({ user: { id: user.id, email: user.email } })

@@ -135,7 +135,9 @@ export async function initDB(): Promise<void> {
   await db.query(`
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,
-      ADD COLUMN IF NOT EXISTS cfi_logo_url TEXT
+      ADD COLUMN IF NOT EXISTS cfi_logo_url TEXT,
+      ADD COLUMN IF NOT EXISTS referral_code TEXT,
+      ADD COLUMN IF NOT EXISTS referred_by INTEGER
   `)
 }
 

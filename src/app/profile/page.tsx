@@ -53,6 +53,8 @@ export default function ProfilePage() {
   const [coach, setCoach] = useState<Coach | null>(null)
   const [branding, setBranding] = useState({ orgName: '', logoUrl: '' })
   const [savingBranding, setSavingBranding] = useState(false)
+  const [referral, setReferral] = useState<{ link: string; referrals: number } | null>(null)
+  const [refCopied, setRefCopied] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -74,6 +76,7 @@ export default function ProfilePage() {
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
         if (rd && !rd.error && typeof rd.score === 'number') setReadiness(rd)
         if (co && co.coach) setCoach(co.coach)
+        fetch('/api/user/referral').then((r) => r.json()).then((rf) => { if (rf && rf.link) setReferral(rf) }).catch(() => {})
       })
       .finally(() => setLoading(false))
   }, [router])
@@ -406,6 +409,20 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
+
+        {/* Invite a friend */}
+        {referral && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Invite a friend</div>
+                <p className="text-xs text-gray-500">They get a 7-day Solo trial; you earn 7 free days per friend who joins.{referral.referrals > 0 ? ` ${referral.referrals} joined so far.` : ''}</p>
+              </div>
+              <button onClick={() => { navigator.clipboard?.writeText(referral.link); setRefCopied(true); setTimeout(() => setRefCopied(false), 2000) }}
+                className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800">{refCopied ? 'Copied!' : 'Copy link'}</button>
+            </div>
+          </div>
+        )}
 
         {/* Stats */}
         {stats && stats.total > 0 ? (
