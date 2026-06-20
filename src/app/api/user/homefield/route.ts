@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { lookupAirport } from '@/lib/airports'
 import { resolveHomeProfile } from '@/lib/home-server'
+import { ensureTaxiways } from '@/lib/osm-taxiways'
 
 const clean = (v: unknown, max: number) =>
   typeof v === 'string' ? v.trim().slice(0, max) : ''
@@ -21,11 +22,14 @@ export async function PUT(req: NextRequest) {
   if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
 
   // Prefer a real, listed field by ident; else a complete manual field; else clear.
-  if (ident && lookupAirport(ident)) {
+  const field = ident ? lookupAirport(ident) : null
+  if (ident && field) {
     await db.query(
       'UPDATE rc_users SET home_ident = $1, home_name = NULL, home_tower = NULL, home_runway = NULL WHERE id = $2',
       [ident, user.userId],
     )
+    // Fetch + cache real taxiway geometry for this field (best-effort).
+    await ensureTaxiways(db, ident, field.lat, field.lon)
   } else if (ident) {
     return NextResponse.json({ error: 'unknown_ident', ident }, { status: 404 })
   } else if (name && tower && runway) {

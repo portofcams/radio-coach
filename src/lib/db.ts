@@ -76,6 +76,15 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS home_runway TEXT,
       ADD COLUMN IF NOT EXISTS home_ident TEXT
   `)
+
+  // Cache of real taxiway geometry per field (fetched once from OpenStreetMap).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_field_geo (
+      ident TEXT PRIMARY KEY,
+      taxiways JSONB NOT NULL DEFAULT '[]',
+      fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
 }
 
 // Run init once on first import in server context

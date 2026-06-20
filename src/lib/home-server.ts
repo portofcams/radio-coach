@@ -14,7 +14,8 @@ export function resolveHomeProfile(row: HomeRow | undefined | null): HomeProfile
   if (!row) return null
   if (row.home_ident) {
     const field = lookupAirport(row.home_ident)
-    if (field) return { mode: 'real', ident: row.home_ident.toUpperCase(), field }
+    // shallow-copy so callers can attach taxiways without mutating the shared dataset
+    if (field) return { mode: 'real', ident: row.home_ident.toUpperCase(), field: { ...field } }
   }
   if (row.home_name && row.home_tower && row.home_runway) {
     return { mode: 'manual', name: row.home_name, tower: row.home_tower, runway: row.home_runway }

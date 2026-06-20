@@ -1,6 +1,6 @@
 import { toPhonetic } from './phonetic'
 import { runwayPhonetic } from './homefield'
-import type { Scenario, RealFieldRunway } from './types'
+import type { Scenario, RealFieldRunway, Taxiway } from './types'
 
 /**
  * Generate accurate scenarios for a pilot's REAL home field, using real
@@ -43,6 +43,8 @@ export interface AirportData {
   towered: boolean
   freqs: AirportFreqs
   runways: AirportRunway[]
+  /** real taxiway geometry (OpenStreetMap), attached server-side when available */
+  taxiways?: Taxiway[]
 }
 
 function spokenCallsign(callsign?: string | null): string {
@@ -89,7 +91,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
   const rw = runwayPhonetic(rwy.le)
   const diagramRunways = toDiagramRunways(field.runways)
   const threshold = { lat: rwy.leLat, lon: rwy.leLon, heading: rwy.leHdg ?? 0 }
-  const baseDiagram = { name, runways: diagramRunways, activeEnd: rwy.le }
+  const baseDiagram = { name, runways: diagramRunways, taxiways: field.taxiways, activeEnd: rwy.le }
 
   if (field.towered && field.freqs.twr) {
     const twr = field.freqs.twr

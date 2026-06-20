@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { getEntitlement } from '@/lib/entitlement'
 import { resolveHomeProfile } from '@/lib/home-server'
+import { getCachedTaxiways, ensureTaxiways } from '@/lib/osm-taxiways'
 
 export async function GET() {
   const user = await getAuthUser()
@@ -20,6 +21,14 @@ export async function GET() {
 
   const entitlement = await getEntitlement(row.id)
   const home = resolveHomeProfile(row)
+
+  // Attach real taxiway geometry to a real home field (cached; fetch once if missing).
+  if (home?.mode === 'real') {
+    const cached = await getCachedTaxiways(db, home.ident)
+    if (cached) home.field.taxiways = cached
+    else void ensureTaxiways(db, home.ident, home.field.lat, home.field.lon) // populate for next load
+  }
+
   return NextResponse.json({
     user: { id: row.id, email: row.email, callsign: row.callsign, home },
     entitlement,

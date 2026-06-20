@@ -17,6 +17,9 @@ export default function RealFieldDiagram({ field }: { field: RealField }) {
   for (const r of field.runways) {
     pts.push([r.leLon, r.leLat], [r.heLon, r.heLat])
   }
+  for (const t of field.taxiways ?? []) {
+    for (const p of t.points) pts.push([p.lon, p.lat])
+  }
   if (field.ownship) pts.push([field.ownship.lon, field.ownship.lat])
   if (pts.length < 2) return null
 
@@ -37,8 +40,9 @@ export default function RealFieldDiagram({ field }: { field: RealField }) {
   // center the drawing
   const offX = (W - (spanX * scale)) / 2
   const offY = (H - (spanY * scale)) / 2
-  const X = (lon: number) => offX + lx(lon) * scale
-  const Y = (lat: number) => offY + ly(lat) * scale
+  // round to 1 dp so tiny float differences never trip SSR hydration
+  const X = (lon: number) => Math.round((offX + lx(lon) * scale) * 10) / 10
+  const Y = (lat: number) => Math.round((offY + ly(lat) * scale) * 10) / 10
 
   const own = field.ownship
   const ox = own ? X(own.lon) : 0
@@ -51,6 +55,30 @@ export default function RealFieldDiagram({ field }: { field: RealField }) {
         <span className="text-amber-500/80">NOT FOR NAVIGATION</span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`${field.name} runway layout`}>
+        {/* Taxiways (real OSM geometry) — drawn beneath the runways */}
+        {(() => {
+          const shownRefs = new Set<string>()
+          return (field.taxiways ?? []).map((t, i) => {
+            const poly = t.points.map((p) => `${X(p.lon).toFixed(1)},${Y(p.lat).toFixed(1)}`).join(' ')
+            // label each ref once, at the midpoint of a segment long enough to read
+            let label = null
+            if (t.ref && !shownRefs.has(t.ref)) {
+              const a = t.points[0], b = t.points[t.points.length - 1]
+              const len = Math.hypot(X(b.lon) - X(a.lon), Y(b.lat) - Y(a.lat))
+              if (len > 26) {
+                shownRefs.add(t.ref)
+                const m = t.points[Math.floor(t.points.length / 2)]
+                label = <text x={X(m.lon)} y={Y(m.lat)} dy="-2" textAnchor="middle" fontSize="7" fontFamily="monospace" fill="#3f6212">{t.ref}</text>
+              }
+            }
+            return (
+              <g key={`tw${i}`}>
+                <polyline points={poly} fill="none" stroke="#3a4a2a" strokeWidth={4} strokeLinejoin="round" strokeLinecap="round" />
+                {label}
+              </g>
+            )
+          })
+        })()}
         {field.runways.map((r, i) => {
           const x1 = X(r.leLon), y1 = Y(r.leLat), x2 = X(r.heLon), y2 = Y(r.heLat)
           const active = field.activeEnd && (r.le === field.activeEnd || r.he === field.activeEnd)

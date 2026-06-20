@@ -54,9 +54,16 @@ export interface RealFieldRunway {
   heLat: number
   heLon: number
 }
+/** A real taxiway polyline from OpenStreetMap (ref = taxiway letter, e.g. "A"). */
+export interface Taxiway {
+  ref: string | null
+  points: Array<{ lat: number; lon: number }>
+}
 export interface RealFieldDiagram {
   name: string
   runways: RealFieldRunway[]
+  /** real taxiway geometry (OpenStreetMap), drawn beneath the runways */
+  taxiways?: Taxiway[]
   /** ownship at a real coordinate (e.g. a runway threshold) + true heading */
   ownship?: { lat: number; lon: number; heading: number }
   /** runway end to highlight, e.g. "27" */
