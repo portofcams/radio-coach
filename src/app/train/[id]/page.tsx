@@ -12,6 +12,7 @@ import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
+import { generateScenario } from '@/lib/procedural'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
@@ -23,8 +24,12 @@ interface UserProfile { id: number; email: string; callsign: string | null; home
 export default function ScenarioPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  // Static library scenario, or a per-user "home field" / custom scenario resolved after fetch.
-  const [scenario, setScenario] = useState<Scenario | undefined>(() => getScenario(id))
+  // Static library scenario, a procedural one (gen-<seed>, deterministic), or a
+  // per-user "home field" / custom scenario resolved after fetch.
+  const [scenario, setScenario] = useState<Scenario | undefined>(() => {
+    if (id.startsWith('gen-')) { const n = parseInt(id.slice(4)); return Number.isFinite(n) ? generateScenario(n) : undefined }
+    return getScenario(id)
+  })
   const isHomeId = id.startsWith('home-')
   const isCustomId = id.startsWith('custom-')
 
@@ -340,11 +345,16 @@ export default function ScenarioPage() {
   }, [scenario, readback, radioState, hintShown, user])
 
   const nextScenario = useCallback(() => {
-    const idx = scenarios.findIndex(s => s.id === id)
-    const next = scenarios[(idx + 1) % scenarios.length]
     setReadback(''); setResult(null); setHintShown(false); setInterimText('')
     autoPlayedRef.current = false
     setRadioState('idle')
+    if (id.startsWith('gen-')) {
+      // endless practice — keep generating fresh scenarios
+      router.push(`/train/gen-${Math.floor(Math.random() * 1_000_000_000)}`)
+      return
+    }
+    const idx = scenarios.findIndex(s => s.id === id)
+    const next = scenarios[(idx + 1) % scenarios.length]
     router.push(`/train/${next.id}`)
   }, [id, router])
 

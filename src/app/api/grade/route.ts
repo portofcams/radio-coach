@@ -7,6 +7,7 @@ import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitle
 import { resolveHomeProfile } from '@/lib/home-server'
 import { homeScenario } from '@/lib/home-client'
 import { getCustomScenarioFor } from '@/lib/customscenarios'
+import { generateScenario } from '@/lib/procedural'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
@@ -22,6 +23,10 @@ export async function POST(req: NextRequest) {
   // Resolve the scenario: static library, or a per-user home-field scenario
   // (generated server-side from the pilot's saved field, so params stay trusted).
   let scenario: Scenario | undefined = getScenario(scenarioId)
+  if (!scenario && scenarioId.startsWith('gen-')) {
+    const n = parseInt(scenarioId.slice(4))
+    if (Number.isFinite(n)) scenario = generateScenario(n)
+  }
   if (!scenario && scenarioId.startsWith('home-') && user && db) {
     const r = await db.query(
       'SELECT callsign, home_ident, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
