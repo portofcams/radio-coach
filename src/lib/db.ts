@@ -67,12 +67,14 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS current_period_end TIMESTAMPTZ
   `)
 
-  // Home-field personalization (user-entered tower-pattern field)
+  // Home-field personalization. home_ident → real FAA field (preferred);
+  // home_name/tower/runway → manual lean fallback for unlisted fields.
   await db.query(`
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS home_name TEXT,
       ADD COLUMN IF NOT EXISTS home_tower TEXT,
-      ADD COLUMN IF NOT EXISTS home_runway TEXT
+      ADD COLUMN IF NOT EXISTS home_runway TEXT,
+      ADD COLUMN IF NOT EXISTS home_ident TEXT
   `)
 }
 

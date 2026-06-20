@@ -14,13 +14,14 @@ interface Stats {
   recent: Array<{ scenario_id: string; score: number; passed: boolean; hint_used: boolean; created_at: string }>
 }
 
-interface HomeFieldProfile { name: string; tower: string; runway: string }
+import type { HomeProfile } from '@/lib/home-client'
 interface User {
   id: number
   email: string
   callsign: string | null
-  home?: HomeFieldProfile | null
+  home?: HomeProfile | null
 }
+interface FieldSummary { icao: string; name: string; city: string; towered: boolean; freqs: Record<string, string>; runways: string[] }
 
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergency',
@@ -36,7 +37,12 @@ export default function ProfilePage() {
   const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
   const [billing, setBilling] = useState(false)
   const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
-  const [home, setHome] = useState<HomeFieldProfile>({ name: '', tower: '', runway: '' })
+  const [ident, setIdent] = useState('')
+  const [lookup, setLookup] = useState<FieldSummary | null>(null)
+  const [lookupErr, setLookupErr] = useState('')
+  const [looking, setLooking] = useState(false)
+  const [manual, setManual] = useState({ name: '', tower: '', runway: '' })
+  const [showManual, setShowManual] = useState(false)
   const [savingHome, setSavingHome] = useState(false)
 
   useEffect(() => {
@@ -49,7 +55,8 @@ export default function ProfilePage() {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
-        if (me.user.home) setHome(me.user.home)
+        if (me.user.home?.mode === 'real') setIdent(me.user.home.ident)
+        else if (me.user.home?.mode === 'manual') { setManual(me.user.home); setShowManual(true) }
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
@@ -57,20 +64,25 @@ export default function ProfilePage() {
       .finally(() => setLoading(false))
   }, [router])
 
-  async function saveHome() {
+  async function lookupField() {
+    if (!ident.trim()) return
+    setLooking(true); setLookupErr(''); setLookup(null)
+    try {
+      const res = await fetch(`/api/airports?ident=${encodeURIComponent(ident.trim().toUpperCase())}`)
+      if (res.ok) { setLookup((await res.json()).field) }
+      else { setLookupErr(`No field "${ident.trim().toUpperCase()}" found. Try the ICAO ident, or enter it manually.`) }
+    } finally { setLooking(false) }
+  }
+
+  async function saveHome(body: object) {
     setSavingHome(true)
     try {
       const res = await fetch('/api/user/homefield', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(home),
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
       })
       const data = await res.json()
-      setHome(data.home ?? { name: '', tower: '', runway: '' })
       setUser((u) => u ? { ...u, home: data.home } : u)
-    } finally {
-      setSavingHome(false)
-    }
+    } finally { setSavingHome(false) }
   }
 
   async function saveCallsign() {
@@ -203,42 +215,71 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* Home field — generates personalized tower-pattern scenarios */}
+        {/* Home field — real FAA frequencies + runways for your airport */}
         <div className="border border-gray-200 rounded-xl p-5 mb-6">
           <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Your home field</div>
-          <p className="text-xs text-gray-400 mb-3">Towered field. We&apos;ll build tower-pattern scenarios at your airport with your call sign.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <p className="text-xs text-gray-400 mb-3">Enter your field&apos;s ICAO ident — we pull the real frequencies, runways, and layout to build scenarios at your airport.</p>
+
+          {user?.home?.mode === 'real' && (
+            <div className="mb-3 text-sm text-gray-700">
+              Current: <span className="font-medium">{user.home.field.name}</span>{' '}
+              <span className="font-mono text-xs text-gray-500">({user.home.ident})</span>{' '}
+              <a href="/train#home-field" className="text-blue-600 hover:underline text-xs ml-1">View scenarios →</a>
+            </div>
+          )}
+
+          <div className="flex gap-2">
             <input
-              value={home.name}
-              onChange={(e) => setHome((h) => ({ ...h, name: e.target.value.slice(0, 40) }))}
-              placeholder="Field name (e.g. Palmer)"
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+              value={ident}
+              onChange={(e) => { setIdent(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)); setLookup(null); setLookupErr('') }}
+              onKeyDown={(e) => { if (e.key === 'Enter') lookupField() }}
+              placeholder="ICAO ident (e.g. KPAE, PHTO, EIDW)"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
-            <input
-              value={home.tower}
-              onChange={(e) => setHome((h) => ({ ...h, tower: e.target.value.replace(/[^0-9.]/g, '').slice(0, 12) }))}
-              placeholder="Tower freq (118.6)"
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
-            <input
-              value={home.runway}
-              onChange={(e) => setHome((h) => ({ ...h, runway: e.target.value.toUpperCase().replace(/[^0-9LRC]/g, '').slice(0, 6) }))}
-              placeholder="Runway (24)"
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-xs text-gray-400">
-              {user?.home ? <a href="/train#home-field" className="text-blue-600 hover:underline">View your home-field scenarios →</a> : 'Fill all three to enable.'}
-            </span>
-            <button
-              onClick={saveHome}
-              disabled={savingHome}
-              className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40"
-            >
-              {savingHome ? 'Saving...' : 'Save'}
+            <button onClick={lookupField} disabled={looking || !ident.trim()}
+              className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-500 disabled:opacity-40">
+              {looking ? '...' : 'Look up'}
             </button>
           </div>
+
+          {lookupErr && <p className="text-xs text-red-600 mt-2">{lookupErr}</p>}
+
+          {lookup && (
+            <div className="mt-3 border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <div className="text-sm font-medium text-gray-900">{lookup.name} <span className="font-mono text-xs text-gray-500">{lookup.icao}</span></div>
+              <div className="text-xs text-gray-500 mt-1">
+                {lookup.towered ? 'Towered' : 'Non-towered (CTAF)'} · Runways {lookup.runways.join(', ')}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5 font-mono">
+                {Object.entries(lookup.freqs).map(([k, v]) => `${k.toUpperCase()} ${v}`).join('  ·  ')}
+              </div>
+              <button onClick={() => saveHome({ ident: lookup.icao })} disabled={savingHome}
+                className="mt-3 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">
+                {savingHome ? 'Saving...' : `Use ${lookup.icao} as my home field`}
+              </button>
+            </div>
+          )}
+
+          {/* Manual fallback for unlisted fields */}
+          <button onClick={() => setShowManual((v) => !v)} className="text-xs text-gray-400 hover:text-gray-600 mt-3 block">
+            {showManual ? 'Hide manual entry' : 'Field not listed? Enter it manually'}
+          </button>
+          {showManual && (
+            <div className="mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input value={manual.name} onChange={(e) => setManual((h) => ({ ...h, name: e.target.value.slice(0, 40) }))}
+                  placeholder="Field name" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
+                <input value={manual.tower} onChange={(e) => setManual((h) => ({ ...h, tower: e.target.value.replace(/[^0-9.]/g, '').slice(0, 12) }))}
+                  placeholder="Tower freq" className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900" />
+                <input value={manual.runway} onChange={(e) => setManual((h) => ({ ...h, runway: e.target.value.toUpperCase().replace(/[^0-9LRC]/g, '').slice(0, 6) }))}
+                  placeholder="Runway (24)" className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900" />
+              </div>
+              <button onClick={() => saveHome(manual)} disabled={savingHome || !(manual.name && manual.tower && manual.runway)}
+                className="mt-2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">
+                {savingHome ? 'Saving...' : 'Save manual field'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Stats */}

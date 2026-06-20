@@ -7,18 +7,18 @@ import { getSession, incrementFreeUsed, FREE_DAILY_LIMIT } from '@/lib/session'
 import { toPhonetic } from '@/lib/phonetic'
 import PaywallModal from '@/components/PaywallModal'
 import AirportDiagram from '@/components/AirportDiagram'
+import RealFieldDiagram from '@/components/RealFieldDiagram'
 import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
-import { homeFieldScenario } from '@/lib/homefield'
+import { homeScenario, type HomeProfile } from '@/lib/home-client'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
 // Radio state machine
 type RadioState = 'idle' | 'atc_loading' | 'atc_playing' | 'ready' | 'listening' | 'transcribed' | 'grading' | 'done'
 
-interface HomeFieldProfile { name: string; tower: string; runway: string }
-interface UserProfile { id: number; email: string; callsign: string | null; home?: HomeFieldProfile | null }
+interface UserProfile { id: number; email: string; callsign: string | null; home?: HomeProfile | null }
 
 export default function ScenarioPage() {
   const { id } = useParams<{ id: string }>()
@@ -103,7 +103,7 @@ export default function ScenarioPage() {
       if (d.entitlement?.pro) setPro(true)
       // Resolve a home-field scenario from the pilot's saved field + callsign
       if (isHomeId && d.user?.home) {
-        const sc = homeFieldScenario(id, d.user.home, d.user.callsign)
+        const sc = homeScenario(id, d.user.home, d.user.callsign)
         if (sc) setScenario(sc)
       }
     }).catch(() => {})
@@ -510,6 +510,13 @@ export default function ScenarioPage() {
         {scenario.diagram && (
           <div className="mb-4">
             <AirportDiagram diagram={scenario.diagram} revealed={!!result} />
+          </div>
+        )}
+
+        {/* Real-geometry field diagram (home field — drawn from real runway coords) */}
+        {scenario.realField && (
+          <div className="mb-4">
+            <RealFieldDiagram field={scenario.realField} />
           </div>
         )}
 

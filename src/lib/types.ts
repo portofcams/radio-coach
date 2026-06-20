@@ -40,6 +40,29 @@ export interface AirportDiagram {
   crossRunway?: string
 }
 
+/**
+ * A real-geometry airport diagram drawn from OurAirports/FAA runway endpoint
+ * coordinates (public domain). Unlike AirportDiagram (schematic or raster), the
+ * runway layout here is true-to-life and the ownship sits at a real threshold —
+ * correct by construction, no eyeballing.
+ */
+export interface RealFieldRunway {
+  le: string
+  he: string
+  leLat: number
+  leLon: number
+  heLat: number
+  heLon: number
+}
+export interface RealFieldDiagram {
+  name: string
+  runways: RealFieldRunway[]
+  /** ownship at a real coordinate (e.g. a runway threshold) + true heading */
+  ownship?: { lat: number; lon: number; heading: number }
+  /** runway end to highlight, e.g. "27" */
+  activeEnd?: string
+}
+
 export interface Scenario {
   id: string
   title: string
@@ -50,6 +73,8 @@ export interface Scenario {
   tier?: 'pro'
   /** optional taxi-diagram schematic, shown on the training screen */
   diagram?: AirportDiagram
+  /** optional real-geometry field diagram (drawn from real runway coordinates) */
+  realField?: RealFieldDiagram
   /** COM frequency for this facility, e.g. "121.900" */
   frequency?: string
   /** The ATC facility type */

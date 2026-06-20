@@ -4,7 +4,8 @@ import { getScenario } from '@/lib/scenarios'
 import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitlement'
-import { homeFieldScenario } from '@/lib/homefield'
+import { resolveHomeProfile } from '@/lib/home-server'
+import { homeScenario } from '@/lib/home-client'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
@@ -22,17 +23,12 @@ export async function POST(req: NextRequest) {
   let scenario: Scenario | undefined = getScenario(scenarioId)
   if (!scenario && scenarioId.startsWith('home-') && user && db) {
     const r = await db.query(
-      'SELECT callsign, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
+      'SELECT callsign, home_ident, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
       [user.userId],
     )
     const row = r.rows[0]
-    if (row?.home_name && row?.home_tower && row?.home_runway) {
-      scenario = homeFieldScenario(
-        scenarioId,
-        { name: row.home_name, tower: row.home_tower, runway: row.home_runway },
-        row.callsign,
-      ) ?? undefined
-    }
+    const home = resolveHomeProfile(row)
+    if (home) scenario = homeScenario(scenarioId, home, row.callsign) ?? undefined
   }
   if (!scenario) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })

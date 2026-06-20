@@ -6,7 +6,7 @@ import { scenarios } from '@/lib/scenarios'
 import { FLIGHT_SESSIONS } from '@/lib/flight-sessions'
 import { useEffect, useState } from 'react'
 import type { Facility, Scenario } from '@/lib/types'
-import { homeFieldScenarios } from '@/lib/homefield'
+import { homeScenarios } from '@/lib/home-client'
 
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground',
@@ -45,14 +45,14 @@ export default function TrainPage() {
   const [activeTab, setActiveTab] = useState<'scenarios' | 'sessions'>('scenarios')
   const [facilityFilter, setFacilityFilter] = useState<Facility | null>(null)
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
-  const [homeScenarios, setHomeScenarios] = useState<Scenario[]>([])
+  const [homeList, setHomeList] = useState<Scenario[]>([])
 
   useEffect(() => {
     // Load completion data from server (if logged in) or localStorage
     fetch('/api/auth/me')
       .then((r) => r.json())
       .then((d) => {
-        if (d.user?.home) setHomeScenarios(homeFieldScenarios(d.user.home, d.user.callsign))
+        if (d.user?.home) setHomeList(homeScenarios(d.user.home, d.user.callsign))
         if (d.user) {
           return fetch('/api/user/stats')
             .then((r) => r.json())
@@ -164,13 +164,13 @@ export default function TrainPage() {
         {/* Scenarios tab */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
-            {homeScenarios.length > 0 && !facilityFilter && !diffFilter && (
+            {homeList.length > 0 && !facilityFilter && !diffFilter && (
               <div id="home-field">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
                   Your home field
                 </h2>
                 <div className="space-y-2">
-                  {homeScenarios.map((s) => {
+                  {homeList.map((s) => {
                     const c = completed[s.id]
                     return (
                       <Link key={s.id} href={`/train/${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
