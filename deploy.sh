@@ -4,12 +4,6 @@ SERVER="root@144.202.116.229"
 APP="radio-coach"
 PORT=8012
 
-# Read env values
-ANTHROPIC_KEY=$(grep ^ANTHROPIC_API_KEY .env | cut -d= -f2-)
-ELEVENLABS_KEY=$(grep ^ELEVENLABS_API_KEY .env | cut -d= -f2-)
-ELEVENLABS_VOICE=$(grep ^ELEVENLABS_VOICE_ID .env | cut -d= -f2-)
-JWT_SECRET=$(grep ^JWT_SECRET .env | cut -d= -f2-)
-
 echo "Building locally..."
 npm run build
 
@@ -23,27 +17,29 @@ rsync -az --delete \
   public/ root@144.202.116.229:/root/radio-coach/public/
 rsync -az Dockerfile root@144.202.116.229:/root/radio-coach/
 
-echo "Updating server env file..."
-ssh $SERVER "cat > /root/radio-coach.env << EOF
-ANTHROPIC_API_KEY=$ANTHROPIC_KEY
-ELEVENLABS_API_KEY=$ELEVENLABS_KEY
-ELEVENLABS_VOICE_ID=$ELEVENLABS_VOICE
-DATABASE_URL=postgresql://radiocoach:RadioCoach2026!@127.0.0.1:5433/radiocoach
-JWT_SECRET=$JWT_SECRET
-PORT=$PORT
-HOSTNAME=0.0.0.0
-EOF"
-
 echo "Building and restarting container on Vultr..."
+# The prod env (wilco Postgres on shared-db_default, Stripe live keys) lives in
+# /root/wilco.env on the server — NOT in local .env. Refresh it from the running
+# container so a redeploy never silently drops a key; fall back to the existing
+# file if the container isn't up. The app talks to Postgres by the docker DNS
+# name `shared-pg`, so it MUST run on the shared-db_default network with the
+# port published — never --network host.
 ssh $SERVER "
+  set -e
   cd /root/radio-coach
+  if docker inspect $APP >/dev/null 2>&1; then
+    docker inspect $APP --format '{{range .Config.Env}}{{println .}}{{end}}' \
+      | grep -E '^(ANTHROPIC_API_KEY|ELEVENLABS_API_KEY|ELEVENLABS_VOICE_ID|DATABASE_URL|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|STRIPE_PRICE_SOLO_PILOT|STRIPE_PRICE_CFI_PRO|PORT|HOSTNAME)=' \
+      > /root/wilco.env.new && mv /root/wilco.env.new /root/wilco.env
+  fi
+  test -s /root/wilco.env || { echo 'ERROR: /root/wilco.env missing and no running container to capture from'; exit 1; }
   docker build -t $APP .
   docker stop $APP 2>/dev/null || true
   docker rm $APP 2>/dev/null || true
   docker run -d --name $APP --restart unless-stopped \
-    --network host \
-    --env-file /root/radio-coach.env \
+    --network shared-db_default -p $PORT:$PORT \
+    --env-file /root/wilco.env \
     $APP
   docker ps | grep $APP
 "
-echo "Done — https://radiocoach.binnacleai.com"
+echo "Done — https://wilco.binnacleai.com"

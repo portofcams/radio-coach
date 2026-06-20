@@ -1293,7 +1293,7 @@ export const scenarios: Scenario[] = [
       'aircraft type',
       'location on field',
       'VFR or IFR',
-      'destination or intentions',
+      'Hilo',
       'information Golf',
     ],
     correctReadback:
