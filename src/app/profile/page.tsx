@@ -15,6 +15,7 @@ interface Stats {
 }
 
 import type { HomeProfile } from '@/lib/home-client'
+import type { Readiness } from '@/lib/readiness'
 interface User {
   id: number
   email: string
@@ -44,14 +45,16 @@ export default function ProfilePage() {
   const [manual, setManual] = useState({ name: '', tower: '', runway: '' })
   const [showManual, setShowManual] = useState(false)
   const [savingHome, setSavingHome] = useState(false)
+  const [readiness, setReadiness] = useState<Readiness | null>(null)
 
   useEffect(() => {
     Promise.all([
       fetch('/api/auth/me').then((r) => r.json()),
       fetch('/api/user/stats').then((r) => r.json()),
       fetch('/api/user/weakspots').then((r) => r.json()),
+      fetch('/api/user/readiness').then((r) => r.json()),
     ])
-      .then(([me, s, w]) => {
+      .then(([me, s, w, rd]) => {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
@@ -60,6 +63,7 @@ export default function ProfilePage() {
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
+        if (rd && !rd.error && typeof rd.score === 'number') setReadiness(rd)
       })
       .finally(() => setLoading(false))
   }, [router])
@@ -164,6 +168,50 @@ export default function ProfilePage() {
             )}
           </div>
         </div>
+
+        {/* Checkride-readiness score */}
+        {readiness && readiness.factors && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="flex items-center gap-5">
+              {(() => {
+                const c = 2 * Math.PI * 34
+                const col = readiness.level === 'ready' ? '#16a34a' : readiness.level === 'almost' ? '#d97706' : '#dc2626'
+                return (
+                  <svg viewBox="0 0 80 80" className="w-20 h-20 shrink-0 -rotate-90">
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="#f1f5f9" strokeWidth="8" />
+                    <circle cx="40" cy="40" r="34" fill="none" stroke={col} strokeWidth="8" strokeLinecap="round"
+                      strokeDasharray={c} strokeDashoffset={c * (1 - readiness.score / 100)} />
+                    <text x="40" y="40" dy="0.35em" textAnchor="middle" className="rotate-90" transform="rotate(90 40 40)"
+                      fontSize="20" fontWeight="700" fill="#0f172a">{readiness.score}</text>
+                  </svg>
+                )
+              })()}
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Radio readiness</div>
+                <div className="text-lg font-semibold text-gray-900">{readiness.label}</div>
+                <div className="mt-2 space-y-1.5">
+                  {[
+                    { label: 'Recent accuracy', v: readiness.factors.recentAccuracy },
+                    { label: 'Pass rate', v: readiness.factors.passRate },
+                    { label: 'Library coverage', v: readiness.factors.coverage },
+                  ].map((f) => (
+                    <div key={f.label} className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 w-28 shrink-0">{f.label}</span>
+                      <span className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <span className="block h-full bg-gray-400 rounded-full" style={{ width: `${f.v}%` }} />
+                      </span>
+                      <span className="text-xs font-mono text-gray-400 w-8 text-right">{f.v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center justify-between">
+              <a href="/checkride" className="text-sm text-blue-600 hover:underline">Run a checkride →</a>
+              <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share your score card</a>
+            </div>
+          </div>
+        )}
 
         {/* Weak spots — adaptive, mined from graded scenarios */}
         {weakspots.length > 0 && (

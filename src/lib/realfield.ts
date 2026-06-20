@@ -34,6 +34,8 @@ export interface AirportFreqs {
 export interface AirportData {
   icao: string
   name: string
+  /** the name ATC says on the radio, e.g. "Seattle", "Paine" (derived at build time) */
+  radioName?: string
   region: string
   country: string
   city: string
@@ -85,7 +87,7 @@ function toDiagramRunways(rwys: AirportRunway[]): RealFieldRunway[] {
 export function realFieldScenarios(field: AirportData, callsign?: string | null): Scenario[] {
   const rwy = primaryRunway(field.runways)
   if (!rwy) return []
-  const name = shortName(field.name)
+  const name = field.radioName || shortName(field.name)
   const cs = spokenCallsign(callsign)
   const rwRaw = rwy.le
   const rw = runwayPhonetic(rwy.le)
@@ -95,7 +97,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
 
   if (field.towered && field.freqs.twr) {
     const twr = field.freqs.twr
-    return [
+    const list: Scenario[] = [
       {
         id: 'home-takeoff', title: `${name} Tower — cleared for takeoff`,
         phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'TOWER', frequency: twr,
@@ -137,6 +139,41 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         commonMistakes: ['Not reading back the landing clearance', 'Dropping the runway number'],
       },
     ]
+
+    // Clearance Delivery — uses the real departure frequency (read it back!) + a squawk.
+    if (field.freqs.appdep) {
+      const depSpoken = freqPhonetic(field.freqs.appdep)
+      const squawk = 'zero two three four'
+      const clncFreq = field.freqs.cld || field.freqs.gnd || twr
+      list.push({
+        id: 'home-clearance', title: `${name} Clearance — VFR departure`,
+        phase: 'departure', difficulty: 3, airport: field.icao,
+        facility: field.freqs.cld ? 'CLEARANCE' : 'GROUND', frequency: clncFreq,
+        realField: baseDiagram,
+        setup: `Picking up a VFR departure clearance at ${name} (${field.icao}) before taxi. Read back the departure frequency and squawk verbatim.`,
+        atcTransmission: `${cs}, ${name} Clearance, on departure fly runway heading, maintain VFR at or below three thousand five hundred, departure frequency ${depSpoken}, squawk ${squawk}.`,
+        requiredElements: ['runway heading', 'altitude', `departure ${depSpoken}`, `squawk ${squawk}`, 'call sign'],
+        correctReadback: `Runway heading, maintain VFR at or below three thousand five hundred, departure ${depSpoken}, squawk ${squawk}, ${cs}.`,
+        commonMistakes: ['Not reading back the squawk code', 'Garbling the departure frequency', 'Dropping the altitude restriction'],
+      })
+    }
+
+    // ATIS — copy the current information letter + altimeter, then check in.
+    if (field.freqs.atis) {
+      list.push({
+        id: 'home-atis', title: `${name} — check in with ATIS`,
+        phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'APPROACH',
+        frequency: field.freqs.appdep || twr,
+        realField: baseDiagram,
+        setup: `Inbound to ${name}. You've copied the ATIS on ${field.freqs.atis} — information Bravo. ${name} Approach confirms the altimeter.`,
+        atcTransmission: `${cs}, ${name} Approach, ${name} altimeter three zero zero one, advise you have information Bravo.`,
+        requiredElements: ['altimeter three zero zero one', 'information bravo', 'call sign'],
+        correctReadback: `Altimeter three zero zero one, information Bravo, ${cs}.`,
+        commonMistakes: ['Not reading back the altimeter', 'Forgetting the information code'],
+      })
+    }
+
+    return list
   }
 
   // Non-towered: CTAF self-announce. The "transmission" is other traffic on the
