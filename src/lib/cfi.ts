@@ -2,6 +2,7 @@
 import type { Pool } from 'pg'
 import { getEntitlement } from './entitlement'
 import { computeReadiness, type Readiness } from './readiness'
+export { ENDORSEMENT_KINDS, endorsementLabel } from './endorsements'
 
 /** CFI Pro = an active subscription on the cfi plan. */
 export async function isCfi(userId: number): Promise<boolean> {

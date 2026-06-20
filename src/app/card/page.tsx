@@ -4,15 +4,18 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toPhonetic } from '@/lib/phonetic'
 import type { Readiness } from '@/lib/readiness'
+import { endorsementLabel } from '@/lib/endorsements'
 
 interface Me { callsign: string | null; home?: { mode: 'real'; ident: string; field: { radioName?: string; name: string } } | { mode: 'manual'; name: string } | null }
 interface Stats { total: number; passed: number; passRate: number; avgScore: number }
+interface Coach { orgName: string | null; logoUrl: string | null; endorsements: string[] }
 
 export default function ScoreCardPage() {
   const router = useRouter()
   const [me, setMe] = useState<Me | null>(null)
   const [rd, setRd] = useState<Readiness | null>(null)
   const [stats, setStats] = useState<Stats | null>(null)
+  const [coach, setCoach] = useState<Coach | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
 
@@ -21,11 +24,13 @@ export default function ScoreCardPage() {
       fetch('/api/auth/me').then((r) => r.json()),
       fetch('/api/user/readiness').then((r) => r.json()),
       fetch('/api/user/stats').then((r) => r.json()),
-    ]).then(([m, r, s]) => {
+      fetch('/api/user/coach').then((r) => r.json()),
+    ]).then(([m, r, s, co]) => {
       if (!m.user) { router.push('/login'); return }
       setMe(m.user)
       if (r && typeof r.score === 'number') setRd(r)
       if (s && !s.error) setStats(s)
+      if (co && co.coach) setCoach(co.coach)
     }).finally(() => setLoading(false))
   }, [router])
 
@@ -64,6 +69,14 @@ export default function ScoreCardPage() {
           )}
           {homeName && <div className="text-xs text-gray-400 mt-0.5">Home field: {homeName}</div>}
 
+          {coach && coach.endorsements.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 justify-center mt-3">
+              {coach.endorsements.map((k) => (
+                <span key={k} className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-800">✓ {endorsementLabel(k)}</span>
+              ))}
+            </div>
+          )}
+
           <div className="grid grid-cols-3 gap-3 w-full mt-6">
             {[
               { label: 'Scenarios', v: stats.total },
@@ -78,7 +91,7 @@ export default function ScoreCardPage() {
           </div>
         </div>
         <div className="px-6 py-3 border-t border-gray-100 text-center text-[11px] text-gray-400">
-          Aviation radio training · wilco.binnacleai.com
+          {coach?.orgName ? <>Coached by {coach.orgName} · </> : null}Aviation radio training · wilco.binnacleai.com
         </div>
       </div>
 

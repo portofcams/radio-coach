@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { scenarios } from '@/lib/scenarios'
+import { ENDORSEMENT_KINDS } from '@/lib/endorsements'
 
 interface Report {
   joined: boolean
@@ -12,6 +13,8 @@ interface Report {
   readiness: { score: number; level: string; label: string; factors: { recentAccuracy: number; passRate: number; coverage: number } } | null
   recent: Array<{ scenario_id: string; score: number; passed: boolean; created_at: string }>
   assignments: Array<{ scenario_id: string; done: boolean; created_at: string }>
+  comments: Array<{ id: number; body: string; created_at: string }>
+  endorsements: string[]
 }
 
 const PHASES = ['ground', 'departure', 'pattern', 'enroute', 'ifr', 'emergency'] as const
@@ -25,6 +28,8 @@ export default function StudentReport() {
   const [picking, setPicking] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [assigning, setAssigning] = useState(false)
+  const [comment, setComment] = useState('')
+  const [posting, setPosting] = useState(false)
 
   async function load() {
     const res = await fetch(`/api/cfi/students/${id}`)
@@ -49,6 +54,20 @@ export default function StudentReport() {
 
   function toggle(sid: string) {
     setSelected((s) => { const n = new Set(s); n.has(sid) ? n.delete(sid) : n.add(sid); return n })
+  }
+
+  async function postComment() {
+    if (!comment.trim()) return
+    setPosting(true)
+    try {
+      await fetch(`/api/cfi/students/${id}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body: comment }) })
+      setComment(''); await load()
+    } finally { setPosting(false) }
+  }
+
+  async function toggleEndorsement(kind: string, has: boolean) {
+    await fetch(`/api/cfi/students/${id}/endorse`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind, remove: has }) })
+    await load()
   }
 
   if (loading) return <div className="max-w-2xl mx-auto px-6 py-16 text-gray-400">Loading...</div>
@@ -137,6 +156,41 @@ export default function StudentReport() {
                   </button>
                 </div>
               )}
+            </div>
+
+            {/* Endorsements */}
+            <div className="border border-gray-200 rounded-xl p-5 mb-6">
+              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Endorsements</div>
+              <div className="flex flex-wrap gap-2">
+                {ENDORSEMENT_KINDS.map((e) => {
+                  const has = r.endorsements.includes(e.key)
+                  return (
+                    <button key={e.key} onClick={() => toggleEndorsement(e.key, has)}
+                      className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${has ? 'bg-green-600 text-white border-green-600' : 'border-gray-300 text-gray-500 hover:border-gray-500'}`}>
+                      {has ? '✓ ' : '+ '}{e.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="text-xs text-gray-400 mt-3">Tap to grant or revoke. Granted endorsements show on the student&apos;s profile and score card.</p>
+            </div>
+
+            {/* Comments */}
+            <div className="border border-gray-200 rounded-xl p-5 mb-6">
+              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Notes to {r.callsign || 'your student'}</div>
+              <div className="flex gap-2">
+                <input value={comment} onChange={(e) => setComment(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') postComment() }}
+                  placeholder="Leave a note (the student sees this)…" className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
+                <button onClick={postComment} disabled={posting || !comment.trim()} className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">Post</button>
+              </div>
+              <div className="mt-3 space-y-2">
+                {r.comments.map((c) => (
+                  <div key={c.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">
+                    {c.body}
+                    <span className="block text-[10px] text-gray-400 mt-0.5">{new Date(c.created_at).toLocaleDateString()}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Recent */}

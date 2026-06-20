@@ -16,13 +16,17 @@ interface Stats {
 
 import type { HomeProfile } from '@/lib/home-client'
 import type { Readiness } from '@/lib/readiness'
+import { endorsementLabel } from '@/lib/endorsements'
 interface User {
   id: number
   email: string
   callsign: string | null
   home?: HomeProfile | null
+  cfiOrgName?: string | null
+  cfiLogoUrl?: string | null
 }
 interface FieldSummary { icao: string; name: string; city: string; towered: boolean; freqs: Record<string, string>; runways: string[] }
+interface Coach { orgName: string | null; logoUrl: string | null; cfiEmail: string; endorsements: string[]; comments: Array<{ body: string; created_at: string }> }
 
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergency',
@@ -46,6 +50,9 @@ export default function ProfilePage() {
   const [showManual, setShowManual] = useState(false)
   const [savingHome, setSavingHome] = useState(false)
   const [readiness, setReadiness] = useState<Readiness | null>(null)
+  const [coach, setCoach] = useState<Coach | null>(null)
+  const [branding, setBranding] = useState({ orgName: '', logoUrl: '' })
+  const [savingBranding, setSavingBranding] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -53,17 +60,20 @@ export default function ProfilePage() {
       fetch('/api/user/stats').then((r) => r.json()),
       fetch('/api/user/weakspots').then((r) => r.json()),
       fetch('/api/user/readiness').then((r) => r.json()),
+      fetch('/api/user/coach').then((r) => r.json()),
     ])
-      .then(([me, s, w, rd]) => {
+      .then(([me, s, w, rd, co]) => {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
         if (me.user.home?.mode === 'real') setIdent(me.user.home.ident)
         else if (me.user.home?.mode === 'manual') { setManual(me.user.home); setShowManual(true) }
+        setBranding({ orgName: me.user.cfiOrgName ?? '', logoUrl: me.user.cfiLogoUrl ?? '' })
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
         if (rd && !rd.error && typeof rd.score === 'number') setReadiness(rd)
+        if (co && co.coach) setCoach(co.coach)
       })
       .finally(() => setLoading(false))
   }, [router])
@@ -76,6 +86,18 @@ export default function ProfilePage() {
       if (res.ok) { setLookup((await res.json()).field) }
       else { setLookupErr(`No field "${ident.trim().toUpperCase()}" found. Try the ICAO ident, or enter it manually.`) }
     } finally { setLooking(false) }
+  }
+
+  async function saveBranding() {
+    setSavingBranding(true)
+    try {
+      const res = await fetch('/api/user/cfi-branding', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(branding),
+      })
+      const data = await res.json()
+      setBranding({ orgName: data.cfiOrgName ?? '', logoUrl: data.cfiLogoUrl ?? '' })
+      setUser((u) => u ? { ...u, cfiOrgName: data.cfiOrgName, cfiLogoUrl: data.cfiLogoUrl } : u)
+    } finally { setSavingBranding(false) }
   }
 
   async function saveHome(body: object) {
@@ -171,6 +193,55 @@ export default function ProfilePage() {
             <a href="/cfi" className="mt-3 inline-block text-sm text-blue-600 hover:underline">Manage your students →</a>
           )}
         </div>
+
+        {/* From your instructor (student side) */}
+        {coach && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              {coach.logoUrl
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img src={coach.logoUrl} alt="" className="w-8 h-8 rounded object-contain bg-gray-50" />
+                : null}
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Your instructor</div>
+                <div className="text-sm font-medium text-gray-900">{coach.orgName || coach.cfiEmail}</div>
+              </div>
+            </div>
+            {coach.endorsements.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {coach.endorsements.map((k) => (
+                  <span key={k} className="text-xs px-2.5 py-1 rounded-full bg-green-100 text-green-800">✓ {endorsementLabel(k)}</span>
+                ))}
+              </div>
+            )}
+            {coach.comments.length > 0 && (
+              <div className="space-y-2">
+                {coach.comments.slice(0, 5).map((c, i) => (
+                  <div key={i} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">{c.body}
+                    <span className="block text-[10px] text-gray-400 mt-0.5">{new Date(c.created_at).toLocaleDateString()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* School / co-branding (CFI side) */}
+        {ent?.plan === 'cfi' && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Your school / branding</div>
+            <p className="text-xs text-gray-400 mb-3">Shown to your students on their profile and score card.</p>
+            <div className="space-y-2">
+              <input value={branding.orgName} onChange={(e) => setBranding((b) => ({ ...b, orgName: e.target.value.slice(0, 60) }))}
+                placeholder="School / flight-club name" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
+              <input value={branding.logoUrl} onChange={(e) => setBranding((b) => ({ ...b, logoUrl: e.target.value.slice(0, 300) }))}
+                placeholder="Logo image URL (https://…)" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900" />
+            </div>
+            <button onClick={saveBranding} disabled={savingBranding} className="mt-3 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">
+              {savingBranding ? 'Saving...' : 'Save branding'}
+            </button>
+          </div>
+        )}
 
         {/* Checkride-readiness score */}
         {readiness && readiness.factors && (

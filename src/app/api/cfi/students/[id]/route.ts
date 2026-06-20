@@ -28,7 +28,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ joined: false, email: row.student_email, weakspots: [], readiness: null, recent: [], assignments: [] })
   }
 
-  const [gradesRes, aggRes, recentRes, assignRes, profile] = await Promise.all([
+  const [gradesRes, aggRes, recentRes, assignRes, profile, commentsRes, endorseRes] = await Promise.all([
     db.query('SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 300', [sid]),
     db.query(
       `SELECT
@@ -46,6 +46,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       [user.userId, sid],
     ),
     db.query('SELECT email, callsign FROM rc_users WHERE id = $1', [sid]),
+    db.query('SELECT id, body, created_at FROM rc_cfi_comments WHERE cfi_user_id = $1 AND student_user_id = $2 ORDER BY created_at DESC LIMIT 50', [user.userId, sid]),
+    db.query('SELECT kind FROM rc_endorsements WHERE cfi_user_id = $1 AND student_user_id = $2', [user.userId, sid]),
   ])
 
   const a = aggRes.rows[0]
@@ -62,6 +64,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     }),
     recent: recentRes.rows,
     assignments: assignRes.rows,
+    comments: commentsRes.rows,
+    endorsements: endorseRes.rows.map((r) => r.kind),
   })
 }
 

@@ -110,6 +110,33 @@ export async function initDB(): Promise<void> {
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_students_cfi ON rc_cfi_students(cfi_user_id)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_assignments_student ON rc_assignments(student_user_id)`)
+
+  // CFI Pro — instructor comments + endorsements; school co-branding on rc_users.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_cfi_comments (
+      id SERIAL PRIMARY KEY,
+      cfi_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      student_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      body TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_endorsements (
+      id SERIAL PRIMARY KEY,
+      cfi_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      student_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      kind TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_comments_student ON rc_cfi_comments(student_user_id)`)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_endorsements_student ON rc_endorsements(student_user_id)`)
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,
+      ADD COLUMN IF NOT EXISTS cfi_logo_url TEXT
+  `)
 }
 
 // Run init once on first import in server context
