@@ -132,6 +132,22 @@ export async function initDB(): Promise<void> {
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_comments_student ON rc_cfi_comments(student_user_id)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_endorsements_student ON rc_endorsements(student_user_id)`)
+  // CFI Pro — custom scenarios a CFI authors (assignable to students).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_custom_scenarios (
+      id SERIAL PRIMARY KEY,
+      cfi_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      setup TEXT NOT NULL DEFAULT '',
+      atc_transmission TEXT NOT NULL,
+      required_elements JSONB NOT NULL DEFAULT '[]',
+      correct_readback TEXT NOT NULL,
+      facility TEXT,
+      frequency TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_custom_cfi ON rc_custom_scenarios(cfi_user_id)`)
   await db.query(`
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,

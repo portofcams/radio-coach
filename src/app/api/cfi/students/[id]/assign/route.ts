@@ -16,7 +16,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!row || !row.student_user_id) return NextResponse.json({ error: 'not_joined' }, { status: 404 })
 
   const { scenarioIds } = await req.json()
-  const ids: string[] = Array.isArray(scenarioIds) ? scenarioIds.filter((s) => typeof s === 'string' && getScenario(s)) : []
+  const raw: string[] = Array.isArray(scenarioIds) ? scenarioIds.filter((s) => typeof s === 'string') : []
+  // valid = a static scenario, or one of this CFI's own custom scenarios
+  const customIds = raw.filter((s) => s.startsWith('custom-')).map((s) => parseInt(s.replace(/^custom-/, '')))
+  const ownedCustom = new Set<string>()
+  if (customIds.length) {
+    const cr = await db.query('SELECT id FROM rc_custom_scenarios WHERE cfi_user_id = $1 AND id = ANY($2)', [user.userId, customIds])
+    cr.rows.forEach((r) => ownedCustom.add(`custom-${r.id}`))
+  }
+  const ids = raw.filter((s) => getScenario(s) || ownedCustom.has(s))
   if (!ids.length) return NextResponse.json({ error: 'no_valid_scenarios' }, { status: 400 })
 
   // Skip already-assigned (and not yet completed) duplicates.

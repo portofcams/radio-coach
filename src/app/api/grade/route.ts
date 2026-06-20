@@ -6,6 +6,7 @@ import { getPool } from '@/lib/db'
 import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitlement'
 import { resolveHomeProfile } from '@/lib/home-server'
 import { homeScenario } from '@/lib/home-client'
+import { getCustomScenarioFor } from '@/lib/customscenarios'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
@@ -29,6 +30,9 @@ export async function POST(req: NextRequest) {
     const row = r.rows[0]
     const home = resolveHomeProfile(row)
     if (home) scenario = homeScenario(scenarioId, home, row.callsign) ?? undefined
+  }
+  if (!scenario && scenarioId.startsWith('custom-') && user && db) {
+    scenario = (await getCustomScenarioFor(db, parseInt(scenarioId.replace(/^custom-/, '')), user.userId)) ?? undefined
   }
   if (!scenario) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })

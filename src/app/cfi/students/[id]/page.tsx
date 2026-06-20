@@ -30,6 +30,7 @@ export default function StudentReport() {
   const [assigning, setAssigning] = useState(false)
   const [comment, setComment] = useState('')
   const [posting, setPosting] = useState(false)
+  const [customs, setCustoms] = useState<Array<{ id: string; title: string }>>([])
 
   async function load() {
     const res = await fetch(`/api/cfi/students/${id}`)
@@ -39,6 +40,7 @@ export default function StudentReport() {
     setLoading(false)
   }
   useEffect(() => { load() /* eslint-disable-next-line */ }, [id])
+  useEffect(() => { fetch('/api/cfi/scenarios').then((r) => r.json()).then((d) => { if (Array.isArray(d.scenarios)) setCustoms(d.scenarios) }).catch(() => {}) }, [])
 
   async function assign() {
     if (!selected.size) return
@@ -132,6 +134,20 @@ export default function StudentReport() {
               {picking && (
                 <div className="mt-4 border-t border-gray-100 pt-4">
                   <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
+                    {customs.filter((c) => !assignedIds.has(c.id)).length > 0 && (
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-1">Your custom scenarios</div>
+                        <div className="space-y-1">
+                          {customs.filter((c) => !assignedIds.has(c.id)).map((c) => (
+                            <label key={c.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                              <input type="checkbox" checked={selected.has(c.id)} onChange={() => toggle(c.id)} className="accent-gray-900" />
+                              <span className="text-gray-700">{c.title}</span>
+                              <span className="text-[9px] font-bold bg-cyan-600 text-white px-1 rounded">CUSTOM</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {PHASES.map((p) => {
                       const list = scenarios.filter((s) => s.phase === p && !assignedIds.has(s.id))
                       if (!list.length) return null

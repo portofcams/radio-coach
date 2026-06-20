@@ -23,9 +23,10 @@ interface UserProfile { id: number; email: string; callsign: string | null; home
 export default function ScenarioPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  // Static library scenario, or a per-user "home field" scenario resolved after /api/auth/me.
+  // Static library scenario, or a per-user "home field" / custom scenario resolved after fetch.
   const [scenario, setScenario] = useState<Scenario | undefined>(() => getScenario(id))
   const isHomeId = id.startsWith('home-')
+  const isCustomId = id.startsWith('custom-')
 
   // Core state machine
   const [radioState, setRadioState] = useState<RadioState>('idle')
@@ -106,8 +107,12 @@ export default function ScenarioPage() {
         const sc = homeScenario(id, d.user.home, d.user.callsign)
         if (sc) setScenario(sc)
       }
+      // Resolve a CFI custom scenario (owned or assigned)
+      if (isCustomId && d.user) {
+        fetch(`/api/custom/${id}`).then((r) => r.json()).then((c) => { if (c.scenario) setScenario(c.scenario) }).catch(() => {})
+      }
     }).catch(() => {})
-  }, [id, isHomeId])
+  }, [id, isHomeId, isCustomId])
 
   // METAR
   useEffect(() => {

@@ -66,9 +66,12 @@ export default function CfiDashboard() {
   return (
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-10">
-        <div className="flex items-center gap-3 mb-8">
-          <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
-          <h1 className="text-xl font-semibold">Your students</h1>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
+            <h1 className="text-xl font-semibold">Your students</h1>
+          </div>
+          <a href="/cfi/build" className="text-sm text-blue-600 hover:underline">Custom scenarios →</a>
         </div>
 
         {/* Add student */}
