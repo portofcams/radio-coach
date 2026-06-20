@@ -167,6 +167,9 @@ export default function ProfilePage() {
               </button>
             )}
           </div>
+          {ent?.plan === 'cfi' && (
+            <a href="/cfi" className="mt-3 inline-block text-sm text-blue-600 hover:underline">Manage your students →</a>
+          )}
         </div>
 
         {/* Checkride-readiness score */}

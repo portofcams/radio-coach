@@ -24,6 +24,13 @@ export async function POST(req: NextRequest) {
   )
   const user = result.rows[0]
 
+  // Auto-link any pending CFI invites addressed to this email.
+  await db.query(
+    `UPDATE rc_cfi_students SET student_user_id = $1, status = 'active'
+     WHERE student_email = $2 AND student_user_id IS NULL`,
+    [user.id, user.email],
+  ).catch(() => {})
+
   await setAuthCookie({ userId: user.id, email: user.email })
   return NextResponse.json({ user: { id: user.id, email: user.email } })
 }

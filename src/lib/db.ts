@@ -85,6 +85,31 @@ export async function initDB(): Promise<void> {
       fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `)
+
+  // CFI Pro — student roster (a CFI links students who join via an invite token).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_cfi_students (
+      id SERIAL PRIMARY KEY,
+      cfi_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      student_user_id INTEGER REFERENCES rc_users(id) ON DELETE CASCADE,
+      student_email TEXT,
+      token TEXT UNIQUE NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  // CFI Pro — assigned scenarios (a radio syllabus).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_assignments (
+      id SERIAL PRIMARY KEY,
+      cfi_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      student_user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      scenario_id TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_students_cfi ON rc_cfi_students(cfi_user_id)`)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_assignments_student ON rc_assignments(student_user_id)`)
 }
 
 // Run init once on first import in server context

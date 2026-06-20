@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { scenarios } from '@/lib/scenarios'
+import { scenarios, getScenario } from '@/lib/scenarios'
 import { FLIGHT_SESSIONS } from '@/lib/flight-sessions'
 import { useEffect, useState } from 'react'
 import type { Facility, Scenario } from '@/lib/types'
@@ -46,6 +46,7 @@ export default function TrainPage() {
   const [facilityFilter, setFacilityFilter] = useState<Facility | null>(null)
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
   const [homeList, setHomeList] = useState<Scenario[]>([])
+  const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean }>>([])
 
   useEffect(() => {
     // Load completion data from server (if logged in) or localStorage
@@ -53,6 +54,7 @@ export default function TrainPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.user?.home) setHomeList(homeScenarios(d.user.home, d.user.callsign))
+        if (d.user) fetch('/api/user/assignments').then((r) => r.json()).then((a) => { if (Array.isArray(a.assignments)) setAssignments(a.assignments) }).catch(() => {})
         if (d.user) {
           return fetch('/api/user/stats')
             .then((r) => r.json())
@@ -164,6 +166,27 @@ export default function TrainPage() {
         {/* Scenarios tab */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
+            {assignments.length > 0 && !facilityFilter && !diffFilter && (
+              <div>
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Assigned by your CFI</h2>
+                <div className="space-y-2">
+                  {assignments.map((a) => {
+                    const sc = getScenario(a.scenario_id)
+                    return (
+                      <Link key={a.scenario_id} href={`/train/${a.scenario_id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="font-medium group-hover:text-gray-900 truncate">{sc?.title ?? a.scenario_id.replace(/-/g, ' ')}</div>
+                            <div className="mt-0.5"><span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-violet-600 text-white leading-4 tracking-wide">ASSIGNED</span></div>
+                          </div>
+                          <span className={`shrink-0 text-xs font-medium ${a.done ? 'text-green-600' : 'text-amber-600'}`}>{a.done ? 'done ✓' : 'to do'}</span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
             {homeList.length > 0 && !facilityFilter && !diffFilter && (
               <div id="home-field">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
