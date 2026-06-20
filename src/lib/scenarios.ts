@@ -122,7 +122,7 @@ export const scenarios: Scenario[] = [
     requiredElements: [
       'aircraft type',
       'location on field',
-      'VFR intentions',
+      'VFR',
       'information Bravo',
     ],
     correctReadback:
@@ -266,7 +266,7 @@ export const scenarios: Scenario[] = [
       'Cessna One Two Three Four Five, runway eight right, caution wake turbulence, Boeing Seven Six Seven departed runway eight left two minutes ago, cleared for takeoff.',
     requiredElements: [
       'call sign',
-      'acknowledge wake turbulence',
+      'wake turbulence',
       'runway eight right',
       'cleared for takeoff',
     ],
@@ -440,7 +440,7 @@ export const scenarios: Scenario[] = [
       'aircraft type',
       'position',
       'altitude',
-      'destination',
+      'Hilo',
       'request VFR flight following',
     ],
     correctReadback:
@@ -534,11 +534,11 @@ export const scenarios: Scenario[] = [
     atcTransmission:
       '(No ATC — you are making a self-announce call at Dillingham Airport, PHDH, on CTAF 122.8. You are 5 miles to the east at 1,500 feet, inbound for runway 8.)',
     requiredElements: [
-      'airport name',
+      'Dillingham',
       'call sign',
       'position and altitude',
-      'intentions',
-      'airport name again',
+      'inbound runway eight',
+      'Dillingham',
     ],
     correctReadback:
       'Dillingham traffic, Cessna One Two Three Four Five, five miles east, one thousand five hundred, inbound runway eight, Dillingham.',
@@ -648,8 +648,8 @@ export const scenarios: Scenario[] = [
       'six thousand',
       'one two zero point five',
       'squawk three three four one',
-      'void time zero one three zero Zulu',
-      'advise intentions by zero one four five Zulu if not airborne',
+      'void zero one three zero Zulu',
+      'advise by zero one four five if not airborne',
     ],
     correctReadback:
       'Cleared to Hilo Airport as filed, climb and maintain six thousand, one two zero point five, squawk three three four one, clearance void zero one three zero Zulu, will advise by zero one four five if not airborne, Cessna One Two Three Four Five.',
@@ -746,7 +746,7 @@ export const scenarios: Scenario[] = [
       "This is the most critical ground transmission. Ground has just told you to STOP — likely because you are about to roll onto an active runway. Immediate, clipped readback, then STOP the aircraft.",
     atcTransmission:
       'Cessna One Two Three Four Five, STOP IMMEDIATELY, I say again STOP, confirm your position.',
-    requiredElements: ['call sign', 'stopping', 'position readback'],
+    requiredElements: ['call sign', 'stopping', 'Alpha One'],
     correctReadback:
       'Stopping, Cessna One Two Three Four Five, we are holding at Alpha One.',
     commonMistakes: [
@@ -797,7 +797,7 @@ export const scenarios: Scenario[] = [
       'Cessna One Two Three Four Five, cleared through the Los Angeles Class Bravo, maintain VFR at or below four thousand five hundred, fly heading zero three zero, squawk six six three two.',
     requiredElements: [
       'call sign',
-      'cleared through Class Bravo',
+      'cleared through the Bravo',
       'at or below four thousand five hundred',
       'heading zero three zero',
       'squawk six six three two',
@@ -904,7 +904,7 @@ export const scenarios: Scenario[] = [
       "You're on downwind and tower needs you to extend for spacing. They'll call your base turn. Acknowledge and confirm — then fly the airplane.",
     atcTransmission:
       'Cessna One Two Three Four Five, extend downwind, I\'ll call your base, traffic is a Boeing Seven Thirty-Seven on a three-mile final.',
-    requiredElements: ['call sign', 'extending downwind', 'will call base'],
+    requiredElements: ['call sign', 'extending downwind', 'wait for your call'],
     correctReadback:
       'Extending downwind, will wait for your call, Cessna One Two Three Four Five.',
     commonMistakes: [
@@ -1129,7 +1129,7 @@ export const scenarios: Scenario[] = [
       'call sign',
       'heading three six zero',
       'climb and maintain four thousand',
-      'expect ILS runway two six left',
+      'expect ILS two six left',
     ],
     correctReadback:
       'Heading three six zero, climb and maintain four thousand, expect ILS two six left, Cessna One Two Three Four Five.',
@@ -1152,13 +1152,13 @@ export const scenarios: Scenario[] = [
     atcTransmission:
       '(No ATC transmission — you are initiating emergency contact on 121.5. Your engine quit 30 miles southwest of Honolulu at 6,000 feet. You have 2 souls on board and 1 hour of fuel.)',
     requiredElements: [
-      'MAYDAY spoken three times',
+      'MAYDAY MAYDAY MAYDAY',
       'call sign',
-      'nature of emergency',
+      'engine failure',
       'position',
       'altitude',
       'souls on board',
-      'fuel remaining',
+      'one hour fuel',
     ],
     correctReadback:
       'MAYDAY MAYDAY MAYDAY, Cessna One Two Three Four Five, engine failure, thirty miles southwest of Honolulu, six thousand feet, two souls on board, one hour fuel, request immediate assistance.',
@@ -1241,7 +1241,7 @@ export const scenarios: Scenario[] = [
       'call sign',
       'location',
       'altitude',
-      'type of turbulence',
+      'moderate turbulence',
     ],
     correctReadback:
       'Cessna One Two Three Four Five, PIREP, sixty miles east of Hilo, eight thousand, moderate turbulence, clear skies.',

@@ -4,6 +4,8 @@ import { getScenario } from '@/lib/scenarios'
 import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitlement'
+import { homeFieldScenario } from '@/lib/homefield'
+import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
   const { scenarioId, readback, hintUsed } = await req.json()
@@ -12,13 +14,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing scenarioId or readback' }, { status: 400 })
   }
 
-  const scenario = getScenario(scenarioId)
+  const user = await getAuthUser()
+  const db = getPool()
+
+  // Resolve the scenario: static library, or a per-user home-field scenario
+  // (generated server-side from the pilot's saved field, so params stay trusted).
+  let scenario: Scenario | undefined = getScenario(scenarioId)
+  if (!scenario && scenarioId.startsWith('home-') && user && db) {
+    const r = await db.query(
+      'SELECT callsign, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
+      [user.userId],
+    )
+    const row = r.rows[0]
+    if (row?.home_name && row?.home_tower && row?.home_runway) {
+      scenario = homeFieldScenario(
+        scenarioId,
+        { name: row.home_name, tower: row.home_tower, runway: row.home_runway },
+        row.callsign,
+      ) ?? undefined
+    }
+  }
   if (!scenario) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
   }
 
-  const user = await getAuthUser()
-  const db = getPool()
   const ent = user && db ? await getEntitlement(user.userId) : null
 
   // Advanced library (emergencies, CRAFT, Class B) is Solo Pilot only.

@@ -7,21 +7,25 @@ import { getSession, incrementFreeUsed, FREE_DAILY_LIMIT } from '@/lib/session'
 import { toPhonetic } from '@/lib/phonetic'
 import PaywallModal from '@/components/PaywallModal'
 import AirportDiagram from '@/components/AirportDiagram'
-import type { GradeResult } from '@/lib/types'
+import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
+import { homeFieldScenario } from '@/lib/homefield'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
 // Radio state machine
 type RadioState = 'idle' | 'atc_loading' | 'atc_playing' | 'ready' | 'listening' | 'transcribed' | 'grading' | 'done'
 
-interface UserProfile { id: number; email: string; callsign: string | null }
+interface HomeFieldProfile { name: string; tower: string; runway: string }
+interface UserProfile { id: number; email: string; callsign: string | null; home?: HomeFieldProfile | null }
 
 export default function ScenarioPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  const scenario = getScenario(id)
+  // Static library scenario, or a per-user "home field" scenario resolved after /api/auth/me.
+  const [scenario, setScenario] = useState<Scenario | undefined>(() => getScenario(id))
+  const isHomeId = id.startsWith('home-')
 
   // Core state machine
   const [radioState, setRadioState] = useState<RadioState>('idle')
@@ -94,8 +98,16 @@ export default function ScenarioPage() {
     }
     init()
     setSession(getSession())
-    fetch('/api/auth/me').then(r => r.json()).then(d => { if (d.user) setUser(d.user); if (d.entitlement?.pro) setPro(true) }).catch(() => {})
-  }, [])
+    fetch('/api/auth/me').then(r => r.json()).then(d => {
+      if (d.user) setUser(d.user)
+      if (d.entitlement?.pro) setPro(true)
+      // Resolve a home-field scenario from the pilot's saved field + callsign
+      if (isHomeId && d.user?.home) {
+        const sc = homeFieldScenario(id, d.user.home, d.user.callsign)
+        if (sc) setScenario(sc)
+      }
+    }).catch(() => {})
+  }, [id, isHomeId])
 
   // METAR
   useEffect(() => {
@@ -322,11 +334,21 @@ export default function ScenarioPage() {
     return () => window.removeEventListener('keydown', handler)
   }, [radioState, readback, playTransmission, submitReadback])
 
-  if (!scenario) return (
-    <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
-      Scenario not found. <a href="/train" className="underline">Back to list</a>
-    </div>
-  )
+  if (!scenario) {
+    if (isHomeId) return (
+      <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
+        <p className="mb-3">Set up your home field to fly your own tower-pattern scenarios.</p>
+        <a href="/profile" className="underline">Add your home field in your profile</a>
+        <span className="mx-2 text-gray-300">·</span>
+        <a href="/train" className="underline">Back to list</a>
+      </div>
+    )
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
+        Scenario not found. <a href="/train" className="underline">Back to list</a>
+      </div>
+    )
+  }
 
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'

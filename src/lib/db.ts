@@ -66,6 +66,14 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS plan TEXT,
       ADD COLUMN IF NOT EXISTS current_period_end TIMESTAMPTZ
   `)
+
+  // Home-field personalization (user-entered tower-pattern field)
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS home_name TEXT,
+      ADD COLUMN IF NOT EXISTS home_tower TEXT,
+      ADD COLUMN IF NOT EXISTS home_runway TEXT
+  `)
 }
 
 // Run init once on first import in server context

@@ -14,10 +14,12 @@ interface Stats {
   recent: Array<{ scenario_id: string; score: number; passed: boolean; hint_used: boolean; created_at: string }>
 }
 
+interface HomeFieldProfile { name: string; tower: string; runway: string }
 interface User {
   id: number
   email: string
   callsign: string | null
+  home?: HomeFieldProfile | null
 }
 
 const PHASE_LABELS: Record<string, string> = {
@@ -34,6 +36,8 @@ export default function ProfilePage() {
   const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
   const [billing, setBilling] = useState(false)
   const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
+  const [home, setHome] = useState<HomeFieldProfile>({ name: '', tower: '', runway: '' })
+  const [savingHome, setSavingHome] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -45,12 +49,29 @@ export default function ProfilePage() {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
+        if (me.user.home) setHome(me.user.home)
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
       })
       .finally(() => setLoading(false))
   }, [router])
+
+  async function saveHome() {
+    setSavingHome(true)
+    try {
+      const res = await fetch('/api/user/homefield', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(home),
+      })
+      const data = await res.json()
+      setHome(data.home ?? { name: '', tower: '', runway: '' })
+      setUser((u) => u ? { ...u, home: data.home } : u)
+    } finally {
+      setSavingHome(false)
+    }
+  }
 
   async function saveCallsign() {
     setSaving(true)
@@ -180,6 +201,44 @@ export default function ProfilePage() {
               Phonetic: <span className="text-gray-600">{toPhonetic(callsign)}</span>
             </div>
           )}
+        </div>
+
+        {/* Home field — generates personalized tower-pattern scenarios */}
+        <div className="border border-gray-200 rounded-xl p-5 mb-6">
+          <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Your home field</div>
+          <p className="text-xs text-gray-400 mb-3">Towered field. We&apos;ll build tower-pattern scenarios at your airport with your call sign.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <input
+              value={home.name}
+              onChange={(e) => setHome((h) => ({ ...h, name: e.target.value.slice(0, 40) }))}
+              placeholder="Field name (e.g. Palmer)"
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <input
+              value={home.tower}
+              onChange={(e) => setHome((h) => ({ ...h, tower: e.target.value.replace(/[^0-9.]/g, '').slice(0, 12) }))}
+              placeholder="Tower freq (118.6)"
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <input
+              value={home.runway}
+              onChange={(e) => setHome((h) => ({ ...h, runway: e.target.value.toUpperCase().replace(/[^0-9LRC]/g, '').slice(0, 6) }))}
+              placeholder="Runway (24)"
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+          </div>
+          <div className="flex items-center justify-between mt-3">
+            <span className="text-xs text-gray-400">
+              {user?.home ? <a href="/train#home-field" className="text-blue-600 hover:underline">View your home-field scenarios →</a> : 'Fill all three to enable.'}
+            </span>
+            <button
+              onClick={saveHome}
+              disabled={savingHome}
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40"
+            >
+              {savingHome ? 'Saving...' : 'Save'}
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
