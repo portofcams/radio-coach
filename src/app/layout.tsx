@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description:
     'Wilco by Clearspar — learn aviation radio comms like a game. Free Ground School drills plus live, graded ATC readbacks. No mic, works offline.',
   manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/icon-192.png',
+    apple: '/apple-icon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

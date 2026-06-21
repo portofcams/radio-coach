@@ -37,6 +37,16 @@ export default function GroundSchoolPage() {
     : null
 
   const total = orderedLessons.length
+  const [dl, setDl] = useState<'idle' | 'working' | 'done'>('idle')
+  async function downloadOffline() {
+    setDl('working')
+    try {
+      const urls = ['/ground-school', ...orderedLessons.map(({ lesson }) => `/ground-school/${lesson.id}`)]
+      // Accept: text/html so the service worker's navigation branch caches them
+      await Promise.all(urls.map((u) => fetch(u, { headers: { Accept: 'text/html' } }).catch(() => {})))
+      setDl('done')
+    } catch { setDl('idle') }
+  }
   const done = progress?.completed.length ?? 0
 
   const hearts = progress ? effectiveHearts(progress) : MAX_HEARTS
@@ -50,8 +60,12 @@ export default function GroundSchoolPage() {
   return (
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-12">
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center justify-between gap-3 mb-2">
           <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← back</Link>
+          <button onClick={downloadOffline} disabled={dl === 'working'}
+            className="text-xs text-gray-400 hover:text-gray-700 disabled:opacity-50">
+            {dl === 'done' ? 'Available offline ✓' : dl === 'working' ? 'Downloading…' : 'Download for offline'}
+          </button>
         </div>
 
         <div className="flex items-start justify-between gap-4 mb-1">

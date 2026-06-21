@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DiagramDrill from '@/components/DiagramDrill'
+import TaxiTrace from '@/components/TaxiTrace'
 import type { RealFieldDiagram } from '@/lib/types'
 
 export default function DiagramDrillPage() {
   const router = useRouter()
   const [field, setField] = useState<RealFieldDiagram | null>(null)
   const [state, setState] = useState<'loading' | 'ok' | 'no-field'>('loading')
+  const [mode, setMode] = useState<'identify' | 'trace'>('identify')
 
   useEffect(() => {
     fetch('/api/auth/me').then((r) => r.json()).then((d) => {
@@ -43,8 +45,16 @@ export default function DiagramDrillPage() {
           <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
           <h1 className="text-xl font-semibold">Diagram drill</h1>
         </div>
-        <p className="text-xs text-gray-400 mb-5">Know your field. Tap the taxiway or runway the controller names — real layout for {field!.name}.</p>
-        {field && <DiagramDrill field={field} />}
+        <p className="text-xs text-gray-400 mb-4">Know your field — real layout for {field!.name}.</p>
+        <div className="flex gap-1.5 mb-4">
+          {(['identify', 'trace'] as const).map((m) => (
+            <button key={m} onClick={() => setMode(m)}
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors capitalize ${mode === m ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}>
+              {m === 'identify' ? 'Identify' : 'Trace a route'}
+            </button>
+          ))}
+        </div>
+        {field && (mode === 'identify' ? <DiagramDrill field={field} /> : <TaxiTrace field={field} />)}
       </div>
     </main>
   )

@@ -130,6 +130,7 @@ export async function initDB(): Promise<void> {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `)
+  await db.query(`ALTER TABLE rc_cfi_comments ADD COLUMN IF NOT EXISTS scenario_id TEXT`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_comments_student ON rc_cfi_comments(student_user_id)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_endorsements_student ON rc_endorsements(student_user_id)`)
   // CFI Pro — custom scenarios a CFI authors (assignable to students).

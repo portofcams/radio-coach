@@ -46,7 +46,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       [user.userId, sid],
     ),
     db.query('SELECT email, callsign FROM rc_users WHERE id = $1', [sid]),
-    db.query('SELECT id, body, created_at FROM rc_cfi_comments WHERE cfi_user_id = $1 AND student_user_id = $2 ORDER BY created_at DESC LIMIT 50', [user.userId, sid]),
+    db.query('SELECT id, body, scenario_id, created_at FROM rc_cfi_comments WHERE cfi_user_id = $1 AND student_user_id = $2 ORDER BY created_at DESC LIMIT 50', [user.userId, sid]),
     db.query('SELECT kind FROM rc_endorsements WHERE cfi_user_id = $1 AND student_user_id = $2', [user.userId, sid]),
   ])
 

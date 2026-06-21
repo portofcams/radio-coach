@@ -14,12 +14,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const row = await getStudentRow(db, user.userId, parseInt(id))
   if (!row || !row.student_user_id) return NextResponse.json({ error: 'not_joined' }, { status: 404 })
 
-  const body = ((await req.json()).body ?? '').toString().trim().slice(0, 1000)
+  const payload = await req.json()
+  const body = (payload.body ?? '').toString().trim().slice(0, 1000)
+  const scenarioId = payload.scenarioId ? String(payload.scenarioId).slice(0, 60) : null
   if (!body) return NextResponse.json({ error: 'empty' }, { status: 400 })
 
   await db.query(
-    'INSERT INTO rc_cfi_comments (cfi_user_id, student_user_id, body) VALUES ($1, $2, $3)',
-    [user.userId, row.student_user_id, body],
+    'INSERT INTO rc_cfi_comments (cfi_user_id, student_user_id, body, scenario_id) VALUES ($1, $2, $3, $4)',
+    [user.userId, row.student_user_id, body, scenarioId],
   )
   return NextResponse.json({ ok: true })
 }

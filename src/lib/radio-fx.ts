@@ -191,6 +191,17 @@ export function attachRadioFx(el: HTMLAudioElement, initialMode: RadioMode = get
       noiseGain.gain.cancelScheduledValues(t)
       noiseGain.gain.setValueAtTime(STATIC_LEVEL[mode], t)
       squelchBurst(t, 0.06)
+      // Busy mode: a "stepped-on" transmission — someone keys over the controller
+      // mid-call, so part of it is lost under a squelch break. Trains you to ask
+      // for a "say again". Scheduled at a random point during the call.
+      if (mode === 'busy') {
+        const t0 = t + 1.4 + Math.random() * 1.8
+        voiceGain.gain.cancelScheduledValues(t0)
+        voiceGain.gain.setValueAtTime(1.28, t0)
+        voiceGain.gain.linearRampToValueAtTime(0.1, t0 + 0.06)
+        voiceGain.gain.linearRampToValueAtTime(1.28, t0 + 0.5)
+        squelchBurst(t0, 0.5)
+      }
     },
     release() {
       const t = c!.currentTime

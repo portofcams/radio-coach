@@ -43,25 +43,35 @@ export interface WeakSpot {
 }
 
 /**
- * From a user's graded scenarios, compute how often they miss each category
- * (misses ÷ opportunities). Needs ≥3 opportunities to count, ranked worst-first.
+ * From a user's graded scenarios (NEWEST FIRST), compute how often they miss
+ * each category — spaced-repetition style: recent attempts count more (weight
+ * decays with age). Needs ≥3 real opportunities to count; ranked by the
+ * recency-weighted miss rate, worst-first.
  */
+const DECAY = 0.95 // ~13-grade half-life
+
 export function computeWeakspots(
   grades: { scenario_id: string; missed_elements: string[] }[],
 ): WeakSpot[] {
-  const opp: Record<string, number> = {}
-  const miss: Record<string, number> = {}
-  for (const g of grades) {
+  const wOpp: Record<string, number> = {} // recency-weighted
+  const wMiss: Record<string, number> = {}
+  const rawOpp: Record<string, number> = {} // unweighted count (for the ≥3 gate)
+  const rawMiss: Record<string, number> = {}
+  grades.forEach((g, i) => {
     const sc = getScenario(g.scenario_id)
-    if (!sc) continue
-    for (const c of catsOf(sc.requiredElements)) opp[c] = (opp[c] ?? 0) + 1
-    for (const c of catsOf(g.missed_elements ?? [])) miss[c] = (miss[c] ?? 0) + 1
-  }
-  return CATEGORIES.map((c) => {
-    const o = opp[c.key] ?? 0
-    const m = miss[c.key] ?? 0
-    return { key: c.key, label: c.label, tip: c.tip, opportunities: o, misses: m, rate: o ? m / o : 0 }
+    if (!sc) return
+    const w = Math.pow(DECAY, i)
+    for (const c of catsOf(sc.requiredElements)) { wOpp[c] = (wOpp[c] ?? 0) + w; rawOpp[c] = (rawOpp[c] ?? 0) + 1 }
+    for (const c of catsOf(g.missed_elements ?? [])) { wMiss[c] = (wMiss[c] ?? 0) + w; rawMiss[c] = (rawMiss[c] ?? 0) + 1 }
   })
+  return CATEGORIES.map((c) => ({
+    key: c.key,
+    label: c.label,
+    tip: c.tip,
+    opportunities: rawOpp[c.key] ?? 0,
+    misses: rawMiss[c.key] ?? 0,
+    rate: wOpp[c.key] ? (wMiss[c.key] ?? 0) / wOpp[c.key] : 0, // recency-weighted rate
+  }))
     .filter((w) => w.opportunities >= 3 && w.misses > 0)
     .sort((a, b) => b.rate - a.rate)
 }

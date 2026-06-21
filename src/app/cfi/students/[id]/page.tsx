@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { scenarios } from '@/lib/scenarios'
 import { ENDORSEMENT_KINDS } from '@/lib/endorsements'
+import { syllabi } from '@/lib/syllabi'
 
 interface Report {
   joined: boolean
@@ -13,7 +14,7 @@ interface Report {
   readiness: { score: number; level: string; label: string; factors: { recentAccuracy: number; passRate: number; coverage: number } } | null
   recent: Array<{ scenario_id: string; score: number; passed: boolean; created_at: string }>
   assignments: Array<{ scenario_id: string; done: boolean; created_at: string }>
-  comments: Array<{ id: number; body: string; created_at: string }>
+  comments: Array<{ id: number; body: string; scenario_id: string | null; created_at: string }>
   endorsements: string[]
 }
 
@@ -30,6 +31,8 @@ export default function StudentReport() {
   const [assigning, setAssigning] = useState(false)
   const [comment, setComment] = useState('')
   const [posting, setPosting] = useState(false)
+  const [noteFor, setNoteFor] = useState<string | null>(null)
+  const [noteText, setNoteText] = useState('')
   const [customs, setCustoms] = useState<Array<{ id: string; title: string }>>([])
 
   async function load() {
@@ -56,6 +59,20 @@ export default function StudentReport() {
 
   function toggle(sid: string) {
     setSelected((s) => { const n = new Set(s); n.has(sid) ? n.delete(sid) : n.add(sid); return n })
+  }
+
+  async function assignSyllabus(ids: string[]) {
+    setAssigning(true)
+    try {
+      await fetch(`/api/cfi/students/${id}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenarioIds: ids }) })
+      setPicking(false); await load()
+    } finally { setAssigning(false) }
+  }
+
+  async function noteOn(scenarioId: string, body: string) {
+    if (!body.trim()) return
+    await fetch(`/api/cfi/students/${id}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, scenarioId }) })
+    await load()
   }
 
   async function postComment() {
@@ -133,6 +150,16 @@ export default function StudentReport() {
 
               {picking && (
                 <div className="mt-4 border-t border-gray-100 pt-4">
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-1">Assign a syllabus</div>
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {syllabi().map((sy) => (
+                      <button key={sy.key} onClick={() => assignSyllabus(sy.scenarioIds)} disabled={assigning}
+                        className="text-xs px-2.5 py-1 rounded-full border border-gray-300 text-gray-600 hover:border-gray-500 disabled:opacity-40">
+                        {sy.label} <span className="text-gray-400">({sy.scenarioIds.length})</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-1">Or pick scenarios</div>
                   <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
                     {customs.filter((c) => !assignedIds.has(c.id)).length > 0 && (
                       <div>
@@ -202,6 +229,7 @@ export default function StudentReport() {
               <div className="mt-3 space-y-2">
                 {r.comments.map((c) => (
                   <div key={c.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">
+                    {c.scenario_id && <span className="text-[10px] font-mono text-blue-600 block mb-0.5">on {c.scenario_id.replace(/-/g, ' ')}</span>}
                     {c.body}
                     <span className="block text-[10px] text-gray-400 mt-0.5">{new Date(c.created_at).toLocaleDateString()}</span>
                   </div>
@@ -209,17 +237,34 @@ export default function StudentReport() {
               </div>
             </div>
 
-            {/* Recent */}
+            {/* Recent — with per-session notes */}
             {r.recent.length > 0 && (
               <div className="border border-gray-200 rounded-xl p-5">
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Recent scenarios</div>
                 <div className="space-y-1.5">
-                  {r.recent.map((g, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600 capitalize">{g.scenario_id.replace(/-/g, ' ')}</span>
-                      <span className={`font-mono text-xs ${g.passed ? 'text-green-600' : 'text-red-500'}`}>{g.score}</span>
-                    </div>
-                  ))}
+                  {r.recent.map((g, i) => {
+                    const noteCount = r.comments.filter((c) => c.scenario_id === g.scenario_id).length
+                    return (
+                      <div key={i}>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600 capitalize">{g.scenario_id.replace(/-/g, ' ')}</span>
+                          <div className="flex items-center gap-2">
+                            {noteCount > 0 && <span className="text-[10px] text-blue-600">{noteCount} note{noteCount > 1 ? 's' : ''}</span>}
+                            <button onClick={() => { setNoteFor(noteFor === `${g.scenario_id}-${i}` ? null : `${g.scenario_id}-${i}`); setNoteText('') }} className="text-[11px] text-gray-400 hover:text-gray-700">+ note</button>
+                            <span className={`font-mono text-xs ${g.passed ? 'text-green-600' : 'text-red-500'}`}>{g.score}</span>
+                          </div>
+                        </div>
+                        {noteFor === `${g.scenario_id}-${i}` && (
+                          <div className="flex gap-2 mt-1.5 mb-1">
+                            <input value={noteText} onChange={(e) => setNoteText(e.target.value)} autoFocus
+                              onKeyDown={(e) => { if (e.key === 'Enter') { noteOn(g.scenario_id, noteText); setNoteFor(null); setNoteText('') } }}
+                              placeholder={`Note on this ${g.scenario_id.replace(/-/g, ' ')} attempt…`} className="flex-1 border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-gray-900" />
+                            <button onClick={() => { noteOn(g.scenario_id, noteText); setNoteFor(null); setNoteText('') }} className="text-xs bg-gray-900 text-white rounded-lg px-3 hover:bg-gray-800">Save</button>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}

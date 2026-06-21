@@ -26,7 +26,7 @@ interface User {
   cfiLogoUrl?: string | null
 }
 interface FieldSummary { icao: string; name: string; city: string; towered: boolean; freqs: Record<string, string>; runways: string[] }
-interface Coach { orgName: string | null; logoUrl: string | null; cfiEmail: string; endorsements: string[]; comments: Array<{ body: string; created_at: string }> }
+interface Coach { orgName: string | null; logoUrl: string | null; cfiEmail: string; endorsements: string[]; comments: Array<{ body: string; scenario_id?: string | null; created_at: string }> }
 
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergency',
@@ -229,7 +229,9 @@ export default function ProfilePage() {
             {coach.comments.length > 0 && (
               <div className="space-y-2">
                 {coach.comments.slice(0, 5).map((c, i) => (
-                  <div key={i} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">{c.body}
+                  <div key={i} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">
+                    {c.scenario_id && <span className="text-[10px] font-mono text-blue-600 block mb-0.5">on {c.scenario_id.replace(/-/g, ' ')}</span>}
+                    {c.body}
                     <span className="block text-[10px] text-gray-400 mt-0.5">{new Date(c.created_at).toLocaleDateString()}</span>
                   </div>
                 ))}
@@ -297,6 +299,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3">
                 <a href="/checkride" className="text-xs text-gray-400 hover:text-gray-600">Checkride</a>
                 <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share card</a>
+                <a href="/report" className="text-xs text-gray-400 hover:text-gray-600">Print report</a>
               </div>
             </div>
           </div>
