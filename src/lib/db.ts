@@ -150,6 +150,20 @@ export async function initDB(): Promise<void> {
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_custom_cfi ON rc_custom_scenarios(cfi_user_id)`)
 
+  // Lightweight client-error capture (server errors go to docker logs).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_logs (
+      id SERIAL PRIMARY KEY,
+      level TEXT NOT NULL DEFAULT 'error',
+      message TEXT,
+      url TEXT,
+      stack TEXT,
+      user_agent TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_logs_created ON rc_logs(created_at DESC)`)
+
   // Flight School tier ($99) — one owner, many instructor-CFIs under one sub.
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_schools (

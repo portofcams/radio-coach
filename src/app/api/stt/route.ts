@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, clientIp } from '@/lib/ratelimit'
 
 // Higher-accuracy speech-to-text via ElevenLabs Scribe (same vendor/key as TTS).
 // Better at aviation phraseology than the browser's Web Speech API.
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY
+const MAX_AUDIO_BYTES = 4_000_000 // ~30s of speech; bounds cost per call
 
 export async function POST(req: NextRequest) {
   if (!ELEVENLABS_API_KEY) return NextResponse.json({ error: 'STT not configured' }, { status: 503 })
+  if (!rateLimit(`stt:${clientIp(req)}`, 40, 600_000)) return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
 
   const form = await req.formData()
   const audio = form.get('audio')
   if (!(audio instanceof Blob)) return NextResponse.json({ error: 'Missing audio' }, { status: 400 })
+  if (audio.size > MAX_AUDIO_BYTES) return NextResponse.json({ error: 'audio_too_large' }, { status: 413 })
 
   const fd = new FormData()
   fd.append('file', audio, 'readback.webm')
