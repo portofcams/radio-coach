@@ -53,7 +53,7 @@ function LoginForm() {
           </p>
           {ref && mode === 'signup' && (
             <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3">
-              A friend invited you — sign up and your first 7 days of Solo Pilot are on us.
+              A friend invited you — sign up and your first month of Pro is on us.
             </p>
           )}
         </div>

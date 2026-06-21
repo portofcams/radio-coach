@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPool } from '@/lib/db'
 import { hashPassword, setAuthCookie } from '@/lib/auth'
+import { applyReferralOnSignup } from '@/lib/referral'
 
 export async function POST(req: NextRequest) {
   const db = getPool()
@@ -37,30 +38,11 @@ export async function POST(req: NextRequest) {
     [user.id, user.email],
   ).catch(() => {})
 
-  // Referral: a friend's code grants the new user a 7-day Solo trial, and the
-  // referrer 7 trial days (only if they're not on a paid Stripe sub).
+  // Referral (give-a-month / get-a-month): a friend's code grants the new user a
+  // free comp month now; the referrer earns their month when this user converts
+  // to paid (handled in the Stripe webhook). Best-effort.
   if (ref && typeof ref === 'string') {
-    try {
-      const refRow = await db.query('SELECT id, stripe_subscription_id, subscription_status, current_period_end FROM rc_users WHERE referral_code = $1', [ref.trim()])
-      const referrer = refRow.rows[0]
-      if (referrer && referrer.id !== user.id) {
-        await db.query(
-          `UPDATE rc_users SET referred_by = $1, plan = 'solo', subscription_status = 'trialing',
-             current_period_end = now() + interval '7 days' WHERE id = $2`,
-          [referrer.id, user.id],
-        )
-        if (!referrer.stripe_subscription_id) {
-          // extend the referrer's trial from the later of now / their current end, capped at +60d
-          await db.query(
-            `UPDATE rc_users SET plan = COALESCE(plan, 'solo'), subscription_status = 'trialing',
-               current_period_end = LEAST(now() + interval '60 days',
-                 GREATEST(COALESCE(current_period_end, now()), now()) + interval '7 days')
-             WHERE id = $1`,
-            [referrer.id],
-          )
-        }
-      }
-    } catch { /* referral best-effort */ }
+    try { await applyReferralOnSignup(db, user.id, ref) } catch { /* referral best-effort */ }
   }
 
   await setAuthCookie({ userId: user.id, email: user.email })

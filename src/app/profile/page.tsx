@@ -204,6 +204,9 @@ export default function ProfilePage() {
               <a href="/cfi" className="text-xs text-gray-400 hover:text-gray-600">Your students</a>
             </div>
           )}
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <a href="/refer" className="text-sm text-blue-600 hover:underline">Refer a friend — give a month, get a month →</a>
+          </div>
         </div>
 
         {/* From your instructor (student side) */}

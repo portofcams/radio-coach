@@ -14,7 +14,7 @@ export async function getEntitlement(userId: number): Promise<Entitlement> {
   const db = getPool()
   if (!db) return { pro: false, plan: null, status: null, periodEnd: null }
   const r = await db.query(
-    'SELECT subscription_status, plan, current_period_end FROM rc_users WHERE id = $1',
+    'SELECT subscription_status, plan, current_period_end, comp_pro_until FROM rc_users WHERE id = $1',
     [userId],
   )
   const row = r.rows[0]
@@ -28,6 +28,11 @@ export async function getEntitlement(userId: number): Promise<Entitlement> {
     periodEnd: row.current_period_end ? new Date(row.current_period_end).toISOString() : null,
   }
   if (own.pro) return own
+
+  // Referral comp month (give-a-month / get-a-month) — grants Solo-level Pro.
+  if (row.comp_pro_until && new Date(row.comp_pro_until) > new Date()) {
+    return { pro: true, plan: 'solo', status: 'comp', periodEnd: new Date(row.comp_pro_until).toISOString() }
+  }
 
   // Not pro on their own sub — they may be an instructor in a flight school
   // whose owner has an active sub. That grants CFI-level access.

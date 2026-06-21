@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getPool } from '@/lib/db'
+import { grantReferrerOnConversion } from '@/lib/referral'
 
 const API_VERSION = '2026-05-27.dahlia' as never
 
@@ -31,6 +32,13 @@ async function applySubscription(sub: Stripe.Subscription) {
      WHERE stripe_customer_id = $1`,
     [customerId, sub.id, sub.status, planFor(priceId), periodEnd],
   )
+
+  // Referral payoff: a referred user who actually starts paying earns their
+  // referrer a comp month (granted once).
+  if (sub.status === 'active') {
+    const u = await db.query('SELECT id FROM rc_users WHERE stripe_customer_id = $1', [customerId])
+    if (u.rows[0]) await grantReferrerOnConversion(db, u.rows[0].id).catch(() => {})
+  }
 }
 
 export async function POST(req: NextRequest) {

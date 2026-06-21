@@ -194,8 +194,12 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS referred_by INTEGER,
       ADD COLUMN IF NOT EXISTS email_opt_out BOOLEAN NOT NULL DEFAULT false,
       ADD COLUMN IF NOT EXISTS email_unsub_token TEXT,
-      ADD COLUMN IF NOT EXISTS last_weekly_email TIMESTAMPTZ
+      ADD COLUMN IF NOT EXISTS last_weekly_email TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS comp_pro_until TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS referral_rewarded BOOLEAN NOT NULL DEFAULT false
   `)
+  // Referral codes must be unique (used to look up the referrer).
+  await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS rc_users_referral_code ON rc_users(referral_code) WHERE referral_code IS NOT NULL`)
 }
 
 // Run init once on first import in server context
