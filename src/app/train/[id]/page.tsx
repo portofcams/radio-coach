@@ -12,6 +12,7 @@ import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
 import { voiceForKey } from '@/lib/voices'
+import { explainElement } from '@/lib/explain'
 import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from '@/lib/native'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
@@ -54,6 +55,7 @@ export default function ScenarioPage() {
   const [pro, setPro] = useState(false)
   const [hintShown, setHintShown] = useState(false)
   const [exchange, setExchange] = useState<'initial' | 'curveball'>('initial')
+  const [showWhy, setShowWhy] = useState(false)
   const exchangeRef = useRef<'initial' | 'curveball'>('initial')
   const [timerEnabled, setTimerEnabled] = useState(false)
   const [timer, setTimer] = useState<number | null>(null)
@@ -672,14 +674,24 @@ export default function ScenarioPage() {
             </div>
 
             <div className="border border-gray-200 rounded-xl p-5">
-              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Required elements</div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Required elements</div>
+                <button onClick={() => setShowWhy((v) => !v)} className="text-xs text-blue-600 hover:underline">
+                  {showWhy ? 'Hide why' : 'Why each part matters'}
+                </button>
+              </div>
               <div className="space-y-1.5">
                 {result.elements.required.map(el => {
                   const hit = result.elements.hit.includes(el)
                   return (
-                    <div key={el} className="flex items-center gap-2 text-sm">
-                      <span className={`shrink-0 ${hit ? 'text-green-600' : 'text-red-500'}`}>{hit ? '✓' : '✗'}</span>
-                      <span className={hit ? 'text-gray-700' : 'text-red-700 font-medium'}>{el}</span>
+                    <div key={el}>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className={`shrink-0 ${hit ? 'text-green-600' : 'text-red-500'}`}>{hit ? '✓' : '✗'}</span>
+                        <span className={hit ? 'text-gray-700' : 'text-red-700 font-medium'}>{el}</span>
+                      </div>
+                      {showWhy && (
+                        <p className="text-xs text-gray-500 leading-relaxed ml-6 mt-0.5 mb-1.5">{explainElement(el)}</p>
+                      )}
                     </div>
                   )
                 })}
