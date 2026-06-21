@@ -11,6 +11,7 @@ import RealFieldDiagram from '@/components/RealFieldDiagram'
 import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
+import { gradeHaptic } from '@/lib/native'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
 
@@ -338,6 +339,7 @@ export default function ScenarioPage() {
       const data = await res.json()
       setResult(data)
       setRadioState('done')
+      gradeHaptic(data.passFail === 'PASS')
       if (!pro && !user) { incrementFreeUsed(); setSession(getSession()) }
     } catch {
       setRadioState('transcribed')
