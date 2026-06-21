@@ -172,7 +172,7 @@ export default function ProfilePage() {
               <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Plan</div>
               {ent?.pro ? (
                 <div className="text-sm">
-                  <span className="font-semibold text-gray-900">{ent.plan === 'cfi' ? 'CFI Pro' : 'Solo Pilot'}</span>
+                  <span className="font-semibold text-gray-900">{ent.plan === 'school' ? 'Flight School' : ent.plan === 'cfi' ? 'CFI Pro' : 'Solo Pilot'}</span>
                   <span className="text-green-600"> · active</span>
                   {ent.periodEnd && <span className="text-gray-400"> · renews {new Date(ent.periodEnd).toLocaleDateString()}</span>}
                 </div>
@@ -193,7 +193,16 @@ export default function ProfilePage() {
             )}
           </div>
           {ent?.plan === 'cfi' && (
-            <a href="/cfi" className="mt-3 inline-block text-sm text-blue-600 hover:underline">Manage your students →</a>
+            <div className="mt-3 flex items-center gap-4">
+              <a href="/cfi" className="text-sm text-blue-600 hover:underline">Manage your students →</a>
+              <a href="/school" className="text-xs text-gray-400 hover:text-gray-600">Run a flight school?</a>
+            </div>
+          )}
+          {ent?.plan === 'school' && (
+            <div className="mt-3 flex items-center gap-4">
+              <a href="/school" className="text-sm text-blue-600 hover:underline">Manage your flight school →</a>
+              <a href="/cfi" className="text-xs text-gray-400 hover:text-gray-600">Your students</a>
+            </div>
           )}
         </div>
 

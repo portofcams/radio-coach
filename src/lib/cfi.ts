@@ -4,10 +4,11 @@ import { getEntitlement } from './entitlement'
 import { computeReadiness, type Readiness } from './readiness'
 export { ENDORSEMENT_KINDS, endorsementLabel } from './endorsements'
 
-/** CFI Pro = an active subscription on the cfi plan. */
+/** CFI capability = an active cfi sub, a flight-school owner, or a school instructor.
+ * (getEntitlement reports plan 'cfi' for school instructors, 'school' for owners.) */
 export async function isCfi(userId: number): Promise<boolean> {
   const ent = await getEntitlement(userId)
-  return !!ent.pro && ent.plan === 'cfi'
+  return !!ent.pro && (ent.plan === 'cfi' || ent.plan === 'school')
 }
 
 export interface RosterStudent {

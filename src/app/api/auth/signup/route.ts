@@ -24,10 +24,16 @@ export async function POST(req: NextRequest) {
   )
   const user = result.rows[0]
 
-  // Auto-link any pending CFI invites addressed to this email.
+  // Auto-link any pending CFI-student invites addressed to this email.
   await db.query(
     `UPDATE rc_cfi_students SET student_user_id = $1, status = 'active'
      WHERE student_email = $2 AND student_user_id IS NULL`,
+    [user.id, user.email],
+  ).catch(() => {})
+  // Auto-link any pending flight-school instructor invites for this email.
+  await db.query(
+    `UPDATE rc_school_members SET user_id = $1, status = 'active'
+     WHERE email = $2 AND user_id IS NULL`,
     [user.id, user.email],
   ).catch(() => {})
 

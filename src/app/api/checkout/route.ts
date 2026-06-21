@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   const PRICE_MAP: Record<string, string | undefined> = {
     solo: process.env.STRIPE_PRICE_SOLO_PILOT,
     cfi: process.env.STRIPE_PRICE_CFI_PRO,
+    school: process.env.STRIPE_PRICE_FLIGHT_SCHOOL,
   }
   const { plan } = await req.json()
   const priceId = PRICE_MAP[plan]

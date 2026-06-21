@@ -148,6 +148,29 @@ export async function initDB(): Promise<void> {
     )
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_custom_cfi ON rc_custom_scenarios(cfi_user_id)`)
+
+  // Flight School tier ($99) — one owner, many instructor-CFIs under one sub.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_schools (
+      id SERIAL PRIMARY KEY,
+      owner_user_id INTEGER NOT NULL UNIQUE REFERENCES rc_users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL DEFAULT 'My Flight School',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_school_members (
+      id SERIAL PRIMARY KEY,
+      school_id INTEGER NOT NULL REFERENCES rc_schools(id) ON DELETE CASCADE,
+      user_id INTEGER REFERENCES rc_users(id) ON DELETE CASCADE,
+      email TEXT,
+      token TEXT UNIQUE NOT NULL,
+      role TEXT NOT NULL DEFAULT 'instructor',
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_school_members_user ON rc_school_members(user_id)`)
   await db.query(`
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,
