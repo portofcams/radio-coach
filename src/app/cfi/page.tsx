@@ -33,6 +33,9 @@ export default function CfiDashboard() {
   const [adding, setAdding] = useState(false)
   const [err, setErr] = useState('')
   const [copied, setCopied] = useState<number | null>(null)
+  const [bulk, setBulk] = useState('')
+  const [showBulk, setShowBulk] = useState(false)
+  const [bulkMsg, setBulkMsg] = useState('')
 
   async function load() {
     const res = await fetch('/api/cfi/students')
@@ -55,6 +58,23 @@ export default function CfiDashboard() {
       if (!res.ok) { setErr(data.error === 'already_added' ? 'That student is already on your roster.' : data.error === 'cannot_add_self' ? "That's you." : 'Could not add — check the email.'); return }
       setEmail('')
       setRoster(data.roster ?? [])
+    } finally { setAdding(false) }
+  }
+
+  async function bulkAdd() {
+    const emails = bulk.split(/[\s,;]+/).map((e) => e.trim()).filter((e) => e.includes('@'))
+    if (emails.length === 0) { setBulkMsg('Paste some email addresses first.'); return }
+    setAdding(true); setBulkMsg('')
+    try {
+      const res = await fetch('/api/cfi/students', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emails }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setBulkMsg('Could not import — check the list.'); return }
+      setBulk('')
+      setRoster(data.roster ?? [])
+      const dup = (data.skipped ?? []).filter((s: { reason: string }) => s.reason === 'already_added').length
+      setBulkMsg(`Added ${data.added}${dup ? ` · ${dup} already on roster` : ''}.`)
     } finally { setAdding(false) }
   }
 
@@ -99,6 +119,24 @@ export default function CfiDashboard() {
           </div>
           {err && <p className="text-xs text-red-600 mt-2">{err}</p>}
           <p className="text-xs text-gray-400 mt-2">If they already have a Wilco account they&apos;re linked right away; otherwise share their invite link and they connect when they sign up.</p>
+
+          <button onClick={() => { setShowBulk((v) => !v); setBulkMsg('') }} className="text-xs text-blue-600 hover:underline mt-3">
+            {showBulk ? '− Hide bulk import' : '+ Bulk import a class roster'}
+          </button>
+          {showBulk && (
+            <div className="mt-3">
+              <textarea value={bulk} onChange={(e) => { setBulk(e.target.value); setBulkMsg('') }}
+                placeholder="Paste emails — one per line, or comma/space separated"
+                rows={4}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900" />
+              <div className="flex items-center gap-3 mt-2">
+                <button onClick={bulkAdd} disabled={adding} className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">
+                  {adding ? 'Importing...' : 'Import all'}
+                </button>
+                {bulkMsg && <span className="text-xs text-gray-500">{bulkMsg}</span>}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* This-week summary */}

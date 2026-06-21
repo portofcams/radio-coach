@@ -3,8 +3,9 @@ import { randomUUID } from 'node:crypto'
 import { getPool } from '@/lib/db'
 import { computeReadiness } from '@/lib/readiness'
 import { computeWeakspots } from '@/lib/weakspots'
-import { composeWeeklyReport } from '@/lib/weekly-email'
+import { composeWeeklyReport, composeCfiDigest } from '@/lib/weekly-email'
 import { emailConfigured, sendEmail } from '@/lib/resend'
+import { isCfi, getRoster } from '@/lib/cfi'
 
 const APP_URL = process.env.APP_URL || 'https://wilco.binnacleai.com'
 const MAX_RECIPIENTS = 500
@@ -100,11 +101,54 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // CFI weekly digests — "who's stuck / who's ready" to each entitled instructor.
+  const cfiResults: Array<{ to: string; students: number; sent?: boolean; error?: string }> = []
+  const cfiRows = await db.query('SELECT DISTINCT cfi_user_id FROM rc_cfi_students')
+  for (const row of cfiRows.rows) {
+    const cfiId: number = row.cfi_user_id
+    if (!(await isCfi(cfiId))) continue
+    const cu = await db.query(
+      `SELECT email, callsign, email_unsub_token, COALESCE(email_opt_out,false) AS opt FROM rc_users WHERE id = $1`,
+      [cfiId],
+    )
+    const c = cu.rows[0]
+    if (!c || !c.email || !c.email.includes('@') || c.email.endsWith('@example.com') || c.opt) continue
+    const roster = await getRoster(db, cfiId, APP_URL)
+    const joined = roster.filter((s) => s.joined)
+    if (joined.length === 0) continue
+
+    let token = c.email_unsub_token
+    if (!token) {
+      token = randomUUID()
+      await db.query('UPDATE rc_users SET email_unsub_token = $1 WHERE id = $2', [token, cfiId])
+    }
+    const digest = composeCfiDigest({
+      instructorName: c.callsign,
+      total: joined.length,
+      ready: joined.filter((s) => s.flag === 'ready').length,
+      needsWork: joined.filter((s) => s.flag === 'needs-work').length,
+      inactive: joined.filter((s) => s.flag === 'inactive').length,
+      activeThisWeek: joined.filter((s) => s.weekCount > 0).length,
+      highlights: joined.filter((s) => s.flag === 'needs-work' || s.flag === 'ready')
+        .slice(0, 8)
+        .map((s) => ({ email: s.email, flag: s.flag ?? 'new', weekCount: s.weekCount, lastDays: s.lastDays })),
+      unsubUrl: `${APP_URL}/api/unsubscribe?token=${token}`,
+      appUrl: APP_URL,
+    })
+    if (live) {
+      const r = await sendEmail({ to: c.email, subject: digest.subject, html: digest.html, text: digest.text })
+      cfiResults.push({ to: c.email, students: joined.length, sent: r.ok, error: r.error })
+    } else {
+      cfiResults.push({ to: c.email, students: joined.length })
+    }
+  }
+
   return NextResponse.json({
     mode: live ? 'live' : 'dry-run',
     emailConfigured: emailConfigured(),
     recipients: results.length,
     sent: live ? results.filter((r) => r.sent).length : 0,
     sample: results.slice(0, 10),
+    cfiDigests: { recipients: cfiResults.length, sent: live ? cfiResults.filter((r) => r.sent).length : 0, sample: cfiResults.slice(0, 10) },
   })
 }

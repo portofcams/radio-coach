@@ -68,6 +68,58 @@ export const GUIDES: Guide[] = [
       { h: 'Phonetic alphabet', p: 'Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.' },
     ],
   },
+  {
+    slug: 'flight-following',
+    title: 'How to request VFR flight following',
+    description: 'Flight following gives you traffic advisories and a controller watching your tail on a VFR flight. How to ask for it and what to read back.',
+    sections: [
+      { h: 'Who to call', p: 'Call the appropriate Approach or Center facility for your area (look it up on a chart or get a handoff from tower). On initial call, give your call sign, type, position, altitude, and that you are requesting flight following — e.g. "Norcal Approach, Cessna One Two Three Four Five, ten miles south of Livermore, four thousand five hundred, request VFR flight following to Salinas."' },
+      { h: 'The squawk', p: 'ATC assigns a discrete transponder code: "Cessna One Two Three Four Five, squawk zero two three four." Read it back and set it: "Squawk zero two three four, Cessna One Two Three Four Five." Then expect "radar contact."' },
+      { h: 'Traffic calls', p: 'You\'ll get advisories by clock position, distance, and altitude: "traffic, two o\'clock, three miles, opposite direction, altitude indicates four thousand five hundred." Reply "traffic in sight" or "looking, negative contact."' },
+      { h: 'Leaving the service', p: 'ATC ends it with "radar service terminated, squawk VFR, frequency change approved." Set 1200 and you\'re on your own again. You can also cancel anytime: "Cessna One Two Three Four Five, cancel flight following."' },
+    ],
+  },
+  {
+    slug: 'position-reports',
+    title: 'Position reports in the traffic pattern and en route',
+    description: 'What to say and when — pattern legs at a non-towered field, and en route position reports when asked.',
+    sections: [
+      { h: 'Pattern legs', p: 'At a non-towered field, announce each leg with intentions: "Lincoln traffic, Skyhawk Four Five X-ray, midfield left downwind runway one eight, touch and go, Lincoln." Then base, final, and clear of the runway.' },
+      { h: 'Inbound', p: 'About ten miles out, announce position and intentions: "Lincoln traffic, Cessna One Two Three Four Five, one zero miles south, inbound landing, Lincoln." Bracket with the field name so others know which airport you mean.' },
+      { h: 'En route, when asked', p: 'If a controller asks "say position," give it relative to a known fix or the field: "Cessna One Two Three Four Five, two zero miles northeast of the VOR, six thousand five hundred."' },
+    ],
+  },
+  {
+    slug: 'frequency-changes',
+    title: 'Frequency changes and handoffs',
+    description: 'How handoffs work, what to read back, and the right way to check onto a new frequency.',
+    sections: [
+      { h: 'The handoff', p: 'A controller passes you to the next sector: "Cessna One Two Three Four Five, contact Norcal Approach one two zero point niner." Read back the frequency and your call sign: "Norcal Approach one two zero point niner, Cessna One Two Three Four Five."' },
+      { h: 'Checking on', p: 'On the new frequency, give who you are and your altitude (and that you\'re level or climbing/descending): "Norcal Approach, Cessna One Two Three Four Five, level six thousand five hundred." Keep it short.' },
+      { h: 'Frequency change approved', p: 'At a non-towered destination or leaving flight following, you may hear "frequency change approved" — acknowledge and switch to CTAF. You can also request it: "Cessna One Two Three Four Five, request frequency change."' },
+    ],
+  },
+  {
+    slug: 'light-gun-signals',
+    title: 'Light-gun signals: flying NORDO at a towered field',
+    description: 'If your radio fails at a towered airport, the tower controls you with a light gun. What each color and steady/flashing signal means.',
+    sections: [
+      { h: 'When you\'d use them', p: 'A complete radio failure (NORDO) at a towered field. Squawk 7600, watch the tower for light signals, and rock your wings (in flight) or move ailerons/rudder (on the ground) to acknowledge. AIM 4-3-13 has the full table.' },
+      { h: 'In flight', p: 'Steady green = cleared to land. Flashing green = return for landing (a landing clearance will follow). Steady red = give way to other aircraft and continue circling. Flashing red = airport unsafe, do not land. Flashing white is not used in flight. Alternating red and green = general warning, exercise extreme caution.' },
+      { h: 'On the ground', p: 'Steady green = cleared for takeoff. Flashing green = cleared to taxi. Steady red = stop. Flashing red = taxi clear of the runway in use. Flashing white = return to your starting point on the airport. Alternating red and green = exercise extreme caution.' },
+      { h: 'Acknowledging', p: 'Day: move the ailerons or rudder, or rock the wings. Night: flash your landing or navigation lights. There\'s no radio read-back — the acknowledgment is the maneuver.' },
+    ],
+  },
+  {
+    slug: 'go-around-and-missed-approach',
+    title: 'Go-around and missed approach calls',
+    description: 'What to say when you break off a landing — VFR go-around in the pattern and the IFR missed approach.',
+    sections: [
+      { h: 'VFR go-around', p: 'If you abandon the landing, fly the airplane first, then tell the tower: "Cessna One Two Three Four Five, going around." Expect pattern instructions: "make left traffic, runway two seven" — read it back.' },
+      { h: 'Non-towered', p: 'Announce on the CTAF so traffic on base/final knows: "Lincoln traffic, Cessna One Two Three Four Five, going around, runway one eight, Lincoln." Sidestep to the upwind side to keep departing traffic in sight.' },
+      { h: 'IFR missed approach', p: 'Fly the published missed unless told otherwise, and report: "Cessna One Two Three Four Five, missed approach." ATC will issue a climb and heading or a hold — read back the altitude and the instruction.' },
+    ],
+  },
 ]
 
 export const getGuide = (slug: string) => GUIDES.find((g) => g.slug === slug) ?? null
