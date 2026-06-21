@@ -80,6 +80,19 @@ function noiseBuffer(c: AudioContext): AudioBuffer {
   return buf
 }
 
+// Pre-rendered party-line chatter clips (public/chatter/c1..c10.mp3), decoded once.
+const CHATTER_COUNT = 10
+const _chatterBufs: Array<AudioBuffer | null> = []
+async function loadChatter(c: AudioContext, idx: number): Promise<AudioBuffer | null> {
+  if (_chatterBufs[idx] !== undefined && _chatterBufs[idx] !== null) return _chatterBufs[idx]
+  try {
+    const res = await fetch(`/chatter/c${idx + 1}.mp3`)
+    const buf = await c.decodeAudioData(await res.arrayBuffer())
+    _chatterBufs[idx] = buf
+    return buf
+  } catch { return null }
+}
+
 /** Soft-clip transfer curve — gentle AM-radio grit. */
 function driveCurve(amount: number): Float32Array<ArrayBuffer> {
   const n = 256
@@ -142,6 +155,12 @@ export function attachRadioFx(el: HTMLAudioElement, initialMode: RadioMode = get
   noise.connect(noiseBp); noiseBp.connect(noiseGain); noiseGain.connect(master)
   try { noise.start() } catch { /* already started */ }
 
+  // Party-line chatter (busy mode) — other aircraft on the frequency, low + filtered.
+  const chatterBp = c.createBiquadFilter(); chatterBp.type = 'bandpass'; chatterBp.frequency.value = 1700; chatterBp.Q.value = 0.8
+  const chatterGain = c.createGain(); chatterGain.gain.value = 0
+  chatterBp.connect(chatterGain); chatterGain.connect(master)
+  let chatterSrc: AudioBufferSourceNode | null = null
+
   let mode: RadioMode = initialMode
 
   function applyMode() {
@@ -201,12 +220,25 @@ export function attachRadioFx(el: HTMLAudioElement, initialMode: RadioMode = get
         voiceGain.gain.linearRampToValueAtTime(0.1, t0 + 0.06)
         voiceGain.gain.linearRampToValueAtTime(1.28, t0 + 0.5)
         squelchBurst(t0, 0.5)
+        // party-line chatter: another aircraft on the frequency, low + filtered
+        const idx = Math.floor(Math.random() * CHATTER_COUNT)
+        loadChatter(c!, idx).then((buf) => {
+          if (!buf || mode !== 'busy') return
+          try { chatterSrc?.stop() } catch { /* */ }
+          chatterSrc = c!.createBufferSource()
+          chatterSrc.buffer = buf
+          chatterSrc.connect(chatterBp)
+          chatterGain.gain.setValueAtTime(0.17, c!.currentTime)
+          try { chatterSrc.start(c!.currentTime + 0.15) } catch { /* */ }
+        })
       }
     },
     release() {
       const t = c!.currentTime
       squelchBurst(t, 0.1)
       noiseGain.gain.setTargetAtTime(0, t + 0.14, 0.06)
+      chatterGain.gain.setTargetAtTime(0, t, 0.1)
+      try { chatterSrc?.stop(t + 0.3) } catch { /* */ }
     },
   }
 

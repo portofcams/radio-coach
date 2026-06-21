@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import NativeInit from '@/components/NativeInit'
+import InstallPrompt from '@/components/InstallPrompt'
 
 export const metadata: Metadata = {
   title: 'Wilco — Clearspar Radio Training',
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-white text-gray-900 antialiased">
         <NativeInit />
         {children}
+        <InstallPrompt />
       </body>
     </html>
   )
