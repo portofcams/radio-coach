@@ -12,6 +12,16 @@ export function lookupAirport(ident: string): AirportData | null {
   return DB[ident.trim().toUpperCase()] ?? null
 }
 
+/** Biggest US towered fields first (max runway length as a popularity proxy) — for SEO index + sitemap. */
+export function curatedAirports(limit = 250): Array<{ ident: string; name: string; city: string; region: string }> {
+  return Object.entries(DB)
+    .filter(([, a]) => a.towered && a.country === 'US' && a.runways.length > 0)
+    .map(([ident, a]) => ({ ident, name: a.name, city: a.city, region: a.region, len: Math.max(...a.runways.map((r) => r.length ?? 0)) }))
+    .sort((x, y) => y.len - x.len)
+    .slice(0, limit)
+    .map(({ ident, name, city, region }) => ({ ident, name, city, region }))
+}
+
 /** A compact summary for the profile lookup preview (what the pilot is saving). */
 export function airportSummary(field: AirportData) {
   return {

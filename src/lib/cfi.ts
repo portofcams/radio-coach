@@ -19,6 +19,9 @@ export interface RosterStudent {
   joined: boolean
   joinUrl: string | null
   attempts: number
+  weekCount: number
+  lastDays: number | null
+  flag: 'ready' | 'almost' | 'needs-work' | 'inactive' | 'new' | null
   readiness: Readiness | null
 }
 
@@ -29,7 +32,9 @@ export async function getRoster(db: Pool, cfiId: number, origin: string): Promis
             (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id) AS attempts,
             (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades g WHERE g.user_id = s.student_user_id) AS passed,
             (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades g WHERE g.user_id = s.student_user_id AND passed) AS distinct_passed,
-            (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades g WHERE g.user_id = s.student_user_id ORDER BY created_at DESC LIMIT 30) t) AS recent_avg
+            (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades g WHERE g.user_id = s.student_user_id ORDER BY created_at DESC LIMIT 30) t) AS recent_avg,
+            (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.created_at > now()-interval '7 days') AS week,
+            (SELECT EXTRACT(EPOCH FROM now() - MAX(created_at))/86400 FROM rc_grades g WHERE g.user_id = s.student_user_id) AS last_days
      FROM rc_cfi_students s LEFT JOIN rc_users u ON u.id = s.student_user_id
      WHERE s.cfi_user_id = $1 ORDER BY s.created_at`,
     [cfiId],
@@ -37,6 +42,24 @@ export async function getRoster(db: Pool, cfiId: number, origin: string): Promis
   return r.rows.map((row) => {
     const joined = !!row.student_user_id
     const attempts = parseInt(row.attempts) || 0
+    const weekCount = parseInt(row.week) || 0
+    const lastDays = row.last_days != null ? Math.floor(parseFloat(row.last_days)) : null
+    const readiness = joined
+      ? computeReadiness({
+          attempts,
+          passedCount: parseInt(row.passed) || 0,
+          distinctPassed: parseInt(row.distinct_passed) || 0,
+          recentAvg: parseInt(row.recent_avg) || 0,
+        })
+      : null
+    let flag: RosterStudent['flag'] = null
+    if (joined) {
+      if (attempts === 0) flag = 'new'
+      else if (lastDays != null && lastDays > 10) flag = 'inactive'
+      else if (readiness?.level === 'ready') flag = 'ready'
+      else if (readiness?.level === 'almost') flag = 'almost'
+      else flag = 'needs-work'
+    }
     return {
       id: row.id,
       status: row.status,
@@ -45,14 +68,10 @@ export async function getRoster(db: Pool, cfiId: number, origin: string): Promis
       joined,
       joinUrl: joined ? null : `${origin}/cfi/join/${row.token}`,
       attempts,
-      readiness: joined
-        ? computeReadiness({
-            attempts,
-            passedCount: parseInt(row.passed) || 0,
-            distinctPassed: parseInt(row.distinct_passed) || 0,
-            recentAvg: parseInt(row.recent_avg) || 0,
-          })
-        : null,
+      weekCount,
+      lastDays,
+      flag,
+      readiness,
     }
   })
 }
