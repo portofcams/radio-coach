@@ -200,6 +200,18 @@ export async function initDB(): Promise<void> {
   `)
   // Referral codes must be unique (used to look up the referrer).
   await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS rc_users_referral_code ON rc_users(referral_code) WHERE referral_code IS NOT NULL`)
+
+  // Push notification device tokens (APNs / FCM).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_push_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES rc_users(id) ON DELETE CASCADE,
+      token TEXT NOT NULL UNIQUE,
+      platform TEXT NOT NULL DEFAULT 'ios',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      last_seen TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
 }
 
 // Run init once on first import in server context

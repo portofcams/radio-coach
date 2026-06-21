@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect } from 'react'
-import { scheduleDailyReminder } from '@/lib/native'
+import { scheduleDailyReminder, registerPush } from '@/lib/native'
 
-/** App-open setup: native practice reminder + offline service worker + error capture. */
+/** App-open setup: native practice reminder + push + offline service worker + error capture. */
 export default function NativeInit() {
   useEffect(() => {
     scheduleDailyReminder()
+    registerPush()
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {})
     }

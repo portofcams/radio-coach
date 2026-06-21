@@ -50,6 +50,25 @@ export async function stopNativeRecordingTranscribe(): Promise<string | null> {
   } catch { return null }
 }
 
+/** Register for remote push (APNs/FCM) and send the device token to the server.
+ * Safe no-op on web or if the user hasn't granted push. */
+export async function registerPush(): Promise<void> {
+  if (!isNative()) return
+  try {
+    const { PushNotifications } = await import('@capacitor/push-notifications')
+    const perm = await PushNotifications.requestPermissions()
+    if (perm.receive !== 'granted') return
+    PushNotifications.addListener('registration', (t: { value: string }) => {
+      const platform = Capacitor.getPlatform() === 'android' ? 'android' : 'ios'
+      fetch('/api/push/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: t.value, platform }),
+      }).catch(() => {})
+    })
+    await PushNotifications.register()
+  } catch { /* push unavailable */ }
+}
+
 /** Schedule a daily on-device practice reminder (no server / push needed). */
 export async function scheduleDailyReminder(): Promise<void> {
   if (!isNative()) return
