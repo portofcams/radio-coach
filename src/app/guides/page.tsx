@@ -23,11 +23,21 @@ export default function GuidesIndex() {
           ))}
         </div>
         <p className="text-sm text-gray-500 mt-6">Then put it into practice — <a href="/train" className="text-blue-600 hover:underline">graded radio scenarios →</a></p>
-        <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-          <a href="/blog" className="text-blue-600 hover:underline">Blog →</a>
-          <a href="/airspace" className="text-blue-600 hover:underline">Airspace requirements →</a>
-          <a href="/glossary" className="text-blue-600 hover:underline">Phraseology glossary →</a>
-          <a href="/directory" className="text-blue-600 hover:underline">Flight-school directory →</a>
+        <div className="mt-8 pt-6 border-t border-gray-100">
+          <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Study tools</div>
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm mb-4">
+            <a href="/written" className="text-blue-600 hover:underline">Written test prep →</a>
+            <a href="/flashcards" className="text-blue-600 hover:underline">FAR/AIM flashcards →</a>
+            <a href="/acs" className="text-blue-600 hover:underline">Checkride tracker →</a>
+            <a href="/brief" className="text-blue-600 hover:underline">Flight radio brief →</a>
+            <a href="/oral" className="text-blue-600 hover:underline">Mock oral →</a>
+          </div>
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <a href="/blog" className="text-blue-600 hover:underline">Blog →</a>
+            <a href="/airspace" className="text-blue-600 hover:underline">Airspace requirements →</a>
+            <a href="/glossary" className="text-blue-600 hover:underline">Phraseology glossary →</a>
+            <a href="/directory" className="text-blue-600 hover:underline">Flight-school directory →</a>
+          </div>
         </div>
       </div>
     </main>
