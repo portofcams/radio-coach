@@ -102,7 +102,10 @@ export default function CfiDashboard() {
             <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
             <h1 className="text-xl font-semibold">Your students</h1>
           </div>
-          <a href="/cfi/build" className="text-sm text-blue-600 hover:underline">Custom scenarios →</a>
+          <div className="flex items-center gap-4">
+            {roster && roster.length > 0 && <a href="/api/cfi/export" className="text-sm text-blue-600 hover:underline">Export CSV</a>}
+            <a href="/cfi/build" className="text-sm text-blue-600 hover:underline">Custom scenarios →</a>
+          </div>
         </div>
 
         {/* Add student */}
