@@ -176,7 +176,10 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,
       ADD COLUMN IF NOT EXISTS cfi_logo_url TEXT,
       ADD COLUMN IF NOT EXISTS referral_code TEXT,
-      ADD COLUMN IF NOT EXISTS referred_by INTEGER
+      ADD COLUMN IF NOT EXISTS referred_by INTEGER,
+      ADD COLUMN IF NOT EXISTS email_opt_out BOOLEAN NOT NULL DEFAULT false,
+      ADD COLUMN IF NOT EXISTS email_unsub_token TEXT,
+      ADD COLUMN IF NOT EXISTS last_weekly_email TIMESTAMPTZ
   `)
 }
 

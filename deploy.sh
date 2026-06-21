@@ -29,7 +29,7 @@ ssh $SERVER "
   cd /root/radio-coach
   if docker inspect $APP >/dev/null 2>&1; then
     docker inspect $APP --format '{{range .Config.Env}}{{println .}}{{end}}' \
-      | grep -E '^(ANTHROPIC_API_KEY|ELEVENLABS_API_KEY|ELEVENLABS_VOICE_ID|DATABASE_URL|JWT_SECRET|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|STRIPE_PRICE_SOLO_PILOT|STRIPE_PRICE_CFI_PRO|STRIPE_PRICE_FLIGHT_SCHOOL|PORT|HOSTNAME)=' \
+      | grep -E '^(ANTHROPIC_API_KEY|ELEVENLABS_API_KEY|ELEVENLABS_VOICE_ID|DATABASE_URL|JWT_SECRET|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|STRIPE_PRICE_SOLO_PILOT|STRIPE_PRICE_CFI_PRO|STRIPE_PRICE_FLIGHT_SCHOOL|CRON_SECRET|RESEND_API_KEY|WEEKLY_FROM|APP_URL|PORT|HOSTNAME)=' \
       > /root/wilco.env.new && mv /root/wilco.env.new /root/wilco.env
   fi
   test -s /root/wilco.env || { echo 'ERROR: /root/wilco.env missing and no running container to capture from'; exit 1; }
