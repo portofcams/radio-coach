@@ -78,6 +78,15 @@ export interface Scenario {
   airport: string
   /** 'pro' scenarios are part of the advanced library — Solo Pilot only */
   tier?: 'pro'
+  /** optional track grouping, e.g. the helicopter phraseology set */
+  category?: 'helicopter'
+  /** optional second exchange: ATC throws an amendment after the first readback */
+  curveball?: {
+    setup?: string
+    atcTransmission: string
+    requiredElements: string[]
+    correctReadback: string
+  }
   /** optional taxi-diagram schematic, shown on the training screen */
   diagram?: AirportDiagram
   /** optional real-geometry field diagram (drawn from real runway coordinates) */

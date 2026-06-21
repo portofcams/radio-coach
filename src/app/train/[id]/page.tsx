@@ -11,6 +11,7 @@ import RealFieldDiagram from '@/components/RealFieldDiagram'
 import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
+import { voiceForKey } from '@/lib/voices'
 import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from '@/lib/native'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
@@ -52,6 +53,8 @@ export default function ScenarioPage() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [pro, setPro] = useState(false)
   const [hintShown, setHintShown] = useState(false)
+  const [exchange, setExchange] = useState<'initial' | 'curveball'>('initial')
+  const exchangeRef = useRef<'initial' | 'curveball'>('initial')
   const [timerEnabled, setTimerEnabled] = useState(false)
   const [timer, setTimer] = useState<number | null>(null)
   const [metar, setMetar] = useState<string | null>(null)
@@ -119,6 +122,9 @@ export default function ScenarioPage() {
       }
     }).catch(() => {})
   }, [id, isHomeId, isCustomId])
+
+  // Always start a scenario on its initial exchange (the page persists across nav).
+  useEffect(() => { exchangeRef.current = 'initial'; setExchange('initial') }, [id])
 
   // METAR
   useEffect(() => {
@@ -269,10 +275,11 @@ export default function ScenarioPage() {
     setHintShown(false)
     if (timerRef.current) { clearInterval(timerRef.current); setTimer(null) }
     try {
+      const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: personalizeText(scenario.atcTransmission, user?.callsign ?? null), speed: ttsSpeed(fx.speed) }),
+        body: JSON.stringify({ text: personalizeText(tx, user?.callsign ?? null), speed: ttsSpeed(fx.speed), voice: voiceForKey(scenario.id) }),
       })
       if (!res.ok) { setRadioState('ready'); return }
       const blob = await res.blob()
@@ -298,6 +305,16 @@ export default function ScenarioPage() {
     }
   }, [scenario, voiceMode, fx, user, startTimer, startListening, stopRecognition])
 
+  // Curveball: after a passing initial readback, ATC throws an amendment.
+  const startCurveball = useCallback(() => {
+    exchangeRef.current = 'curveball'
+    setExchange('curveball')
+    setResult(null); setReadback(''); setInterimText(''); setHintShown(false)
+    autoPlayedRef.current = true
+    setRadioState('idle')
+    setTimeout(() => playTransmission(), 50)
+  }, [playTransmission])
+
   // Auto-play on mount
   useEffect(() => {
     if (!autoPlayedRef.current && scenario) {
@@ -320,7 +337,7 @@ export default function ScenarioPage() {
       const res = await fetch('/api/grade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown }),
+        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown, part: exchangeRef.current === 'curveball' ? 'curveball' : undefined }),
       })
       // server-enforced gate (daily cap, or a Pro-only advanced scenario) → paywall
       if (res.status === 402) {
@@ -342,6 +359,7 @@ export default function ScenarioPage() {
 
   const nextScenario = useCallback(() => {
     setReadback(''); setResult(null); setHintShown(false); setInterimText('')
+    exchangeRef.current = 'initial'; setExchange('initial')
     autoPlayedRef.current = false
     setRadioState('idle')
     if (id.startsWith('gen-')) {
@@ -451,7 +469,14 @@ export default function ScenarioPage() {
           </div>
         )}
 
-        <p className="text-gray-600 mb-6 leading-relaxed">{scenario.setup}</p>
+        {exchange === 'curveball' && scenario.curveball ? (
+          <div className="mb-6">
+            <span className="inline-block font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white tracking-widest mb-2">AMENDMENT</span>
+            <p className="text-gray-600 leading-relaxed">{scenario.curveball.setup ?? 'ATC has an amended instruction — read it back.'}</p>
+          </div>
+        ) : (
+          <p className="text-gray-600 mb-6 leading-relaxed">{scenario.setup}</p>
+        )}
 
         {/* Radio Stack Panel */}
         <div className={`rounded-xl mb-4 overflow-hidden transition-all border ${isAtcActive ? 'border-amber-500/60 shadow-lg shadow-amber-900/20' : 'border-gray-800'}`} style={{ background: '#111214' }}>
@@ -670,14 +695,25 @@ export default function ScenarioPage() {
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
-              <button onClick={reset} className="flex-1 border border-gray-300 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium hover:border-gray-400">
-                Try again
-              </button>
-              <button onClick={nextScenario} className="flex-1 bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
-                Next scenario →
-              </button>
-            </div>
+            {scenario?.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (
+              <div className="flex gap-3 pt-2">
+                <button onClick={startCurveball} className="flex-1 bg-amber-500 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-amber-600">
+                  Amendment incoming →
+                </button>
+                <button onClick={nextScenario} className="px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:border-gray-400">
+                  Skip
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-3 pt-2">
+                <button onClick={reset} className="flex-1 border border-gray-300 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium hover:border-gray-400">
+                  Try again
+                </button>
+                <button onClick={nextScenario} className="flex-1 bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
+                  Next scenario →
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

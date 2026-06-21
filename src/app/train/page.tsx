@@ -84,6 +84,7 @@ export default function TrainPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/practice" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Practice</Link>
+            <Link href="/listen" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Listen</Link>
             <Link href="/leaderboard" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Leaderboard</Link>
             <Link href="/guides" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Guides</Link>
             <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
@@ -219,9 +220,42 @@ export default function TrainPage() {
                 </div>
               </div>
             )}
+            {(() => {
+              const heli = scenarios
+                .filter((s) => s.category === 'helicopter')
+                .filter((s) => !facilityFilter || s.facility === facilityFilter)
+                .filter((s) => !diffFilter || s.difficulty === diffFilter)
+              if (!heli.length) return null
+              return (
+                <div>
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Helicopter operations</h2>
+                  <div className="space-y-2">
+                    {heli.map((s) => {
+                      const c = completed[s.id]
+                      return (
+                        <Link key={s.id} href={`/train/${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
+                              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-slate-700 text-white leading-4 tracking-wide">HELI</span>
+                                {s.airport && <span className="font-mono text-xs text-blue-600">{s.airport}</span>}
+                                {s.frequency && <span className="font-mono text-xs text-gray-400">{s.frequency}</span>}
+                              </div>
+                            </div>
+                            {c && <span className={`shrink-0 text-xs font-mono ${c.passed ? 'text-green-600' : 'text-red-500'}`}>{c.score}</span>}
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
             {phases.map((phase) => {
               const phaseScenarios = scenarios
                 .filter((s) => s.phase === phase)
+                .filter((s) => s.category !== 'helicopter')
                 .filter((s) => !facilityFilter || s.facility === facilityFilter)
                 .filter((s) => !diffFilter || s.difficulty === diffFilter)
               if (!phaseScenarios.length) return null

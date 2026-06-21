@@ -11,7 +11,7 @@ import { generateScenario } from '@/lib/procedural'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { scenarioId, readback, hintUsed } = await req.json()
+  const { scenarioId, readback, hintUsed, part } = await req.json()
 
   if (!scenarioId || !readback?.trim()) {
     return NextResponse.json({ error: 'Missing scenarioId or readback' }, { status: 400 })
@@ -57,6 +57,18 @@ export async function POST(req: NextRequest) {
         { error: 'daily_limit', limit: FREE_DAILY_LIMIT },
         { status: 402 },
       )
+    }
+  }
+
+  // Curveball: grade the second exchange against the amendment, not the original.
+  if (part === 'curveball') {
+    if (!scenario.curveball) return NextResponse.json({ error: 'no_curveball' }, { status: 400 })
+    scenario = {
+      ...scenario,
+      atcTransmission: scenario.curveball.atcTransmission,
+      requiredElements: scenario.curveball.requiredElements,
+      correctReadback: scenario.curveball.correctReadback,
+      curveball: undefined,
     }
   }
 

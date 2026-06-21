@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit, clientIp } from '@/lib/ratelimit'
+import { VOICE_IDS } from '@/lib/voices'
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb'
@@ -13,7 +14,7 @@ function clampSpeed(s: unknown): number {
 export async function POST(req: NextRequest) {
   if (!rateLimit(`tts:${clientIp(req)}`, 60, 600_000)) return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
 
-  const { text, speed } = await req.json()
+  const { text, speed, voice } = await req.json()
   if (!text || typeof text !== 'string') return NextResponse.json({ error: 'Missing text' }, { status: 400 })
   if (text.length > 600) return NextResponse.json({ error: 'text_too_long' }, { status: 413 })
 
@@ -21,8 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'TTS not configured' }, { status: 503 })
   }
 
+  // Voice variety: honor an allowlisted voice id, else the default controller.
+  const voiceId = typeof voice === 'string' && VOICE_IDS.has(voice) ? voice : VOICE_ID
+
   const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`,
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
     {
       method: 'POST',
       headers: {
