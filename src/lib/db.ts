@@ -110,6 +110,7 @@ export async function initDB(): Promise<void> {
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_students_cfi ON rc_cfi_students(cfi_user_id)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_assignments_student ON rc_assignments(student_user_id)`)
+  await db.query(`ALTER TABLE rc_assignments ADD COLUMN IF NOT EXISTS due_at TIMESTAMPTZ`)
 
   // CFI Pro — instructor comments + endorsements; school co-branding on rc_users.
   await db.query(`

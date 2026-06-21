@@ -46,7 +46,7 @@ export default function TrainPage() {
   const [facilityFilter, setFacilityFilter] = useState<Facility | null>(null)
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
   const [homeList, setHomeList] = useState<Scenario[]>([])
-  const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean }>>([])
+  const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
 
   useEffect(() => {
     // Load completion data from server (if logged in) or localStorage
@@ -178,12 +178,22 @@ export default function TrainPage() {
                 <div className="space-y-2">
                   {assignments.map((a) => {
                     const sc = getScenario(a.scenario_id)
+                    let due: { text: string; cls: string } | null = null
+                    if (a.due_at && !a.done) {
+                      const d = Math.ceil((new Date(a.due_at).getTime() - Date.now()) / 86_400_000)
+                      due = d < 0 ? { text: `${-d}d overdue`, cls: 'text-red-600' }
+                        : d === 0 ? { text: 'due today', cls: 'text-red-500' }
+                        : { text: `due in ${d}d`, cls: 'text-amber-600' }
+                    }
                     return (
                       <Link key={a.scenario_id} href={`/train/${a.scenario_id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <div className="font-medium group-hover:text-gray-900 truncate">{sc?.title ?? a.scenario_id.replace(/-/g, ' ')}</div>
-                            <div className="mt-0.5"><span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-violet-600 text-white leading-4 tracking-wide">ASSIGNED</span></div>
+                            <div className="mt-0.5 flex items-center gap-2">
+                              <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-violet-600 text-white leading-4 tracking-wide">ASSIGNED</span>
+                              {due && <span className={`text-[11px] font-medium ${due.cls}`}>{due.text}</span>}
+                            </div>
                           </div>
                           <span className={`shrink-0 text-xs font-medium ${a.done ? 'text-green-600' : 'text-amber-600'}`}>{a.done ? 'done ✓' : 'to do'}</span>
                         </div>

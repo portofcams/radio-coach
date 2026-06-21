@@ -13,7 +13,7 @@ interface Report {
   weakspots: Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number }>
   readiness: { score: number; level: string; label: string; factors: { recentAccuracy: number; passRate: number; coverage: number } } | null
   recent: Array<{ scenario_id: string; score: number; passed: boolean; created_at: string }>
-  assignments: Array<{ scenario_id: string; done: boolean; created_at: string }>
+  assignments: Array<{ scenario_id: string; done: boolean; created_at: string; due_at?: string | null }>
   comments: Array<{ id: number; body: string; scenario_id: string | null; created_at: string }>
   endorsements: string[]
 }
@@ -29,6 +29,7 @@ export default function StudentReport() {
   const [picking, setPicking] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [assigning, setAssigning] = useState(false)
+  const [dueInDays, setDueInDays] = useState<number>(0)
   const [comment, setComment] = useState('')
   const [posting, setPosting] = useState(false)
   const [noteFor, setNoteFor] = useState<string | null>(null)
@@ -50,7 +51,7 @@ export default function StudentReport() {
     setAssigning(true)
     try {
       await fetch(`/api/cfi/students/${id}/assign`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenarioIds: [...selected] }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenarioIds: [...selected], dueInDays }),
       })
       setSelected(new Set()); setPicking(false)
       await load()
@@ -64,7 +65,7 @@ export default function StudentReport() {
   async function assignSyllabus(ids: string[]) {
     setAssigning(true)
     try {
-      await fetch(`/api/cfi/students/${id}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenarioIds: ids }) })
+      await fetch(`/api/cfi/students/${id}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenarioIds: ids, dueInDays }) })
       setPicking(false); await load()
     } finally { setAssigning(false) }
   }
@@ -140,16 +141,32 @@ export default function StudentReport() {
               </div>
               {r.assignments.length === 0 && !picking && <div className="text-sm text-gray-400">Nothing assigned yet.</div>}
               <div className="space-y-1.5">
-                {r.assignments.map((a) => (
-                  <div key={a.scenario_id} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700 capitalize">{a.scenario_id.replace(/-/g, ' ')}</span>
-                    <span className={a.done ? 'text-green-600' : 'text-gray-400'}>{a.done ? 'done ✓' : 'pending'}</span>
-                  </div>
-                ))}
+                {r.assignments.map((a) => {
+                  let dueText = ''
+                  if (a.due_at && !a.done) {
+                    const d = Math.ceil((new Date(a.due_at).getTime() - Date.now()) / 86_400_000)
+                    dueText = d < 0 ? ` · ${-d}d overdue` : d === 0 ? ' · due today' : ` · due in ${d}d`
+                  }
+                  return (
+                    <div key={a.scenario_id} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-700 capitalize">{a.scenario_id.replace(/-/g, ' ')}</span>
+                      <span className={a.done ? 'text-green-600' : dueText.includes('overdue') || dueText.includes('today') ? 'text-red-500' : 'text-gray-400'}>{a.done ? 'done ✓' : `pending${dueText}`}</span>
+                    </div>
+                  )
+                })}
               </div>
 
               {picking && (
                 <div className="mt-4 border-t border-gray-100 pt-4">
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-1">Due date</div>
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {[{ d: 0, l: 'No deadline' }, { d: 7, l: '1 week' }, { d: 14, l: '2 weeks' }, { d: 30, l: '30 days' }].map((o) => (
+                      <button key={o.d} onClick={() => setDueInDays(o.d)}
+                        className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${dueInDays === o.d ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-600 hover:border-gray-500'}`}>
+                        {o.l}
+                      </button>
+                    ))}
+                  </div>
                   <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-1">Assign a syllabus</div>
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {syllabi().map((sy) => (
