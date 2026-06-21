@@ -24,6 +24,19 @@ export async function GET(req: NextRequest) {
   const db = getPool()
   if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
 
+  // Test mode: send ONE sample email to a single address (no real users touched).
+  const sampleTo = req.nextUrl.searchParams.get('sample')
+  if (sampleTo) {
+    if (!emailConfigured()) return NextResponse.json({ error: 'no_email_key' }, { status: 503 })
+    const report = composeWeeklyReport({
+      callsign: 'N172SP', weekScenarios: 5, weekPassed: 4,
+      readinessScore: 78, readinessLabel: 'Almost checkride ready',
+      topWeakspot: 'Hold short', unsubUrl: `${APP_URL}/api/unsubscribe?token=sample`, appUrl: APP_URL,
+    })
+    const r = await sendEmail({ to: sampleTo, subject: report.subject, html: report.html, text: report.text })
+    return NextResponse.json({ mode: 'sample', to: sampleTo, sent: r.ok, error: r.error })
+  }
+
   const wantSend = req.nextUrl.searchParams.get('send') === '1'
   const live = wantSend && emailConfigured()
 
