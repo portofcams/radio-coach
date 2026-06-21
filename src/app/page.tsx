@@ -570,7 +570,8 @@ export default function Home() {
       <section className="bg-gray-950 py-20">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-white mb-2">Simple pricing</h2>
-          <p className="text-gray-400 mb-12">Free while you&rsquo;re getting started. Upgrade when you want more.</p>
+          <p className="text-gray-400 mb-2">Free while you&rsquo;re getting started. Upgrade when you want more.</p>
+          <p className="text-gray-500 text-sm mb-12">Save two months with annual billing — Solo $150/yr, CFI Pro $300/yr.</p>
           <div className="grid sm:grid-cols-3 gap-4 max-w-3xl">
             {[
               {

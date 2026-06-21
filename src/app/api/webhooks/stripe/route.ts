@@ -7,8 +7,8 @@ const API_VERSION = '2026-05-27.dahlia' as never
 
 function planFor(priceId: string | undefined): string | null {
   if (!priceId) return null
-  if (priceId === process.env.STRIPE_PRICE_FLIGHT_SCHOOL) return 'school'
-  if (priceId === process.env.STRIPE_PRICE_CFI_PRO) return 'cfi'
+  if (priceId === process.env.STRIPE_PRICE_FLIGHT_SCHOOL || priceId === process.env.STRIPE_PRICE_FLIGHT_SCHOOL_ANNUAL) return 'school'
+  if (priceId === process.env.STRIPE_PRICE_CFI_PRO || priceId === process.env.STRIPE_PRICE_CFI_PRO_ANNUAL) return 'cfi'
   return 'solo'
 }
 

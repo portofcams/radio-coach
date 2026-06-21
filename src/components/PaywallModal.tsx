@@ -12,6 +12,7 @@ interface Props {
 
 export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false, reason = 'daily' }: Props) {
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
+  const [interval, setInterval] = useState<'month' | 'year'>('month')
 
   async function checkout(plan: 'solo' | 'cfi') {
     setLoading(plan)
@@ -19,7 +20,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, interval }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
@@ -28,6 +29,10 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
       setLoading(null)
     }
   }
+
+  const annual = interval === 'year'
+  const price = (plan: 'solo' | 'cfi') => annual ? (plan === 'solo' ? '$150' : '$300') : (plan === 'solo' ? '$15' : '$30')
+  const per = annual ? '/year' : '/month'
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -71,6 +76,11 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
           </div>
         ) : (
         <div className="space-y-3">
+          {/* Billing interval toggle */}
+          <div className="flex items-center justify-center gap-1 bg-gray-100 rounded-lg p-1 mb-1">
+            <button onClick={() => setInterval('month')} className={`flex-1 text-sm py-1.5 rounded-md font-medium transition-colors ${!annual ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}>Monthly</button>
+            <button onClick={() => setInterval('year')} className={`flex-1 text-sm py-1.5 rounded-md font-medium transition-colors ${annual ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}>Annual · 2 months free</button>
+          </div>
           {/* Solo Pilot */}
           <button
             onClick={() => checkout('solo')}
@@ -83,8 +93,8 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
                 <div className="text-sm text-gray-300">Unlimited scenarios · All airport classes</div>
               </div>
               <div className="text-right shrink-0">
-                <div className="font-bold text-lg">$15</div>
-                <div className="text-xs text-gray-400">/month</div>
+                <div className="font-bold text-lg">{price('solo')}</div>
+                <div className="text-xs text-gray-400">{per}</div>
               </div>
             </div>
             {loading === 'solo' && (
@@ -104,8 +114,8 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
                 <div className="text-sm text-gray-500">Student tracking · Assign scenarios</div>
               </div>
               <div className="text-right shrink-0">
-                <div className="font-bold text-lg text-gray-900">$30</div>
-                <div className="text-xs text-gray-500">/month</div>
+                <div className="font-bold text-lg text-gray-900">{price('cfi')}</div>
+                <div className="text-xs text-gray-500">{per}</div>
               </div>
             </div>
             {loading === 'cfi' && (

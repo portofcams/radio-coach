@@ -186,10 +186,16 @@ export default function ProfilePage() {
                 Manage
               </button>
             ) : (
-              <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
-                className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">
-                Go unlimited · $15/mo
-              </button>
+              <div className="shrink-0 text-right">
+                <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
+                  className="text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">
+                  Go unlimited · $15/mo
+                </button>
+                <button onClick={() => billingAction('/api/checkout', { plan: 'solo', interval: 'year' })} disabled={billing}
+                  className="block ml-auto mt-1 text-xs text-blue-600 hover:underline disabled:opacity-60">
+                  or $150/yr — 2 months free
+                </button>
+              </div>
             )}
           </div>
           {ent?.plan === 'cfi' && (

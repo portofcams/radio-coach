@@ -20,9 +20,13 @@ export async function POST(req: NextRequest) {
     solo: process.env.STRIPE_PRICE_SOLO_PILOT,
     cfi: process.env.STRIPE_PRICE_CFI_PRO,
     school: process.env.STRIPE_PRICE_FLIGHT_SCHOOL,
+    'solo:year': process.env.STRIPE_PRICE_SOLO_PILOT_ANNUAL,
+    'cfi:year': process.env.STRIPE_PRICE_CFI_PRO_ANNUAL,
+    'school:year': process.env.STRIPE_PRICE_FLIGHT_SCHOOL_ANNUAL,
   }
-  const { plan } = await req.json()
-  const priceId = PRICE_MAP[plan]
+  const { plan, interval } = await req.json()
+  const key = interval === 'year' ? `${plan}:year` : plan
+  const priceId = PRICE_MAP[key] ?? PRICE_MAP[plan]
   if (!priceId) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
 
   // reuse or create the Stripe customer for this user
