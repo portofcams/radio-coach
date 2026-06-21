@@ -18,6 +18,38 @@ export async function gradeHaptic(pass: boolean): Promise<void> {
   } catch { /* haptics unavailable */ }
 }
 
+/** Native mic record (Capacitor) → returns true if recording started. */
+export async function startNativeRecording(): Promise<boolean> {
+  if (!isNative()) return false
+  try {
+    const { VoiceRecorder } = await import('capacitor-voice-recorder')
+    const perm = await VoiceRecorder.requestAudioRecordingPermission()
+    if (!perm.value) return false
+    await VoiceRecorder.startRecording()
+    return true
+  } catch { return false }
+}
+
+/** Stop native recording and transcribe via ElevenLabs Scribe (better than on-device ASR). */
+export async function stopNativeRecordingTranscribe(): Promise<string | null> {
+  if (!isNative()) return null
+  try {
+    const { VoiceRecorder } = await import('capacitor-voice-recorder')
+    const res = await VoiceRecorder.stopRecording()
+    const { recordDataBase64, mimeType } = res.value
+    if (!recordDataBase64) return null
+    const bin = atob(recordDataBase64)
+    const bytes = new Uint8Array(bin.length)
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+    const blob = new Blob([bytes], { type: mimeType || 'audio/aac' })
+    const fd = new FormData()
+    fd.append('audio', blob, 'readback.m4a')
+    const r = await fetch('/api/stt', { method: 'POST', body: fd })
+    if (!r.ok) return null
+    return (await r.json()).text ?? null
+  } catch { return null }
+}
+
 /** Schedule a daily on-device practice reminder (no server / push needed). */
 export async function scheduleDailyReminder(): Promise<void> {
   if (!isNative()) return

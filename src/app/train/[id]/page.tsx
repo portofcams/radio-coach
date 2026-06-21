@@ -11,7 +11,7 @@ import RealFieldDiagram from '@/components/RealFieldDiagram'
 import type { GradeResult, Scenario } from '@/lib/types'
 import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController, type RadioFxSettings, type RadioMode, type RadioSpeed } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
-import { gradeHaptic } from '@/lib/native'
+import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from '@/lib/native'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
 
@@ -162,24 +162,18 @@ export default function ScenarioPage() {
     setRadioState('listening')
 
     if (isNativeRef.current) {
-      // ── Native iOS path via Capacitor plugin ──────────────────────────
-      try {
-        const { SpeechRecognition } = await import('@capacitor-community/speech-recognition')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const handle = await (SpeechRecognition as any).addListener(
-          'partialResults',
-          (data: { matches?: string[] }) => {
-            if (data.matches?.[0]) setInterimText(data.matches[0])
-          },
-        )
-        nativeListenerRef.current = handle
-        recognitionRef.current = {
-          stop: () => { SpeechRecognition.stop().catch(() => {}) },
-        }
-        await SpeechRecognition.start({ language: 'en-US', maxResults: 1, partialResults: true, popup: false })
-      } catch {
-        setInterimText('')
-        setRadioState('ready')
+      // ── Native iOS: record with the mic, transcribe via Scribe (best accuracy) ──
+      const started = await startNativeRecording()
+      if (!started) { setInterimText(''); setRadioState('ready'); return }
+      recognitionRef.current = {
+        stop: () => {
+          setInterimText('Transcribing…')
+          stopNativeRecordingTranscribe().then((text) => {
+            setInterimText('')
+            if (text) { setReadback(text); setRadioState('transcribed') }
+            else setRadioState('ready')
+          })
+        },
       }
       return
     }
@@ -601,22 +595,10 @@ export default function ScenarioPage() {
               interimText={interimText}
               readback={readback}
               onMicClick={() => {
-                if (radioState === 'listening') {
-                  if (isNativeRef.current && interimText) {
-                    // Native: tap-to-stop takes current interim as final
-                    const finalText = interimText
-                    stopRecognition()
-                    setReadback(finalText)
-                    setInterimText('')
-                    setRadioState('transcribed')
-                  } else {
-                    // web (Scribe record→transcribe, or Web Speech): stopping lets
-                    // the recorder's onstop/onend drive transcription + next state
-                    stopRecognition()
-                  }
-                } else {
-                  startListening()
-                }
+                // Stopping (native record→Scribe, web Scribe, or Web Speech) lets the
+                // recorder's stop handler drive transcription + the next state.
+                if (radioState === 'listening') stopRecognition()
+                else startListening()
               }}
               onSubmit={() => submitReadback()}
               onRerecord={() => { setReadback(''); setInterimText(''); startListening() }}
