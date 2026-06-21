@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
   const setup = clean(b.setup, 600)
   const facility = clean(b.facility, 12).toUpperCase() || null
   const frequency = clean(b.frequency, 12) || null
+  const airport = clean(b.airport, 8).toUpperCase() || null
   const elements = Array.isArray(b.requiredElements)
     ? b.requiredElements.map((e: unknown) => clean(e, 80)).filter(Boolean).slice(0, 12)
     : []
@@ -40,9 +41,9 @@ export async function POST(req: NextRequest) {
   }
 
   await db.query(
-    `INSERT INTO rc_custom_scenarios (cfi_user_id, title, setup, atc_transmission, required_elements, correct_readback, facility, frequency)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [user.userId, title, setup, atc, JSON.stringify(elements), readback, facility, frequency],
+    `INSERT INTO rc_custom_scenarios (cfi_user_id, title, setup, atc_transmission, required_elements, correct_readback, facility, frequency, airport)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [user.userId, title, setup, atc, JSON.stringify(elements), readback, facility, frequency, airport],
   )
   return NextResponse.json({ ok: true })
 }

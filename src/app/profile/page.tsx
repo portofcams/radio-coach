@@ -159,7 +159,10 @@ export default function ProfilePage() {
             <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
             <h1 className="text-xl font-semibold">Profile</h1>
           </div>
-          <button onClick={logout} className="text-sm text-gray-400 hover:text-gray-600">Sign out</button>
+          <div className="flex items-center gap-4">
+            <a href="/feedback" className="text-sm text-gray-400 hover:text-gray-600">Feedback</a>
+            <button onClick={logout} className="text-sm text-gray-400 hover:text-gray-600">Sign out</button>
+          </div>
         </div>
 
         {/* Email */}

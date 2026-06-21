@@ -10,7 +10,7 @@ export default function BuildScenarioPage() {
   const router = useRouter()
   const [list, setList] = useState<Custom[]>([])
   const [state, setState] = useState<'loading' | 'ok' | 'not-cfi'>('loading')
-  const [form, setForm] = useState({ title: '', setup: '', facility: 'TOWER', frequency: '', atcTransmission: '', elements: '', correctReadback: '' })
+  const [form, setForm] = useState({ title: '', setup: '', facility: 'TOWER', frequency: '', airport: '', atcTransmission: '', elements: '', correctReadback: '' })
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
 
@@ -38,7 +38,7 @@ export default function BuildScenarioPage() {
         body: JSON.stringify({ ...form, requiredElements }),
       })
       if (!res.ok) { setErr((await res.json()).error ?? 'Could not save'); return }
-      setForm({ title: '', setup: '', facility: 'TOWER', frequency: '', atcTransmission: '', elements: '', correctReadback: '' })
+      setForm({ title: '', setup: '', facility: 'TOWER', frequency: '', airport: '', atcTransmission: '', elements: '', correctReadback: '' })
       await load()
     } finally { setSaving(false) }
   }
@@ -77,6 +77,8 @@ export default function BuildScenarioPage() {
             </select>
             <input className={inp} placeholder="Frequency (e.g. 118.6)" value={form.frequency} onChange={(e) => setForm({ ...form, frequency: e.target.value })} />
           </div>
+          <input className={inp} placeholder="Airport ICAO (optional, e.g. PAMR — enables METAR + map)" value={form.airport} onChange={(e) => setForm({ ...form, airport: e.target.value.toUpperCase() })} />
+          <p className="text-xs text-gray-400 -mt-1">After saving, hit <strong>Test</strong> on the scenario below to fly it yourself.</p>
           <textarea className={inp} rows={2} placeholder="What ATC says (played aloud)" value={form.atcTransmission} onChange={(e) => setForm({ ...form, atcTransmission: e.target.value })} />
           <textarea className={inp} rows={3} placeholder="Required elements — one per line (e.g.&#10;cleared for takeoff&#10;runway two four&#10;call sign)" value={form.elements} onChange={(e) => setForm({ ...form, elements: e.target.value })} />
           <textarea className={inp} rows={2} placeholder="The textbook-correct readback" value={form.correctReadback} onChange={(e) => setForm({ ...form, correctReadback: e.target.value })} />

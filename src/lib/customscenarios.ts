@@ -12,6 +12,7 @@ export interface CustomRow {
   correct_readback: string
   facility: string | null
   frequency: string | null
+  airport: string | null
 }
 
 export function rowToScenario(row: CustomRow): Scenario {
@@ -20,7 +21,7 @@ export function rowToScenario(row: CustomRow): Scenario {
     title: row.title,
     phase: 'pattern',
     difficulty: 2,
-    airport: '',
+    airport: row.airport || '',
     facility: (row.facility as Facility) || undefined,
     frequency: row.frequency || undefined,
     setup: row.setup || '',

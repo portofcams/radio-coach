@@ -214,6 +214,23 @@ export async function initDB(): Promise<void> {
     )
   `)
 
+  // Custom-scenario optional home airport (METAR/diagram context).
+  await db.query(`ALTER TABLE rc_custom_scenarios ADD COLUMN IF NOT EXISTS airport TEXT`)
+
+  // In-app feedback (bugs / ideas / other).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_feedback (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES rc_users(id) ON DELETE SET NULL,
+      email TEXT,
+      kind TEXT NOT NULL DEFAULT 'general',
+      message TEXT NOT NULL,
+      url TEXT,
+      user_agent TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+
   // Public flight-school directory listing fields.
   await db.query(`
     ALTER TABLE rc_schools
