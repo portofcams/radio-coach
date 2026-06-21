@@ -23,6 +23,12 @@ export default function GuidesIndex() {
           ))}
         </div>
         <p className="text-sm text-gray-500 mt-6">Then put it into practice — <a href="/train" className="text-blue-600 hover:underline">graded radio scenarios →</a></p>
+        <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <a href="/blog" className="text-blue-600 hover:underline">Blog →</a>
+          <a href="/airspace" className="text-blue-600 hover:underline">Airspace requirements →</a>
+          <a href="/glossary" className="text-blue-600 hover:underline">Phraseology glossary →</a>
+          <a href="/directory" className="text-blue-600 hover:underline">Flight-school directory →</a>
+        </div>
       </div>
     </main>
   )

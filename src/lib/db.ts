@@ -212,6 +212,18 @@ export async function initDB(): Promise<void> {
       last_seen TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `)
+
+  // Public flight-school directory listing fields.
+  await db.query(`
+    ALTER TABLE rc_schools
+      ADD COLUMN IF NOT EXISTS public_listing BOOLEAN NOT NULL DEFAULT false,
+      ADD COLUMN IF NOT EXISTS slug TEXT,
+      ADD COLUMN IF NOT EXISTS city TEXT,
+      ADD COLUMN IF NOT EXISTS region TEXT,
+      ADD COLUMN IF NOT EXISTS website TEXT,
+      ADD COLUMN IF NOT EXISTS blurb TEXT
+  `)
+  await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS rc_schools_slug ON rc_schools(slug) WHERE slug IS NOT NULL`)
 }
 
 // Run init once on first import in server context

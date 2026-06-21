@@ -15,6 +15,8 @@ export default function SchoolPage() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [copied, setCopied] = useState<number | null>(null)
+  const [listing, setListing] = useState({ public_listing: false, slug: '', city: '', region: '', website: '', blurb: '' })
+  const [savedListing, setSavedListing] = useState(false)
 
   async function load() {
     const res = await fetch('/api/school')
@@ -22,11 +24,25 @@ export default function SchoolPage() {
     if (res.status === 403) { setState('not-owner'); return }
     const d = await res.json()
     setSchool(d.school); setName(d.school?.name ?? ''); setMembers(d.members ?? []); setState('ok')
+    const s = d.school ?? {}
+    setListing({
+      public_listing: !!s.public_listing, slug: s.slug ?? '',
+      city: s.city ?? '', region: s.region ?? '', website: s.website ?? '', blurb: s.blurb ?? '',
+    })
   }
   useEffect(() => { load() /* eslint-disable-next-line */ }, [])
 
   async function saveName() {
-    await fetch('/api/school', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
+    await fetch('/api/school', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...listing }) })
+  }
+  async function saveListing() {
+    setBusy(true); setSavedListing(false)
+    try {
+      const res = await fetch('/api/school', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...listing }) })
+      const d = await res.json()
+      if (d.slug) setListing((l) => ({ ...l, slug: d.slug }))
+      setSavedListing(true); setTimeout(() => setSavedListing(false), 2000)
+    } finally { setBusy(false) }
   }
   async function addInstructor() {
     if (!email.trim()) return
@@ -86,6 +102,28 @@ export default function SchoolPage() {
           </div>
           {err && <p className="text-xs text-red-600 mt-2">{err}</p>}
           <p className="text-xs text-gray-400 mt-2">Each instructor gets full CFI Pro tools under your subscription — no separate payment.</p>
+        </div>
+
+        <div className="border border-gray-200 rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Public directory listing</div>
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" checked={listing.public_listing} onChange={(e) => setListing((l) => ({ ...l, public_listing: e.target.checked }))} />
+              List publicly
+            </label>
+          </div>
+          <p className="text-xs text-gray-400 mb-3">Show your school on the <a href="/directory" className="text-blue-600 hover:underline">Wilco directory</a> — a free SEO listing for prospective students.</p>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <input value={listing.city} onChange={(e) => setListing((l) => ({ ...l, city: e.target.value.slice(0, 60) }))} placeholder="City" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
+            <input value={listing.region} onChange={(e) => setListing((l) => ({ ...l, region: e.target.value.slice(0, 60) }))} placeholder="State / region" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
+          </div>
+          <input value={listing.website} onChange={(e) => setListing((l) => ({ ...l, website: e.target.value.slice(0, 200) }))} placeholder="Website (optional)" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-gray-900" />
+          <textarea value={listing.blurb} onChange={(e) => setListing((l) => ({ ...l, blurb: e.target.value.slice(0, 280) }))} placeholder="Short description (what you teach, where)" rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-gray-900" />
+          <div className="flex items-center gap-3">
+            <button onClick={saveListing} disabled={busy} className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">{busy ? 'Saving…' : 'Save listing'}</button>
+            {savedListing && <span className="text-xs text-green-600">Saved</span>}
+            {listing.public_listing && listing.slug && <a href={`/directory/${listing.slug}`} className="text-xs text-blue-600 hover:underline">View listing →</a>}
+          </div>
         </div>
 
         <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Instructors ({members.length})</div>
