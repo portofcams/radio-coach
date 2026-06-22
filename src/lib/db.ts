@@ -217,6 +217,45 @@ export async function initDB(): Promise<void> {
   // Custom-scenario optional home airport (METAR/diagram context).
   await db.query(`ALTER TABLE rc_custom_scenarios ADD COLUMN IF NOT EXISTS airport TEXT`)
 
+  // Saved aircraft profiles (spine for weight & balance).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_aircraft (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      tail TEXT, type TEXT,
+      empty_weight REAL, empty_arm REAL,
+      max_gross REAL, cg_fwd REAL, cg_aft REAL,
+      front_arm REAL, rear_arm REAL, fuel_arm REAL, baggage_arm REAL,
+      fuel_cap_gal REAL, fuel_lb_per_gal REAL DEFAULT 6,
+      max_baggage REAL, max_xwind REAL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_aircraft_user ON rc_aircraft(user_id)`)
+
+  // Logbook.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_logbook (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      flight_date DATE NOT NULL,
+      aircraft TEXT, dep TEXT, arr TEXT,
+      total REAL DEFAULT 0, pic REAL DEFAULT 0, dual REAL DEFAULT 0, night REAL DEFAULT 0,
+      day_ldg INTEGER DEFAULT 0, night_ldg INTEGER DEFAULT 0,
+      remarks TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_logbook_user ON rc_logbook(user_id, flight_date DESC)`)
+
+  // Pilot currency dates.
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS flight_review_date DATE,
+      ADD COLUMN IF NOT EXISTS medical_expiry DATE
+  `)
+
   // In-app feedback (bugs / ideas / other).
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_feedback (

@@ -14,6 +14,13 @@ const TOOLS = [
   { href: '/brief', name: 'Flight radio brief', desc: 'Route → the expected call sequence with real freqs.' },
 ]
 
+const RECORDS = [
+  { href: '/wb', name: 'Weight & balance', desc: 'Load your aircraft, check gross weight + CG.' },
+  { href: '/aircraft', name: 'Your aircraft', desc: 'Save profiles (weights, arms, limits).' },
+  { href: '/logbook', name: 'Logbook', desc: 'Log flights, totals, CSV export.' },
+  { href: '/currency', name: 'Currency', desc: 'Passenger, flight review & medical status.' },
+]
+
 export default function ToolsPage() {
   return (
     <main className="min-h-screen">
@@ -23,6 +30,15 @@ export default function ToolsPage() {
         <p className="text-gray-500 mb-6">Quick calculators and references for everyday flying — free, no account needed.</p>
         <div className="grid sm:grid-cols-2 gap-3">
           {TOOLS.map((t) => (
+            <Link key={t.href} href={t.href} className="block border border-gray-200 rounded-xl p-4 hover:border-gray-400 transition-colors group">
+              <div className="font-medium group-hover:text-gray-900">{t.name}</div>
+              <div className="text-sm text-gray-500 mt-0.5">{t.desc}</div>
+            </Link>
+          ))}
+        </div>
+        <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-3">Your aircraft &amp; records <span className="font-normal text-gray-400">(sign in)</span></h2>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {RECORDS.map((t) => (
             <Link key={t.href} href={t.href} className="block border border-gray-200 rounded-xl p-4 hover:border-gray-400 transition-colors group">
               <div className="font-medium group-hover:text-gray-900">{t.name}</div>
               <div className="text-sm text-gray-500 mt-0.5">{t.desc}</div>
