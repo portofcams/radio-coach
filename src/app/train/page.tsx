@@ -86,6 +86,7 @@ export default function TrainPage() {
             <Link href="/practice" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Practice</Link>
             <Link href="/listen" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Listen</Link>
             <Link href="/oral" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Oral</Link>
+            <Link href="/community" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Community</Link>
             <Link href="/leaderboard" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Leaderboard</Link>
             <Link href="/guides" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Guides</Link>
             <Link href="/glossary" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Glossary</Link>

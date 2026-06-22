@@ -256,6 +256,32 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS medical_expiry DATE
   `)
 
+  // Community scenario library — user-submitted, auto-validated by the rule grader.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_community_scenarios (
+      id SERIAL PRIMARY KEY,
+      author_user_id INTEGER REFERENCES rc_users(id) ON DELETE SET NULL,
+      author_name TEXT NOT NULL DEFAULT 'A pilot',
+      title TEXT NOT NULL,
+      setup TEXT NOT NULL DEFAULT '',
+      atc_transmission TEXT NOT NULL,
+      required_elements JSONB NOT NULL DEFAULT '[]',
+      correct_readback TEXT NOT NULL,
+      facility TEXT, frequency TEXT, airport TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      upvotes INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_community_status ON rc_community_scenarios(status, upvotes DESC)`)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_community_votes (
+      scenario_id INTEGER NOT NULL REFERENCES rc_community_scenarios(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      PRIMARY KEY (scenario_id, user_id)
+    )
+  `)
+
   // "7 days to radio confidence" email drip subscribers.
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_drip_subscribers (

@@ -35,6 +35,7 @@ export default function ScenarioPage() {
   })
   const isHomeId = id.startsWith('home-')
   const isCustomId = id.startsWith('custom-')
+  const isCommunityId = id.startsWith('community-')
 
   // Core state machine
   const [radioState, setRadioState] = useState<RadioState>('idle')
@@ -128,7 +129,11 @@ export default function ScenarioPage() {
         fetch(`/api/custom/${id}`).then((r) => r.json()).then((c) => { if (c.scenario) setScenario(c.scenario) }).catch(() => {})
       }
     }).catch(() => {})
-  }, [id, isHomeId, isCustomId])
+    // Resolve a community scenario (public — no auth needed)
+    if (isCommunityId) {
+      fetch(`/api/community/${id.replace(/^community-/, '')}`).then((r) => r.json()).then((c) => { if (c.scenario) setScenario(c.scenario) }).catch(() => {})
+    }
+  }, [id, isHomeId, isCustomId, isCommunityId])
 
   // Always start a scenario on its initial exchange (the page persists across nav).
   useEffect(() => { exchangeRef.current = 'initial'; setExchange('initial') }, [id])

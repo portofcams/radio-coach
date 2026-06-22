@@ -25,7 +25,7 @@ const WX: Record<string, string> = {
 }
 const COVER: Record<string, string> = { SKC: 'sky clear', CLR: 'clear below 12,000', NSC: 'no significant cloud', FEW: 'few', SCT: 'scattered', BKN: 'broken', OVC: 'overcast', VV: 'vertical visibility' }
 
-function decodeWind(t: string): string | null {
+export function decodeWind(t: string): string | null {
   const calm = /^00000(KT|MPS)$/.test(t)
   if (calm) return 'Wind calm'
   const m = t.match(/^(VRB|\d{3})(\d{2,3})(G(\d{2,3}))?(KT|MPS)$/)
@@ -36,19 +36,20 @@ function decodeWind(t: string): string | null {
   return `Wind ${dir} at ${parseInt(m[2])}${unit}${gust}`
 }
 
-function decodeVis(t: string): { text: string; sm: number | null } | null {
-  let m = t.match(/^(M)?(\d+)(\/(\d+))?SM$/)
+export function decodeVis(t: string): { text: string; sm: number | null } | null {
+  const p = t.match(/^P(\d+)SM$/) // P6SM = greater than 6 SM
+  if (p) return { text: `Visibility greater than ${p[1]} statute miles`, sm: parseInt(p[1]) + 0.1 }
+  const m = t.match(/^(M)?(\d+)(\/(\d+))?SM$/)
   if (m) {
     const whole = parseInt(m[2])
     const sm = m[4] ? whole / parseInt(m[4]) : whole
     const disp = m[4] ? `${m[2]}/${m[4]}` : m[2]
     return { text: `Visibility ${m[1] ? 'less than ' : ''}${disp} statute miles`, sm }
   }
-  m = t.match(/^(\d) (\d)\/(\d)SM$/) // "1 1/2SM" handled by caller joining; keep simple
   return null
 }
 
-function decodeCloud(t: string): { text: string; baseFt: number | null; ceiling: boolean } | null {
+export function decodeCloud(t: string): { text: string; baseFt: number | null; ceiling: boolean } | null {
   const m = t.match(/^(SKC|CLR|NSC|FEW|SCT|BKN|OVC|VV)(\d{3})?(CB|TCU)?$/)
   if (!m) return null
   const cov = COVER[m[1]]
@@ -59,7 +60,7 @@ function decodeCloud(t: string): { text: string; baseFt: number | null; ceiling:
   return { text: `${cov} at ${ft.toLocaleString()} ft${extra}`, baseFt: ft, ceiling }
 }
 
-function decodeWx(t: string): string | null {
+export function decodeWx(t: string): string | null {
   const sign = t.startsWith('-') ? 'light ' : t.startsWith('+') ? 'heavy ' : ''
   const body = t.replace(/^[-+]/, '')
   const parts: string[] = []

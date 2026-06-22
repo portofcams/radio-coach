@@ -7,6 +7,7 @@ import { getEntitlement, dailyGradeCount, FREE_DAILY_LIMIT } from '@/lib/entitle
 import { resolveHomeProfile } from '@/lib/home-server'
 import { homeScenario } from '@/lib/home-client'
 import { getCustomScenarioFor } from '@/lib/customscenarios'
+import { getCommunityScenario } from '@/lib/community'
 import { generateScenario } from '@/lib/procedural'
 import type { Scenario } from '@/lib/types'
 
@@ -38,6 +39,9 @@ export async function POST(req: NextRequest) {
   }
   if (!scenario && scenarioId.startsWith('custom-') && user && db) {
     scenario = (await getCustomScenarioFor(db, parseInt(scenarioId.replace(/^custom-/, '')), user.userId)) ?? undefined
+  }
+  if (!scenario && scenarioId.startsWith('community-') && db) {
+    scenario = (await getCommunityScenario(db, parseInt(scenarioId.replace(/^community-/, '')))) ?? undefined
   }
   if (!scenario) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })

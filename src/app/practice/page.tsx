@@ -29,6 +29,12 @@ export default function PracticePage() {
         </button>
       </div>
 
+      <div className="border border-gray-200 rounded-xl p-5 mb-4 text-left">
+        <div className="font-semibold mb-1">Weak-spot bootcamp</div>
+        <p className="text-gray-500 text-sm mb-4">A focused plan built from the elements you&apos;ve been missing lately.</p>
+        <a href="/bootcamp" className="block text-center w-full border border-gray-300 text-gray-800 rounded-lg px-6 py-3 text-sm font-medium hover:border-gray-500">Build my bootcamp</a>
+      </div>
+
       <div className="border border-gray-200 rounded-xl p-5 text-left">
         <div className="font-semibold mb-1">Endless random</div>
         <p className="text-gray-500 text-sm mb-4">A never-ending stream of fresh, randomly generated ATC calls.</p>
