@@ -21,8 +21,16 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params
   const g = getGuide(slug)
   if (!g) notFound()
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: g.title,
+    description: g.description,
+    step: g.sections.map((s) => ({ '@type': 'HowToStep', name: s.h, text: s.p })),
+  }
   return (
     <main className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <a href="/guides" className="text-gray-400 hover:text-gray-600 text-sm">← all guides</a>
         <h1 className="text-2xl font-semibold mt-3 mb-2">{g.title}</h1>

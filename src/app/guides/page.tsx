@@ -34,9 +34,12 @@ export default function GuidesIndex() {
           </div>
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
             <a href="/blog" className="text-blue-600 hover:underline">Blog →</a>
+            <a href="/compare" className="text-blue-600 hover:underline">How to practice ATC →</a>
+            <a href="/confidence" className="text-blue-600 hover:underline">Free 7-day email course →</a>
             <a href="/airspace" className="text-blue-600 hover:underline">Airspace requirements →</a>
             <a href="/glossary" className="text-blue-600 hover:underline">Phraseology glossary →</a>
             <a href="/directory" className="text-blue-600 hover:underline">Flight-school directory →</a>
+            <a href="/widgets" className="text-blue-600 hover:underline">Free widgets for schools →</a>
           </div>
         </div>
       </div>

@@ -256,6 +256,19 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS medical_expiry DATE
   `)
 
+  // "7 days to radio confidence" email drip subscribers.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_drip_subscribers (
+      id SERIAL PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      day_sent INTEGER NOT NULL DEFAULT -1,
+      unsub_token TEXT NOT NULL,
+      opted_out BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      last_sent TIMESTAMPTZ
+    )
+  `)
+
   // Readback duels — async "beat my score" challenges (shareable link).
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_duels (
