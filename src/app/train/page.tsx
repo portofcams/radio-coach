@@ -173,6 +173,25 @@ export default function TrainPage() {
         {/* Scenarios tab */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
+            {!facilityFilter && !diffFilter && (() => {
+              const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter')
+              const day = new Date().toISOString().slice(0, 10)
+              let h = 0
+              for (let i = 0; i < day.length; i++) h = (h * 31 + day.charCodeAt(i)) >>> 0
+              const c = pool[h % pool.length]
+              const done = completed[c.id]
+              return (
+                <Link href={`/train/${c.id}`} className="block rounded-xl p-4 border border-amber-300 bg-amber-50 hover:border-amber-400 transition-colors">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="font-mono text-[10px] font-bold tracking-widest text-amber-600 mb-0.5">CALL OF THE DAY</div>
+                      <div className="font-medium text-gray-900 truncate">{c.title}</div>
+                    </div>
+                    <span className="shrink-0 text-sm font-medium text-amber-700">{done ? `done · ${done.score}` : 'Fly it →'}</span>
+                  </div>
+                </Link>
+              )
+            })()}
             {assignments.length > 0 && !facilityFilter && !diffFilter && (
               <div>
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Assigned by your CFI</h2>

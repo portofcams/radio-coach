@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 import NativeInit from '@/components/NativeInit'
 import InstallPrompt from '@/components/InstallPrompt'
+import ThemeToggle from '@/components/ThemeToggle'
+
+// Set the theme class before paint (no flash of the wrong theme).
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('wilco_theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`
 
 export const metadata: Metadata = {
   title: 'Wilco — Clearspar Radio Training',
@@ -17,10 +21,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-white text-gray-900 antialiased">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body className="antialiased">
         <NativeInit />
         {children}
         <InstallPrompt />
+        <ThemeToggle />
       </body>
     </html>
   )

@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Base body colors (kept out of the className so dark can own the page bg). */
+body { background: #ffffff; color: #111827; }
+
+/* ── Dark mode ─────────────────────────────────────────────────────────────
+   The app uses raw Tailwind grays (no theme tokens), so dark mode is a tuned
+   global remap of the utility classes actually used. bg-gray-900 is the primary
+   button + dark-section color → mapped to a mid surface so buttons stay visible. */
+.dark { color-scheme: dark; }
+.dark body { background: #0b0f14; color: #e5e7eb; }
+
+.dark .bg-white { background-color: #13171c !important; }
+.dark .bg-gray-50, .dark .bg-gray-50\/60 { background-color: #161b21 !important; }
+.dark .bg-gray-100 { background-color: #1b2127 !important; }
+.dark .bg-gray-950 { background-color: #090c10 !important; }
+.dark .bg-gray-900 { background-color: #2a313a !important; } /* buttons + dark sections */
+.dark .bg-gray-800 { background-color: #222932 !important; }
+
+.dark .text-gray-900 { color: #f3f4f6 !important; }
+.dark .text-gray-800 { color: #e5e7eb !important; }
+.dark .text-gray-700 { color: #d1d5db !important; }
+.dark .text-gray-600 { color: #b6bcc4 !important; }
+.dark .text-gray-500 { color: #9aa1aa !important; }
+.dark .text-gray-400 { color: #767d86 !important; }
+
+.dark .border-gray-100, .dark .border-gray-200, .dark .border-gray-300 { border-color: #242b33 !important; }
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #242b33 !important; }
+
+/* Form controls */
+.dark input, .dark textarea, .dark select { background-color: #13171c; color: #e5e7eb; border-color: #2a313a; }
+.dark input::placeholder, .dark textarea::placeholder { color: #6b7280; }
+
+/* Soft colored panels — dim the pastel *-50 backgrounds for dark */
+.dark .bg-green-50 { background-color: #0e2417 !important; }
+.dark .bg-red-50 { background-color: #2a1214 !important; }
+.dark .bg-amber-50 { background-color: #2a2008 !important; }
+.dark .bg-yellow-50 { background-color: #262006 !important; }
+.dark .bg-blue-50, .dark .bg-blue-50\/40 { background-color: #0f1d2e !important; }
+.dark .bg-sky-50 { background-color: #0c1f2b !important; }
+.dark .bg-cyan-50 { background-color: #0a2227 !important; }
+.dark .bg-fuchsia-50 { background-color: #2a0f24 !important; }
+.dark .bg-violet-50 { background-color: #1c1530 !important; }
+.dark .bg-orange-50 { background-color: #2a1606 !important; }
+.dark .bg-gray-50\/60 { background-color: #161b21 !important; }

@@ -11,6 +11,7 @@ const TOOLS = [
   { href: '/metar', name: 'METAR decoder', desc: 'Raw report → plain English + flight category.' },
   { href: '/crosswind', name: 'Crosswind calculator', desc: 'Runway + wind → headwind & crosswind.' },
   { href: '/density-altitude', name: 'Density altitude', desc: 'Elevation, altimeter & temp → performance.' },
+  { href: '/e6b', name: 'E6B calculator', desc: 'Time/speed/distance, fuel, and wind correction.' },
   { href: '/brief', name: 'Flight radio brief', desc: 'Route → the expected call sequence with real freqs.' },
 ]
 

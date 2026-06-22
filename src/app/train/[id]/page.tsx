@@ -57,6 +57,11 @@ export default function ScenarioPage() {
   const [exchange, setExchange] = useState<'initial' | 'curveball'>('initial')
   const [showWhy, setShowWhy] = useState(false)
   const exchangeRef = useRef<'initial' | 'curveball'>('initial')
+  const [duelTarget, setDuelTarget] = useState<{ name: string; score: number } | null>(null)
+  const duelIdRef = useRef<string | null>(null)
+  const duelRecordedRef = useRef(false)
+  const [challengeUrl, setChallengeUrl] = useState<string | null>(null)
+  const [challengeCopied, setChallengeCopied] = useState(false)
   const [timerEnabled, setTimerEnabled] = useState(false)
   const [timer, setTimer] = useState<number | null>(null)
   const [metar, setMetar] = useState<string | null>(null)
@@ -127,6 +132,43 @@ export default function ScenarioPage() {
 
   // Always start a scenario on its initial exchange (the page persists across nav).
   useEffect(() => { exchangeRef.current = 'initial'; setExchange('initial') }, [id])
+
+  // Duel mode: a ?duel=ID challenge to beat. (Read from URL to avoid a Suspense boundary.)
+  useEffect(() => {
+    const did = new URLSearchParams(window.location.search).get('duel')
+    duelIdRef.current = did
+    duelRecordedRef.current = false
+    setDuelTarget(null)
+    setChallengeUrl(null)
+    if (did) {
+      fetch(`/api/duel/${did}`).then((r) => (r.ok ? r.json() : null)).then((d) => {
+        if (d?.scenario_id) setDuelTarget({ name: d.creator_name, score: d.creator_score })
+      }).catch(() => {})
+    }
+  }, [id])
+
+  // Record the duel attempt once a graded result lands.
+  useEffect(() => {
+    if (radioState === 'done' && result && duelIdRef.current && duelTarget && !duelRecordedRef.current) {
+      duelRecordedRef.current = true
+      fetch(`/api/duel/${duelIdRef.current}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ beat: result.score > duelTarget.score }),
+      }).catch(() => {})
+    }
+  }, [radioState, result, duelTarget])
+
+  async function createChallenge() {
+    if (!scenario || !result) return
+    try {
+      const res = await fetch('/api/duel', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scenarioId: scenario.id, name: user?.callsign || 'A pilot', score: result.score }),
+      })
+      const d = await res.json()
+      if (d.id) setChallengeUrl(`${window.location.origin}/duel/${d.id}`)
+    } catch { /* ignore */ }
+  }
 
   // METAR
   useEffect(() => {
@@ -705,6 +747,29 @@ export default function ScenarioPage() {
                   {result.phraseologyIssues.map((issue, i) => <li key={i} className="text-sm text-yellow-800">— {issue}</li>)}
                 </ul>
               </div>
+            )}
+
+            {duelTarget && (
+              <div className={`rounded-xl p-4 border text-center ${result.score > duelTarget.score ? 'border-green-300 bg-green-50' : result.score === duelTarget.score ? 'border-amber-300 bg-amber-50' : 'border-red-300 bg-red-50'}`}>
+                <div className="font-mono text-[10px] font-bold tracking-widest text-amber-600 mb-1">RADIO DUEL</div>
+                <div className="text-sm text-gray-700">You {result.score}% vs {duelTarget.name} {duelTarget.score}%</div>
+                <div className={`text-lg font-bold ${result.score > duelTarget.score ? 'text-green-700' : result.score === duelTarget.score ? 'text-amber-700' : 'text-red-700'}`}>
+                  {result.score > duelTarget.score ? 'You win!' : result.score === duelTarget.score ? 'Dead heat' : 'They beat you'}
+                </div>
+              </div>
+            )}
+
+            {!duelTarget && getScenario(id) && (
+              challengeUrl ? (
+                <div className="border border-gray-200 rounded-xl p-3 flex items-center gap-2">
+                  <input readOnly value={challengeUrl} className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs font-mono bg-gray-50" />
+                  <button onClick={() => { navigator.clipboard?.writeText(challengeUrl); setChallengeCopied(true); setTimeout(() => setChallengeCopied(false), 1500) }} className="bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-800">{challengeCopied ? 'Copied' : 'Copy'}</button>
+                </div>
+              ) : (
+                <button onClick={createChallenge} className="w-full border border-gray-300 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium hover:border-gray-400">
+                  Challenge a friend to beat {result.score}% →
+                </button>
+              )
             )}
 
             {scenario?.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (

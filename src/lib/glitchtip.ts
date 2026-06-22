@@ -1,9 +1,14 @@
 // GlitchTip / Sentry error reporting — dependency-free (Sentry store endpoint).
 // Gated on GLITCHTIP_DSN; a clean no-op until that env is set.
 // DSN form: https://<publicKey>@<host>/<projectId>  (GlitchTip = errors.portofcams.com)
-import { randomUUID } from 'node:crypto'
-
 const DSN = process.env.GLITCHTIP_DSN
+
+// 32-hex event id (Sentry just needs uniqueness; no crypto dep → edge-safe).
+function eventId(): string {
+  let s = ''
+  for (let i = 0; i < 32; i++) s += Math.floor(Math.random() * 16).toString(16)
+  return s
+}
 
 export function glitchtipConfigured(): boolean {
   return Boolean(DSN)
@@ -27,7 +32,7 @@ async function send(event: Record<string, unknown>): Promise<void> {
         'X-Sentry-Auth': `Sentry sentry_version=7, sentry_key=${d.key}, sentry_client=wilco/1.0`,
       },
       body: JSON.stringify({
-        event_id: randomUUID().replace(/-/g, ''),
+        event_id: eventId(),
         timestamp: new Date().toISOString(),
         platform: 'node',
         environment: 'production',

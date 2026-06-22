@@ -256,6 +256,19 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS medical_expiry DATE
   `)
 
+  // Readback duels — async "beat my score" challenges (shareable link).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_duels (
+      id SERIAL PRIMARY KEY,
+      scenario_id TEXT NOT NULL,
+      creator_name TEXT NOT NULL DEFAULT 'A pilot',
+      creator_score INTEGER NOT NULL,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      beaten INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+
   // In-app feedback (bugs / ideas / other).
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_feedback (
