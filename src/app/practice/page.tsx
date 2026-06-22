@@ -21,6 +21,12 @@ export default function PracticePage() {
         <h1 className="text-2xl font-semibold">Practice</h1>
       </div>
 
+      <div className="border border-amber-300 bg-amber-50 rounded-xl p-5 mb-4 text-left">
+        <div className="font-semibold mb-1">Live duel <span className="font-mono text-[10px] font-bold tracking-widest text-amber-600 align-middle">NEW</span></div>
+        <p className="text-gray-600 text-sm mb-4">Race another pilot on the same ATC call in real time — fastest clean readback wins.</p>
+        <a href="/duel/live" className="block text-center w-full bg-amber-500 text-white rounded-lg px-6 py-3 text-sm font-semibold hover:bg-amber-600">Start a live duel</a>
+      </div>
+
       <div className="border border-gray-200 rounded-xl p-5 mb-4 text-left">
         <div className="font-semibold mb-1">Smart practice</div>
         <p className="text-gray-500 text-sm mb-4">Adapts to your recent scores — steps up the difficulty as you pass and leans into the phases you&apos;ve been missing.</p>
