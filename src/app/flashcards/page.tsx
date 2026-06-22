@@ -3,14 +3,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { FLASHCARDS, type Flashcard } from '@/lib/flashcards'
+import { loadStudyState, saveStudyState } from '@/lib/studysync'
 
-// Leitner spaced repetition: each card has a box (1–5) + due time, in localStorage.
+// Leitner spaced repetition: box (1–5) + due time per card. Synced to the account
+// when signed in (cross-device); localStorage otherwise.
 const KEY = 'wilco_srs_v1'
 const INTERVALS_H = [0, 4, 24, 72, 168, 336] // hours by box (1..5)
 type Sched = Record<string, { box: number; due: number }>
 
-function load(): Sched { try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} } }
-function save(s: Sched) { try { localStorage.setItem(KEY, JSON.stringify(s)) } catch { /* ignore */ } }
+function save(s: Sched) { saveStudyState('flashcards', KEY, s) }
 
 export default function FlashcardsPage() {
   const [sched, setSched] = useState<Sched>({})
@@ -18,7 +19,7 @@ export default function FlashcardsPage() {
   const [revealed, setRevealed] = useState(false)
   const [reviewed, setReviewed] = useState(0)
 
-  useEffect(() => { setSched(load()); setReady(true) }, [])
+  useEffect(() => { loadStudyState<Sched>('flashcards', KEY, {}).then((s) => { setSched(s); setReady(true) }) }, [])
 
   // Due = scheduled in the past, or never seen. Soonest-due first.
   const queue = useMemo(() => {

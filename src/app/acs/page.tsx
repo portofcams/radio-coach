@@ -3,22 +3,21 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ACS, ACS_TASK_COUNT } from '@/lib/acs'
+import { loadStudyState, saveStudyState } from '@/lib/studysync'
 
 const KEY = 'wilco_acs_v1'
+type Done = Record<string, boolean>
 
 export default function AcsPage() {
-  const [done, setDone] = useState<Record<string, boolean>>({})
+  const [done, setDone] = useState<Done>({})
   const [ready, setReady] = useState(false)
 
-  useEffect(() => {
-    try { setDone(JSON.parse(localStorage.getItem(KEY) || '{}')) } catch { /* ignore */ }
-    setReady(true)
-  }, [])
+  useEffect(() => { loadStudyState<Done>('acs', KEY, {}).then((d) => { setDone(d); setReady(true) }) }, [])
 
   function toggle(id: string) {
     setDone((d) => {
       const next = { ...d, [id]: !d[id] }
-      try { localStorage.setItem(KEY, JSON.stringify(next)) } catch { /* ignore */ }
+      saveStudyState('acs', KEY, next)
       return next
     })
   }

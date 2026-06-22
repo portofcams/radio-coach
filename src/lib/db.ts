@@ -256,6 +256,17 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS medical_expiry DATE
   `)
 
+  // Cross-device study-tool state (flashcards SRS, ACS checklist) per user+tool.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_study_state (
+      user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      tool TEXT NOT NULL,
+      state JSONB NOT NULL DEFAULT '{}',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (user_id, tool)
+    )
+  `)
+
   // Community scenario library — user-submitted, auto-validated by the rule grader.
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_community_scenarios (

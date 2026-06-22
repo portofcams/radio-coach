@@ -52,6 +52,7 @@ export default function ProfilePage() {
   const [readiness, setReadiness] = useState<Readiness | null>(null)
   const [coach, setCoach] = useState<Coach | null>(null)
   const [branding, setBranding] = useState({ orgName: '', logoUrl: '' })
+  const [cfiShared, setCfiShared] = useState(false)
   const [savingBranding, setSavingBranding] = useState(false)
   const [referral, setReferral] = useState<{ link: string; referrals: number } | null>(null)
   const [refCopied, setRefCopied] = useState(false)
@@ -217,6 +218,24 @@ export default function ProfilePage() {
             <a href="/refer" className="text-sm text-blue-600 hover:underline">Refer a friend — give a month, get a month →</a>
           </div>
         </div>
+
+        {/* Bottom-up B2B: students nudge their instructor / school */}
+        {ent?.plan !== 'cfi' && ent?.plan !== 'school' && !coach && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Training with an instructor?</div>
+            <p className="text-sm text-gray-600 mb-3">Wilco has a CFI tool to assign you scenarios and track your weak spots. Share it with your instructor or school — they can try it free.</p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                  const msg = `I'm using Wilco to practice radio calls and it has a tool for instructors to assign scenarios and track students. Might be worth a look: https://wilco.binnacleai.com/cfi`
+                  navigator.clipboard?.writeText(msg); setCfiShared(true); setTimeout(() => setCfiShared(false), 2000)
+                }}
+                className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800"
+              >{cfiShared ? 'Copied — paste it to your CFI' : 'Copy a message for your CFI'}</button>
+              <a href="/cfi" className="text-xs text-gray-400 hover:text-gray-600">See the CFI tools</a>
+            </div>
+          </div>
+        )}
 
         {/* From your instructor (student side) */}
         {coach && (
