@@ -112,7 +112,7 @@ export default function SchoolPage() {
               List publicly
             </label>
           </div>
-          <p className="text-xs text-gray-400 mb-3">Show your school on the <a href="/directory" className="text-blue-600 hover:underline">Wilco directory</a> — a free SEO listing for prospective students.</p>
+          <p className="text-xs text-gray-400 mb-3">Show your school on the <a href="/directory" className="text-blue-600 hover:underline">Clearspar directory</a> — a free SEO listing for prospective students.</p>
           <div className="grid grid-cols-2 gap-2 mb-2">
             <input value={listing.city} onChange={(e) => setListing((l) => ({ ...l, city: e.target.value.slice(0, 60) }))} placeholder="City" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
             <input value={listing.region} onChange={(e) => setListing((l) => ({ ...l, region: e.target.value.slice(0, 60) }))} placeholder="State / region" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />

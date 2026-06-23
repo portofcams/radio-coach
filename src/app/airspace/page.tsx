@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { AIRSPACE } from '@/lib/airspace'
 
 export const metadata: Metadata = {
-  title: 'Airspace radio requirements — Class B, C, D, E, G · Wilco',
+  title: 'Airspace radio requirements — Class B, C, D, E, G · Clearspar',
   description: 'What you have to say (and have) to fly into each class of US airspace — Class Bravo, Charlie, Delta, Echo, and Golf — explained for student pilots.',
   alternates: { canonical: 'https://wilco.binnacleai.com/airspace' },
 }

@@ -8,9 +8,9 @@ import ThemeToggle from '@/components/ThemeToggle'
 const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('wilco_theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`
 
 export const metadata: Metadata = {
-  title: 'Wilco — Clearspar Radio Training',
+  title: 'Clearspar Radio Trainer — ATC Radio Training',
   description:
-    'Wilco by Clearspar — learn aviation radio comms like a game. Free Ground School drills plus live, graded ATC readbacks. No mic, works offline.',
+    'Clearspar Radio Trainer — learn aviation radio comms like a game. Free Ground School drills plus live, graded ATC readbacks. No mic, works offline.',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icon-192.png',

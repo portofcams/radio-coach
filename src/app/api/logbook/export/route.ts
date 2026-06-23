@@ -24,6 +24,6 @@ export async function GET() {
   }
   const today = new Date().toISOString().slice(0, 10)
   return new NextResponse(lines.join('\n'), {
-    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="wilco-logbook-${today}.csv"` },
+    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="clearspar-logbook-${today}.csv"` },
   })
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 // Minimal embeddable crosswind widget. Designed to be iframed on flight-school
-// sites — compact, with a "powered by Wilco" backlink.
+// sites — compact, with a "powered by Clearspar" backlink.
 export default function EmbedCrosswind() {
   const [runway, setRunway] = useState('')
   const [wd, setWd] = useState('')

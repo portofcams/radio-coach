@@ -1,9 +1,9 @@
-// Wilco service worker — conservative offline support.
+// Clearspar service worker — conservative offline support.
 // Online users ALWAYS get fresh content (network-first for pages); pages you've
 // visited are served from cache when offline (so Ground School works on the ramp).
 // Hashed static assets are cache-first. Bump VERSION to invalidate.
-const VERSION = 'wilco-v1'
-const CACHE = `wilco-cache-${VERSION}`
+const VERSION = 'clearspar-v1'
+const CACHE = `clearspar-cache-${VERSION}`
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()
@@ -17,9 +17,9 @@ self.addEventListener('activate', (e) => {
   })())
 })
 
-const OFFLINE_HTML = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline · Wilco</title></head>
+const OFFLINE_HTML = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline · Clearspar Radio Trainer</title></head>
 <body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b0f14;color:#e5e7eb;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center">
-<div style="max-width:300px;padding:24px"><div style="font-weight:600;letter-spacing:.1em;margin-bottom:12px">WILCO</div>
+<div style="max-width:300px;padding:24px"><div style="font-weight:600;letter-spacing:.1em;margin-bottom:12px">CLEARSPAR</div>
 <p style="color:#9ca3af;font-size:14px">You're offline. Pages you've already opened — including Ground School — still work. Reconnect for live comms.</p></div></body></html>`
 
 self.addEventListener('fetch', (event) => {

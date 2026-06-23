@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Radio Cheat Sheet — Wilco',
+  title: 'Radio Cheat Sheet — Clearspar',
   description: 'The aviation radio formulas — read-backs, numbers, initial calls, airport signs — referenced to the FAA AIM. Print it, screenshot it, learn it.',
 }
 
@@ -136,7 +136,7 @@ export default function CheatSheet() {
                 <div className="font-medium text-gray-900 mb-1.5">Say</div>
                 <ul className="space-y-1 text-gray-600">
                   <li><span className="font-mono text-gray-900">Roger</span> — I received your message</li>
-                  <li><span className="font-mono text-gray-900">Wilco</span> — I will comply</li>
+                  <li><span className="font-mono text-gray-900">Clearspar</span> — I will comply</li>
                   <li><span className="font-mono text-gray-900">Affirmative / Negative</span> — yes / no</li>
                   <li><span className="font-mono text-gray-900">Say again</span> — repeat your last</li>
                   <li><span className="font-mono text-gray-900">Unable</span> — I can&rsquo;t do that</li>

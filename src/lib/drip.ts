@@ -63,7 +63,7 @@ export const DRIP: DripDay[] = [
     lead: 'You\'ve got the pieces. Now make them automatic.',
     body: [
       'Knowledge becomes fluency through reps under a little pressure. The fastest way to get there is graded practice: hear a real call, read it back, and see exactly what you missed.',
-      'That\'s what Wilco does — free to start, no flight sim, no mic required. Drill your home field, run a mock oral for the checkride, and watch your readiness score climb.',
+      'That\'s what Clearspar Radio Trainer does — free to start, no flight sim, no mic required. Drill your home field, run a mock oral for the checkride, and watch your readiness score climb.',
       '<a href="APPURL/train" style="color:#2563eb">Start your first graded scenario →</a>',
     ],
   },
@@ -82,10 +82,10 @@ export function composeDrip(dayIndex: number, opts: { unsubUrl: string; appUrl: 
       ${body.map((p) => `<p style="margin:0 0 14px;color:#374151;line-height:1.55">${p}</p>`).join('')}
     </div>
     <div style="text-align:center;color:#9ca3af;font-size:11px;padding:16px 8px;line-height:1.6">
-      Wilco · Clearspar — aviation radio training<br>${ADDRESS}<br>
+      Clearspar Radio Trainer — aviation radio training<br>${ADDRESS}<br>
       <a href="${opts.unsubUrl}" style="color:#9ca3af">Unsubscribe</a>
     </div>
   </div></body></html>`
-  const text = [d.subject, '', d.lead, '', ...body.map((p) => p.replace(/<[^>]+>/g, '')), '', `Wilco · Clearspar — ${ADDRESS}`, `Unsubscribe: ${opts.unsubUrl}`].join('\n')
+  const text = [d.subject, '', d.lead, '', ...body.map((p) => p.replace(/<[^>]+>/g, '')), '', `Clearspar Radio Trainer — ${ADDRESS}`, `Unsubscribe: ${opts.unsubUrl}`].join('\n')
   return { subject: d.subject, html, text }
 }

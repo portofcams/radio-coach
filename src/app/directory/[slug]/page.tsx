@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!s) return {}
   const where = [s.city, s.region].filter(Boolean).join(', ')
   return {
-    title: `${s.name}${where ? ` — ${where}` : ''} · trains with Wilco`,
-    description: s.blurb ?? `${s.name} uses Wilco to train pilots on ATC radio communications.`,
+    title: `${s.name}${where ? ` — ${where}` : ''} · trains with Clearspar`,
+    description: s.blurb ?? `${s.name} uses Clearspar to train pilots on ATC radio communications.`,
     alternates: { canonical: `https://wilco.binnacleai.com/directory/${slug}` },
   }
 }
@@ -42,8 +42,8 @@ export default async function SchoolProfile({ params }: { params: Promise<{ slug
           )}
         </div>
         <div className="mt-8 border-t border-gray-100 pt-6">
-          <p className="text-sm text-gray-500 mb-3">{s.name} trains radio communications with Wilco — graded ATC scenarios built to the FAA standard.</p>
-          <Link href="/train" className="inline-block bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-800">Try Wilco free →</Link>
+          <p className="text-sm text-gray-500 mb-3">{s.name} trains radio communications with Clearspar — graded ATC scenarios built to the FAA standard.</p>
+          <Link href="/train" className="inline-block bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-800">Try Clearspar free →</Link>
         </div>
       </div>
     </main>

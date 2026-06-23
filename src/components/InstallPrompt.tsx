@@ -21,7 +21,7 @@ export default function InstallPrompt() {
 
   return (
     <div className="fixed bottom-4 inset-x-4 z-50 mx-auto max-w-sm bg-[#0b0f14] text-white rounded-xl shadow-lg p-3 flex items-center gap-3">
-      <div className="flex-1 text-sm">Add Wilco to your home screen for one-tap radio practice.</div>
+      <div className="flex-1 text-sm">Add Clearspar to your home screen for one-tap radio practice.</div>
       <button
         onClick={async () => { try { await evt.prompt(); await evt.userChoice } catch { /* */ } finally { dismiss() } }}
         className="shrink-0 text-sm bg-white text-gray-900 rounded-lg px-3 py-1.5 font-medium hover:bg-gray-100"

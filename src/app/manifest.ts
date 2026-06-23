@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Wilco — Radio Training',
-    short_name: 'Wilco',
+    name: 'Clearspar Radio Trainer',
+    short_name: 'Clearspar',
     description: 'Aviation radio communications training — graded ATC readbacks + offline ground school.',
     start_url: '/train',
     display: 'standalone',

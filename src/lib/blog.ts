@@ -17,7 +17,7 @@ export const POSTS: BlogPost[] = [
     title: 'How to talk to ATC at a towered field for the first time',
     description: 'The exact calls — ground, tower, and the readbacks — for your first flight into a towered airport, with examples you can copy.',
     date: '2026-06-18',
-    author: 'Wilco',
+    author: 'Clearspar',
     readMins: 6,
     lead: 'The radio is the part most student pilots dread, but a towered field follows a script. Learn the script and the nerves go away. Here is the whole sequence, in order, with example calls.',
     sections: [
@@ -33,7 +33,7 @@ export const POSTS: BlogPost[] = [
     title: 'The readbacks that fail checkrides — and how to nail them',
     description: 'The handful of radio mistakes examiners watch for, and the exact phraseology that keeps you on the right side of them.',
     date: '2026-06-16',
-    author: 'Wilco',
+    author: 'Clearspar',
     readMins: 5,
     lead: 'Examiners are not grading your radio voice — they are grading whether you read back the safety-critical items correctly. Miss one of these and it shows up in the debrief.',
     sections: [
@@ -49,7 +49,7 @@ export const POSTS: BlogPost[] = [
     title: 'Non-towered airport radio calls, explained',
     description: 'There is no controller at a non-towered field — you announce your own position on the CTAF. The standard self-announce calls, in order.',
     date: '2026-06-13',
-    author: 'Wilco',
+    author: 'Clearspar',
     readMins: 5,
     lead: 'At a non-towered airport nobody clears you to do anything — you see, avoid, and announce. The calls follow a simple pattern, and bracketing them with the field name is what keeps everyone on the same page.',
     sections: [
@@ -65,7 +65,7 @@ export const POSTS: BlogPost[] = [
     title: 'How to request VFR flight following (and why you should)',
     description: 'Flight following gives you traffic advisories and a controller watching your route. Exactly how to ask, what to read back, and how to end it.',
     date: '2026-06-10',
-    author: 'Wilco',
+    author: 'Clearspar',
     readMins: 4,
     lead: 'Flight following is free, makes you a better-protected VFR pilot, and is great radio practice. Many students never ask for it simply because they are not sure how. Here is the whole exchange.',
     sections: [

@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const a = getAirspace(slug)
   if (!a) return {}
   return {
-    title: `${a.title} · Wilco`,
+    title: `${a.title} · Clearspar`,
     description: `${a.oneLine} ${a.requirement}`,
     alternates: { canonical: `https://wilco.binnacleai.com/airspace/${slug}` },
   }

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { COMPARE } from '@/lib/compare'
 
 export const metadata: Metadata = {
-  title: 'How to practice ATC radio — guides & comparisons · Wilco',
+  title: 'How to practice ATC radio — guides & comparisons · Clearspar',
   description: 'Honest guides to learning aviation radio communications: the best ways to practice, free options, and how to pass the radio on your checkride.',
   alternates: { canonical: 'https://wilco.binnacleai.com/compare' },
 }

@@ -1,5 +1,5 @@
 // Comparison / high-intent SEO pages. Honest and factual about real products —
-// position Wilco for what it is (free, graded phraseology practice), not by
+// position Clearspar for what it is (free, graded phraseology practice), not by
 // knocking competitors.
 export interface ComparePage {
   slug: string
@@ -19,8 +19,8 @@ export const COMPARE: ComparePage[] = [
       { h: 'Listen to real ATC (LiveATC)', p: 'Free streams of real tower and approach frequencies. Excellent for tuning your ear to the rhythm and speed of real comms. The limit: it is passive — you never practice speaking or get feedback.' },
       { h: 'Online ATC networks (PilotEdge, VATSIM)', p: 'Live human or networked controllers you talk to while flying a desktop flight simulator. The most immersive option, and great once you have a sim set up. The trade-offs: it requires a flight sim and (for PilotEdge) a subscription, and the pressure can be a lot for a brand-new student.' },
       { h: 'Flashcards & the AIM', p: 'Memorizing the phonetic alphabet, numbers, and the AIM Chapter 4 phraseology is the foundation. Necessary, but knowing the words is not the same as saying them under time pressure.' },
-      { h: 'Graded practice (Wilco)', p: 'Hear a real ATC call, read it back by voice or text, and get graded element-by-element against the FAA standard — no flight sim, no mic required, free to start. It fills the gap between flashcards and the live networks: active speaking practice with instant, specific feedback.' },
-      { h: 'A simple plan', p: 'Learn the phraseology (flashcards/AIM), build the ear (LiveATC), drill speaking and readbacks with feedback (Wilco), then put it together in a live environment (PilotEdge/VATSIM or your actual training flights).' },
+      { h: 'Graded practice (Clearspar)', p: 'Hear a real ATC call, read it back by voice or text, and get graded element-by-element against the FAA standard — no flight sim, no mic required, free to start. It fills the gap between flashcards and the live networks: active speaking practice with instant, specific feedback.' },
+      { h: 'A simple plan', p: 'Learn the phraseology (flashcards/AIM), build the ear (LiveATC), drill speaking and readbacks with feedback (Clearspar), then put it together in a live environment (PilotEdge/VATSIM or your actual training flights).' },
     ],
   },
   {
@@ -30,7 +30,7 @@ export const COMPARE: ComparePage[] = [
     lead: 'You do not need a flight sim or a paid network to start getting comfortable on the radio. You can drill the actual calls and readbacks for free.',
     sections: [
       { h: 'What "free" usually leaves out', p: 'Listening apps are free but passive. Full ATC networks are interactive but need a flight simulator and often a subscription. The missing free option is active speaking practice with feedback.' },
-      { h: 'Free graded practice', p: 'Wilco\'s Ground School and five graded Live Comms scenarios a day are free. You hear a real call, read it back, and see exactly which required elements you hit or missed — towered, non-towered, IFR, even emergencies.' },
+      { h: 'Free graded practice', p: 'Clearspar\'s Ground School and five graded Live Comms scenarios a day are free. You hear a real call, read it back, and see exactly which required elements you hit or missed — towered, non-towered, IFR, even emergencies.' },
       { h: 'Practice your actual home field', p: 'Enter your airport and practice its real frequencies, runways, and taxi layout — so the calls you drill are the ones you will actually make.' },
       { h: 'When to upgrade', p: 'Free covers the fundamentals. Unlimited scenarios, all airport classes, and progress tracking are a low monthly cost when you want to push harder.' },
     ],
@@ -44,7 +44,7 @@ export const COMPARE: ComparePage[] = [
       { h: 'Read back the safety-critical items', p: 'Hold-short instructions (verbatim, with the runway), runway assignments, and every clearance — altitude, heading, route, frequency, squawk. "Roger" is not a readback.' },
       { h: 'Sound standard, not fast', p: 'Use the phonetic alphabet, say niner/fife/tree, and keep calls in the who-who-where-what order. Standard phraseology beats a smooth-but-nonstandard delivery.' },
       { h: 'Know your home field cold', p: 'You should be able to make every call at your training airport without thinking — ground, tower or CTAF, pattern, and the readbacks.' },
-      { h: 'Drill it with feedback', p: 'Practice graded scenarios until the readbacks are automatic, and run a mock oral on the communication and airspace questions. Wilco does both — free to start.' },
+      { h: 'Drill it with feedback', p: 'Practice graded scenarios until the readbacks are automatic, and run a mock oral on the communication and airspace questions. Clearspar does both — free to start.' },
     ],
   },
   {

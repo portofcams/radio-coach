@@ -6,8 +6,8 @@ import { listPublicSchools } from '@/lib/directory'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Flight schools & CFIs training with Wilco · Directory',
-  description: 'Find a flight school or instructor using Wilco to train radio communications. Schools: list yours free and show students you teach to the FAA standard.',
+  title: 'Flight schools & CFIs training with Clearspar · Directory',
+  description: 'Find a flight school or instructor using Clearspar to train radio communications. Schools: list yours free and show students you teach to the FAA standard.',
   alternates: { canonical: 'https://wilco.binnacleai.com/directory' },
 }
 
@@ -18,13 +18,13 @@ export default async function DirectoryPage() {
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-10">
         <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← home</Link>
-        <h1 className="text-2xl font-semibold mt-3 mb-1">Flight schools training with Wilco</h1>
-        <p className="text-gray-500 mb-6">Schools and instructors using Wilco to drill radio communications to the FAA standard.</p>
+        <h1 className="text-2xl font-semibold mt-3 mb-1">Flight schools training with Clearspar</h1>
+        <p className="text-gray-500 mb-6">Schools and instructors using Clearspar to drill radio communications to the FAA standard.</p>
 
         {schools.length === 0 ? (
           <div className="border border-dashed border-gray-300 rounded-xl p-6 text-center mb-6">
             <p className="text-gray-600 mb-2">No schools listed yet — be the first.</p>
-            <p className="text-sm text-gray-400">If your school uses Wilco, add a free listing below.</p>
+            <p className="text-sm text-gray-400">If your school uses Clearspar, add a free listing below.</p>
           </div>
         ) : (
           <div className="space-y-2 mb-8">

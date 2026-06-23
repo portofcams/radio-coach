@@ -121,7 +121,7 @@ export default function CfiDashboard() {
             </button>
           </div>
           {err && <p className="text-xs text-red-600 mt-2">{err}</p>}
-          <p className="text-xs text-gray-400 mt-2">If they already have a Wilco account they&apos;re linked right away; otherwise share their invite link and they connect when they sign up.</p>
+          <p className="text-xs text-gray-400 mt-2">If they already have a Clearspar account they&apos;re linked right away; otherwise share their invite link and they connect when they sign up.</p>
 
           <button onClick={() => { setShowBulk((v) => !v); setBulkMsg('') }} className="text-xs text-blue-600 hover:underline mt-3">
             {showBulk ? '− Hide bulk import' : '+ Bulk import a class roster'}

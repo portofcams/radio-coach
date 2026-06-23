@@ -223,11 +223,11 @@ export default function ProfilePage() {
         {ent?.plan !== 'cfi' && ent?.plan !== 'school' && !coach && (
           <div className="border border-gray-200 rounded-xl p-5 mb-6">
             <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Training with an instructor?</div>
-            <p className="text-sm text-gray-600 mb-3">Wilco has a CFI tool to assign you scenarios and track your weak spots. Share it with your instructor or school — they can try it free.</p>
+            <p className="text-sm text-gray-600 mb-3">Clearspar has a CFI tool to assign you scenarios and track your weak spots. Share it with your instructor or school — they can try it free.</p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
-                  const msg = `I'm using Wilco to practice radio calls and it has a tool for instructors to assign scenarios and track students. Might be worth a look: https://wilco.binnacleai.com/cfi`
+                  const msg = `I'm using Clearspar to practice radio calls and it has a tool for instructors to assign scenarios and track students. Might be worth a look: https://wilco.binnacleai.com/cfi`
                   navigator.clipboard?.writeText(msg); setCfiShared(true); setTimeout(() => setCfiShared(false), 2000)
                 }}
                 className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800"

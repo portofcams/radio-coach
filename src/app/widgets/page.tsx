@@ -10,7 +10,7 @@ const WIDGETS = [
 ]
 
 function snippet(key: string, height: number) {
-  return `<iframe src="${BASE}/embed/${key}" width="100%" height="${height}" style="border:1px solid #e5e7eb;border-radius:12px;max-width:480px" loading="lazy" title="Wilco ${key} widget"></iframe>`
+  return `<iframe src="${BASE}/embed/${key}" width="100%" height="${height}" style="border:1px solid #e5e7eb;border-radius:12px;max-width:480px" loading="lazy" title="Clearspar ${key} widget"></iframe>`
 }
 
 export default function WidgetsPage() {
@@ -41,7 +41,7 @@ export default function WidgetsPage() {
           ))}
         </div>
 
-        <p className="text-sm text-gray-500 mt-10">Want the full radio trainer for your students? <Link href="/school" className="text-blue-600 hover:underline">Wilco for flight schools →</Link></p>
+        <p className="text-sm text-gray-500 mt-10">Want the full radio trainer for your students? <Link href="/school" className="text-blue-600 hover:underline">Clearspar for flight schools →</Link></p>
       </div>
     </main>
   )

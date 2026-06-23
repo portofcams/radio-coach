@@ -3,7 +3,7 @@ import Link from 'next/link'
 import DripSignup from '@/components/DripSignup'
 
 export const metadata: Metadata = {
-  title: '7 days to radio confidence — free email course · Wilco',
+  title: '7 days to radio confidence — free email course · Clearspar',
   description: 'A free 7-day email course for student pilots: go from dreading the radio to making clean ATC calls. One short lesson a day.',
   alternates: { canonical: 'https://wilco.binnacleai.com/confidence' },
 }

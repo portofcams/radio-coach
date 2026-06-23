@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   if (!customerId) {
     const customer = await stripe.customers.create({
       email: user.email,
-      metadata: { userId: String(user.userId), app: 'wilco' },
+      metadata: { userId: String(user.userId), app: 'clearspar' },
     })
     customerId = customer.id
     if (db) await db.query('UPDATE rc_users SET stripe_customer_id = $2 WHERE id = $1', [user.userId, customerId])

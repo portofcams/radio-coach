@@ -29,14 +29,14 @@ async function send(event: Record<string, unknown>): Promise<void> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Sentry-Auth': `Sentry sentry_version=7, sentry_key=${d.key}, sentry_client=wilco/1.0`,
+        'X-Sentry-Auth': `Sentry sentry_version=7, sentry_key=${d.key}, sentry_client=clearspar/1.0`,
       },
       body: JSON.stringify({
         event_id: eventId(),
         timestamp: new Date().toISOString(),
         platform: 'node',
         environment: 'production',
-        tags: { app: 'wilco' },
+        tags: { app: 'clearspar' },
         ...event,
       }),
     })

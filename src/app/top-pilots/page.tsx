@@ -6,8 +6,8 @@ import { topWeekly } from '@/lib/leaderboard-server'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Top radio pilots this week · Wilco',
-  description: 'This week\'s leaderboard — the student pilots passing the most graded ATC radio scenarios on Wilco. Practice your readbacks and climb the board.',
+  title: 'Top radio pilots this week · Clearspar',
+  description: 'This week\'s leaderboard — the student pilots passing the most graded ATC radio scenarios on Clearspar. Practice your readbacks and climb the board.',
   alternates: { canonical: 'https://wilco.binnacleai.com/top-pilots' },
 }
 

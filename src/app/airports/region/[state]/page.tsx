@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
   const name = US_STATES[state.toUpperCase()]
   if (!name) return {}
   return {
-    title: `Aircraft radio practice in ${name} — airport frequencies · Wilco`,
+    title: `Aircraft radio practice in ${name} — airport frequencies · Clearspar`,
     description: `Tower, ground, ATIS and clearance frequencies for towered airports in ${name}, plus free ATC radio-communication practice with instant grading.`,
     alternates: { canonical: `https://wilco.binnacleai.com/airports/region/${state.toLowerCase()}` },
   }

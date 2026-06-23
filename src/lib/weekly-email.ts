@@ -41,7 +41,7 @@ export function composeWeeklyReport(d: WeeklyReportData): { subject: string; htm
       <a href="${d.appUrl}/train" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600">Fly a scenario →</a>
     </div>
     <div style="text-align:center;color:#9ca3af;font-size:11px;padding:16px 8px;line-height:1.6">
-      Wilco · Clearspar — aviation radio training<br>${ADDRESS}<br>
+      Clearspar Radio Trainer — aviation radio training<br>${ADDRESS}<br>
       <a href="${d.unsubUrl}" style="color:#9ca3af">Unsubscribe from weekly reports</a>
     </div>
   </div></body></html>`
@@ -53,7 +53,7 @@ export function composeWeeklyReport(d: WeeklyReportData): { subject: string; htm
     d.topWeakspot ? `Focus area: ${d.topWeakspot}.` : '',
     `Fly a scenario: ${d.appUrl}/train`,
     '',
-    `Wilco · Clearspar — ${ADDRESS}`,
+    `Clearspar Radio Trainer — ${ADDRESS}`,
     `Unsubscribe: ${d.unsubUrl}`,
   ].filter(Boolean).join('\n')
 
@@ -101,7 +101,7 @@ export function composeCfiDigest(d: CfiDigestData): { subject: string; html: str
       <a href="${d.appUrl}/cfi" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600">Open your roster →</a>
     </div>
     <div style="text-align:center;color:#9ca3af;font-size:11px;padding:16px 8px;line-height:1.6">
-      Wilco · Clearspar — aviation radio training<br>${ADDRESS}<br>
+      Clearspar Radio Trainer — aviation radio training<br>${ADDRESS}<br>
       <a href="${d.unsubUrl}" style="color:#9ca3af">Unsubscribe from weekly reports</a>
     </div>
   </div></body></html>`
@@ -113,7 +113,7 @@ export function composeCfiDigest(d: CfiDigestData): { subject: string; html: str
     ...d.highlights.map((s) => `- ${s.email}: ${FLAG_LABEL[s.flag] ?? s.flag} (${s.weekCount} this wk, ${lastSeen(s.lastDays)})`),
     '',
     `Open your roster: ${d.appUrl}/cfi`,
-    `Wilco · Clearspar — ${ADDRESS}`,
+    `Clearspar Radio Trainer — ${ADDRESS}`,
     `Unsubscribe: ${d.unsubUrl}`,
   ].join('\n')
 

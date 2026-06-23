@@ -4,7 +4,7 @@ import { GLOSSARY } from '@/lib/glossary'
 import Glossary from '@/components/Glossary'
 
 export const metadata: Metadata = {
-  title: 'ATC phraseology glossary — plain-English radio terms · Wilco',
+  title: 'ATC phraseology glossary — plain-English radio terms · Clearspar',
   description: 'What pilots actually mean by roger, wilco, hold short, line up and wait, squawk, CTAF, special VFR and more — a searchable plain-English glossary of ATC radio phraseology.',
   alternates: { canonical: 'https://wilco.binnacleai.com/glossary' },
 }

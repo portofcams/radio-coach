@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { GUIDES } from '@/lib/guides'
 
 export const metadata: Metadata = {
-  title: 'ATC radio phraseology guides · Wilco',
+  title: 'ATC radio phraseology guides · Clearspar',
   description: 'Plain-English guides to aviation radio phraseology — initial call-ups, hold-short readbacks, CTAF self-announce, Class B entry, IFR clearances, and numbers.',
   alternates: { canonical: 'https://wilco.binnacleai.com/guides' },
 }

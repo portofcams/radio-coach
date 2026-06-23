@@ -34,10 +34,10 @@ function CallList({ blocks }: { blocks: CallBlock[] }) {
 export async function generateMetadata({ params }: { params: Promise<{ ident: string }> }): Promise<Metadata> {
   const { ident } = await params
   const f = lookupAirport(ident)
-  if (!f) return { title: 'Airport not found · Wilco' }
+  if (!f) return { title: 'Airport not found · Clearspar' }
   const id = ident.toUpperCase()
   return {
-    title: `Radio calls at ${f.name} (${id}) — frequencies & what to say · Wilco`,
+    title: `Radio calls at ${f.name} (${id}) — frequencies & what to say · Clearspar`,
     description: `How to talk to ATC at ${f.name} (${id})${f.city ? ` in ${f.city}` : ''}: the exact ${f.towered ? 'ground, tower and approach' : 'CTAF self-announce'} calls, real frequencies, and free graded practice.`,
     alternates: { canonical: `https://wilco.binnacleai.com/airports/${id}` },
   }

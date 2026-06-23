@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const c = getCompare(slug)
   if (!c) return {}
   return {
-    title: `${c.title} · Wilco`,
+    title: `${c.title} · Clearspar`,
     description: c.description,
     alternates: { canonical: `https://wilco.binnacleai.com/compare/${slug}` },
   }
@@ -27,7 +27,7 @@ export default async function ComparePage({ params }: { params: Promise<{ slug: 
     '@type': 'Article',
     headline: c.title,
     description: c.description,
-    author: { '@type': 'Organization', name: 'Wilco' },
+    author: { '@type': 'Organization', name: 'Clearspar' },
   }
   return (
     <main className="min-h-screen">

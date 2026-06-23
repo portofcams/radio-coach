@@ -40,7 +40,7 @@ export default function ScoreCardPage() {
   const homeName = me.home?.mode === 'real' ? (me.home.field.radioName || me.home.field.name) : me.home?.mode === 'manual' ? me.home.name : null
   const col = rd.level === 'ready' ? '#16a34a' : rd.level === 'almost' ? '#d97706' : '#dc2626'
   const c = 2 * Math.PI * 52
-  const shareText = `I'm ${rd.score}% radio-ready on Wilco — ${rd.label}. ${stats.passed} scenarios passed, ${stats.passRate}% pass rate. Free aviation radio training → wilco.binnacleai.com`
+  const shareText = `I'm ${rd.score}% radio-ready on Clearspar — ${rd.label}. ${stats.passed} scenarios passed, ${stats.passRate}% pass rate. Free aviation radio training → wilco.binnacleai.com`
 
   async function copyShare() {
     try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* */ }

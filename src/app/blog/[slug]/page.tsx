@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = getPost(slug)
   if (!p) return {}
   return {
-    title: `${p.title} · Wilco`,
+    title: `${p.title} · Clearspar`,
     description: p.description,
     alternates: { canonical: `https://wilco.binnacleai.com/blog/${slug}` },
     openGraph: { title: p.title, description: p.description, type: 'article', publishedTime: p.date },
@@ -30,7 +30,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     headline: p.title,
     description: p.description,
     datePublished: p.date,
-    author: { '@type': 'Organization', name: 'Wilco' },
+    author: { '@type': 'Organization', name: 'Clearspar' },
   }
 
   return (

@@ -9,9 +9,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const g = getGuide(slug)
-  if (!g) return { title: 'Guide not found · Wilco' }
+  if (!g) return { title: 'Guide not found · Clearspar' }
   return {
-    title: `${g.title} · Wilco`,
+    title: `${g.title} · Clearspar`,
     description: g.description,
     alternates: { canonical: `https://wilco.binnacleai.com/guides/${g.slug}` },
   }

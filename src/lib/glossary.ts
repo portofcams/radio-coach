@@ -52,7 +52,7 @@ const raw: Array<[string, string]> = [
   ['Tower', 'The controller responsible for the runways and the airport traffic pattern at a towered field.'],
   ['Traffic in sight', 'You see the traffic ATC pointed out. If you don’t, say "negative contact" or "looking."'],
   ['Unable', 'You cannot comply with an instruction. Say "unable" plainly and, if able, why.'],
-  ['Wilco', '"Will comply." You received the message, understand it, and will do it. More than "roger."'],
+  ['Clearspar', '"Will comply." You received the message, understand it, and will do it. More than "roger."'],
 ]
 
 export const GLOSSARY: GlossaryTerm[] = raw

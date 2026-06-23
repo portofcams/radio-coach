@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   return new NextResponse(lines.join('\n'), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="wilco-roster-${today}.csv"`,
+      'Content-Disposition': `attachment; filename="clearspar-roster-${today}.csv"`,
     },
   })
 }
