@@ -18,7 +18,7 @@ rsync -az --delete \
 rsync -az Dockerfile root@144.202.116.229:/root/radio-coach/
 
 echo "Building and restarting container on Vultr..."
-# The prod env (wilco Postgres on shared-db_default, Stripe live keys) lives in
+# The prod env (Clearspar Postgres on shared-db_default, Stripe live keys) lives in
 # /root/wilco.env on the server — NOT in local .env. Refresh it from the running
 # container so a redeploy never silently drops a key; fall back to the existing
 # file if the container isn't up. The app talks to Postgres by the docker DNS

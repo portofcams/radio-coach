@@ -1,6 +1,6 @@
-# Wilco — Android (Capacitor)
+# Clearspar Radio Trainer — Android (Capacitor)
 
-Wilco's iOS app is a Capacitor shell that loads the live site
+Clearspar Radio Trainer's iOS app is a Capacitor shell that loads the live site
 (`https://wilco.binnacleai.com`, see `capacitor.config.ts`). Android works the
 same way — the web app already runs in any browser, so the Android wrapper is
 thin. `@capacitor/android` is installed; the `android/` project is gitignored and
@@ -12,7 +12,7 @@ which isn't on the iOS dev Mac).
 npx cap add android      # generates android/ from the installed @capacitor/android
 npx cap sync android     # copy web assets + plugin configs
 ```
-`capacitor.config.ts` already sets `appId: com.binnacleai.radiocoach`, `appName: Wilco`,
+`capacitor.config.ts` already sets `appId: com.binnacleai.radiocoach`, `appName: Clearspar Radio Trainer`,
 and `server.url`, so the wrapper points at production with no extra config.
 
 ## Build / run (Android Studio + SDK required)

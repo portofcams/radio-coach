@@ -1,11 +1,11 @@
 import AppIntents
 
-// Siri / Shortcuts: "Hey Siri, practice radio with Wilco" → opens the app.
+// Siri / Shortcuts: "Hey Siri, practice radio with Clearspar" → opens the app.
 // App Shortcuts are zero-config on iOS 16+ — just ship this file in the App target.
 @available(iOS 16.0, *)
 struct PracticeRadioIntent: AppIntent {
     static var title: LocalizedStringResource = "Practice radio calls"
-    static var description = IntentDescription("Open Wilco and practice ATC radio calls.")
+    static var description = IntentDescription("Open Clearspar Radio Trainer and practice ATC radio calls.")
     static var openAppWhenRun: Bool = true
 
     @MainActor
@@ -15,7 +15,7 @@ struct PracticeRadioIntent: AppIntent {
 }
 
 @available(iOS 16.0, *)
-struct WilcoShortcuts: AppShortcutsProvider {
+struct ClearsparShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: PracticeRadioIntent(),

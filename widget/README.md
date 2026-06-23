@@ -1,4 +1,4 @@
-# Wilco — iOS home-screen widget (WidgetKit)
+# Clearspar — iOS home-screen widget (WidgetKit)
 
 A small/medium home-screen widget showing a rotating **phonetic letter + radio
 tip**, fully self-contained (no network, no App Group). Tapping deep-links to

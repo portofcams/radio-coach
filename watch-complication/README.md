@@ -1,8 +1,8 @@
-# Wilco — Apple Watch complication (watchOS WidgetKit)
+# Clearspar — Apple Watch complication (watchOS WidgetKit)
 
 A watch-face complication showing a **daily phonetic letter** (A — Alpha…),
 self-contained (no network, no account). Supports the accessory families
-(circular, rectangular, inline, corner). Tapping opens the Wilco watch app.
+(circular, rectangular, inline, corner). Tapping opens the Clearspar watch app.
 
 ## Files
 - `Sources/` (committed) — `WilcoComplication.swift` (tips + provider + family-aware

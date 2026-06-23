@@ -1,4 +1,4 @@
-# Wilco — Apple Watch micro-drills (watchOS app)
+# Clearspar — Apple Watch micro-drills (watchOS app)
 
 A wrist app with quick **phonetic / numbers / callsign** flashcard drills, fully
 offline (no network, no Capacitor). The watchOS target is added to the iOS Xcode
