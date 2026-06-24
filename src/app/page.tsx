@@ -20,265 +20,192 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
 
-      {/* Nav */}
-      <nav className="border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="font-mono text-sm font-semibold tracking-widest text-gray-900">
-            CLEARSPAR
-          </span>
-          <div className="flex items-center gap-5">
-            <Link href="/ground-school" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Ground School</Link>
-            <Link href="/checkride" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Checkrides</Link>
-            <Link href="/cheatsheet" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Cheat Sheet</Link>
-            <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
-            <NavAuth />
-          </div>
-        </div>
-      </nav>
+      {/* ── Nav + Hero — G1000 glass-cockpit panel ── */}
+      <style>{`
+        .gc{position:relative;overflow:hidden;background:#06070a}
+        .gc-pfd{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+        .gc-att{animation:gc-roll 11s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+        @keyframes gc-roll{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(-5.4deg)}}
+        .gc-scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(4,5,8,.98) 0%,rgba(4,5,8,.95) 33%,rgba(4,5,8,.77) 51%,rgba(4,5,8,.36) 68%,rgba(4,5,8,0) 85%)}
+        .gc-word{font-family:var(--font-mono,monospace);font-size:13px;letter-spacing:.22em;font-weight:600;color:#eef3f8;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+        .gc-strip{position:relative;z-index:20;background:rgba(6,8,12,.82);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+        .gc-strip-in{display:flex;align-items:center;gap:10px;font-family:var(--font-mono,monospace);font-size:11px;padding:5px 0;color:#9aa6b2}
+        .gc-strip i{font-style:normal;color:#727b88;margin-right:3px}
+        .gc-strip small{color:#727b88}
+        .gc-grn{color:#19e07a}
+        .gc-tx{text-shadow:0 0 8px rgba(25,224,122,.5)}
+        .gc-cy{color:#36d6e6}
+        .gc-wht{color:#b7c0cc}
+        .gc-sep{color:#3a414b}
+        .gc-arr{font-style:normal;color:#5a626c}
+        .gc-mic{display:inline-flex;align-items:flex-end;gap:1.5px;height:11px}
+        .gc-mic span{width:3px;background:#19e07a;border-radius:1px;animation:gc-eq 1s ease-in-out infinite}
+        .gc-mic span:nth-child(1){height:40%;animation-delay:0s}
+        .gc-mic span:nth-child(2){height:70%;animation-delay:.18s}
+        .gc-mic span:nth-child(3){height:100%;animation-delay:.36s}
+        .gc-mic span:nth-child(4){height:55%;animation-delay:.54s}
+        @keyframes gc-eq{0%,100%{transform:scaleY(.4);opacity:.6}50%{transform:scaleY(1);opacity:1}}
+        .gc-keys{position:relative;z-index:20;display:flex;gap:1px;background:#0c0d10;border-top:1px solid rgba(255,255,255,.1)}
+        .gc-keys span{flex:1;text-align:center;font-family:var(--font-mono,monospace);font-size:10px;letter-spacing:.1em;color:#828b98;padding:11px 0;background:#16181d}
+        .gc-key-on{color:#19e07a;background:#11271c}
+        .gc-amber{color:#f5a623;text-shadow:0 0 20px rgba(245,166,35,.45)}
+        @media (prefers-reduced-motion:reduce){.gc-att,.gc-mic span{animation:none}}
+        @media (max-width:640px){.gc-hidesm{display:none}.gc-scrim{background:linear-gradient(180deg,rgba(4,5,8,.58) 0%,rgba(4,5,8,.8) 48%,rgba(4,5,8,.92) 100%)}}
+      `}</style>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pt-20 pb-16">
+      <section className="gc">
 
-        {/* Airport scene background */}
-        <svg
-          viewBox="0 0 1400 620"
-          xmlns="http://www.w3.org/2000/svg"
-          className="absolute inset-0 w-full h-full"
-          preserveAspectRatio="xMidYMid slice"
-          aria-hidden="true"
-        >
+        {/* PFD background */}
+        <svg className="gc-pfd" viewBox="0 0 680 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e0f2fe" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#f0f9ff" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="runwayFade" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#94a3b8" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#94a3b8" stopOpacity="0" />
-            </linearGradient>
+            <linearGradient id="gcSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#3f97d6" /><stop offset="1" stopColor="#1d6cae" /></linearGradient>
+            <linearGradient id="gcGnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#714f2d" /><stop offset="1" stopColor="#43301d" /></linearGradient>
           </defs>
 
-          {/* Sky tint */}
-          <rect x="0" y="0" width="1400" height="620" fill="url(#skyGrad)" />
-
-          {/* Ground / horizon */}
-          <rect x="0" y="430" width="1400" height="190" fill="#f1f5f9" fillOpacity="0.25" />
-          <line x1="0" y1="430" x2="1400" y2="430" stroke="#cbd5e1" strokeWidth="1" strokeOpacity="0.3" />
-
-          {/* Runway — vanishing point at (1200, 390) toward the tower */}
-          <path d="M 550 620 L 1200 390 L 1400 580 Z" fill="url(#runwayFade)" />
-          <line x1="550" y1="620" x2="1200" y2="390" stroke="#94a3b8" strokeWidth="1.5" strokeOpacity="0.18" />
-          <line x1="1400" y1="580" x2="1200" y2="390" stroke="#94a3b8" strokeWidth="1.5" strokeOpacity="0.18" />
-
-          {/* Runway threshold stripes (near end, left side) */}
-          <g fillOpacity="0.10" fill="#64748b">
-            <rect x="580" y="600" width="38" height="13" rx="2" />
-            <rect x="628" y="588" width="33" height="11" rx="2" />
-            <rect x="672" y="576" width="28" height="10" rx="2" />
-            <rect x="1345" y="575" width="35" height="12" rx="2" />
-            <rect x="1310" y="565" width="30" height="10" rx="2" />
-          </g>
-
-          {/* Runway centerline dashes (converging toward tower) */}
-          <g stroke="#94a3b8" strokeOpacity="0.11" strokeWidth="2">
-            <line x1="1010" y1="620" x2="1030" y2="588" />
-            <line x1="1042" y1="558" x2="1058" y2="528" />
-            <line x1="1068" y1="502" x2="1082" y2="475" />
-            <line x1="1090" y1="452" x2="1102" y2="429" />
-            <line x1="1110" y1="410" x2="1118" y2="393" />
-          </g>
-
-          {/* ── CONTROL TOWER — far right ── */}
-          <g fill="#334155" fillOpacity="0.08">
-            {/* Base terminal building */}
-            <rect x="1200" y="390" width="130" height="170" rx="3" />
-            <rect x="1172" y="445" width="185" height="115" rx="3" />
-            {/* Tower shaft */}
-            <rect x="1242" y="185" width="38" height="210" rx="2" />
-            {/* Observation cab — trapezoid */}
-            <path d="M 1215 185 L 1228 148 L 1298 148 L 1310 185 Z" />
-            {/* Cab roof overhang */}
-            <rect x="1209" y="141" width="110" height="10" rx="2" />
-          </g>
-
-          {/* Tower cab windows */}
-          <g fill="#bae6fd" fillOpacity="0.45">
-            <rect x="1222" y="155" width="13" height="20" rx="1.5" />
-            <rect x="1240" y="155" width="13" height="20" rx="1.5" />
-            <rect x="1258" y="155" width="13" height="20" rx="1.5" />
-            <rect x="1276" y="155" width="13" height="20" rx="1.5" />
-            <rect x="1294" y="155" width="13" height="20" rx="1.5" />
-          </g>
-
-          {/* Tower antennas */}
-          <g stroke="#334155" strokeOpacity="0.08">
-            <line x1="1261" y1="141" x2="1261" y2="98" strokeWidth="3" />
-            <line x1="1247" y1="106" x2="1275" y2="106" strokeWidth="1.5" />
-            <line x1="1261" y1="98" x2="1253" y2="108" strokeWidth="1.5" />
-            <line x1="1261" y1="98" x2="1269" y2="108" strokeWidth="1.5" />
-            <line x1="1288" y1="141" x2="1288" y2="118" strokeWidth="2" />
-            <line x1="1232" y1="141" x2="1232" y2="124" strokeWidth="2" />
-          </g>
-          <circle cx="1261" cy="95" r="6" fill="#334155" fillOpacity="0.08" />
-          <circle cx="1261" cy="95" r="3" fill="#fef08a" fillOpacity="0.25" />
-
-          {/* Animated airplane */}
-          <style>{`
-            @keyframes planefly {
-              0%   { transform: translate(-320px, 588px) rotate(0deg);   opacity: 0; }
-              4%   { opacity: 1; }
-              12%  { transform: translate(60px,  572px) rotate(-2deg);  opacity: 1; }
-              28%  { transform: translate(400px, 530px) rotate(-8deg); }
-              48%  { transform: translate(740px, 450px) rotate(-16deg); }
-              66%  { transform: translate(1010px,310px) rotate(-20deg); }
-              84%  { transform: translate(1310px,165px) rotate(-22deg); }
-              96%  { transform: translate(1620px, 40px) rotate(-20deg); opacity: 1; }
-              100% { transform: translate(1750px,-20px) rotate(-18deg); opacity: 0; }
-            }
-            #plane-anim {
-              animation: planefly 11s cubic-bezier(0.22, 0.1, 0.58, 1) infinite;
-            }
-          `}</style>
-
-          {/* ── AIRPLANE — Cessna-style, takeoff attitude ── */}
-          <g id="plane-anim" fill="#1e293b" fillOpacity="0.09">
-
-            {/* Main fuselage */}
-            <path d="
-              M 162 0
-              Q 146 -10 112 -16
-              Q 62 -20 10 -18
-              Q -60 -16 -116 -10
-              Q -150 -6 -166 0
-              Q -150 6 -116 10
-              Q -60 16 10 18
-              Q 62 20 112 16
-              Q 146 10 162 0 Z
-            " />
-
-            {/* Nose cone */}
-            <path d="M 160 -6 Q 182 -2 190 0 Q 182 2 160 6 Z" />
-
-            {/* Cabin bump / windshield */}
-            <path d="
-              M 22 -18 Q 42 -30 82 -30 Q 116 -29 136 -16
-              L 112 -16 Q 96 -26 76 -26 Q 46 -26 30 -18 Z
-            " />
-
-            {/* Wing (high wing, side view) */}
-            <path d="M 42 -18 L 26 -90 L -18 -86 L -2 -18 Z" />
-
-            {/* Wing strut */}
-            <line x1="30" y1="16" x2="8" y2="-64" stroke="#1e293b" strokeOpacity="0.09" strokeWidth="5" />
-
-            {/* Horizontal stabilizer */}
-            <path d="M -146 -4 L -170 -32 L -180 -30 L -160 -4 Z" />
-            <path d="M -146 4 L -170 32 L -180 30 L -160 4 Z" />
-
-            {/* Vertical fin */}
-            <path d="M -138 -8 Q -150 -28 -160 -58 L -146 -57 Q -136 -28 -124 -8 Z" />
-
-            {/* Propeller arc */}
-            <ellipse cx="192" cy="0" rx="5" ry="46" fillOpacity="0.3" />
-
-            {/* Main gear (trailing, just airborne) */}
-            <line x1="-4" y1="17" x2="-2" y2="38" stroke="#1e293b" strokeOpacity="0.07" strokeWidth="5" />
-            <ellipse cx="-2" cy="41" rx="10" ry="7" fillOpacity="0.07" />
-            <line x1="30" y1="17" x2="32" y2="38" stroke="#1e293b" strokeOpacity="0.07" strokeWidth="5" />
-            <ellipse cx="32" cy="41" rx="10" ry="7" fillOpacity="0.07" />
-
-            {/* Nose gear (retracting) */}
-            <line x1="132" y1="12" x2="134" y2="27" stroke="#1e293b" strokeOpacity="0.06" strokeWidth="4" />
-            <ellipse cx="134" cy="30" rx="7" ry="5" fillOpacity="0.06" />
-          </g>
-
-          {/* Prop wash streaks (trailing behind plane, left of center) */}
-          <g stroke="#94a3b8" strokeOpacity="0.05" strokeWidth="1.5" fill="none">
-            <path d="M 788 270 Q 740 265 670 267" />
-            <path d="M 784 283 Q 730 279 655 281" />
-            <path d="M 790 295 Q 738 292 662 295" />
-          </g>
-
-          {/* ── VOR COMPASS ROSE — upper left, very subtle ── */}
-          <g transform="translate(110, 150)" opacity="0.08">
-            {/* Outer ring */}
-            <circle cx="0" cy="0" r="88" fill="none" stroke="#334155" strokeWidth="1.5" />
-            <circle cx="0" cy="0" r="72" fill="none" stroke="#334155" strokeWidth="0.75" />
-
-            {/* Cardinal tick marks */}
-            {Array.from({ length: 36 }, (_, i) => {
-              const angle = i * 10
-              const rad = (angle * Math.PI) / 180
-              const isCardinal = angle % 90 === 0
-              const isMajor = angle % 30 === 0
-              const outer = 88
-              const inner = isCardinal ? 72 : isMajor ? 78 : 83
-              return (
-                <line
-                  key={i}
-                  x1={Math.sin(rad) * inner}
-                  y1={-Math.cos(rad) * inner}
-                  x2={Math.sin(rad) * outer}
-                  y2={-Math.cos(rad) * outer}
-                  stroke="#334155"
-                  strokeWidth={isCardinal ? 2 : isMajor ? 1.5 : 1}
-                />
-              )
-            })}
-
-            {/* N/S/E/W labels */}
-            <text x="0" y="-60" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">N</text>
-            <text x="0" y="62" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">S</text>
-            <text x="62" y="0" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">E</text>
-            <text x="-62" y="0" textAnchor="middle" dominantBaseline="middle" fontSize="12" fontFamily="monospace" fontWeight="bold" fill="#334155">W</text>
-
-            {/* TO/FROM arrow — pointing roughly NE (045°) */}
-            <g transform="rotate(45)">
-              <polygon points="0,-52 6,-38 -6,-38" fill="#334155" />
-              <line x1="0" y1="-38" x2="0" y2="52" stroke="#334155" strokeWidth="1.5" />
-              <polygon points="0,52 6,38 -6,38" fill="none" stroke="#334155" strokeWidth="1.5" />
+          <g className="gc-att">
+            <rect x="-260" y="-280" width="1240" height="1040" fill="none" />
+            <rect x="-260" y="-280" width="1240" height="520" fill="url(#gcSky)" />
+            <rect x="-260" y="240" width="1240" height="520" fill="url(#gcGnd)" />
+            <line x1="-260" y1="240" x2="980" y2="240" stroke="#f2f6fa" strokeWidth="2" />
+            <g stroke="#f2f6fa" strokeOpacity=".92" strokeWidth="1.6" fontFamily="monospace" fontSize="11" fill="#f2f6fa">
+              <line x1="322" y1="184" x2="398" y2="184" /><text x="306" y="188">10</text><text x="402" y="188">10</text>
+              <line x1="338" y1="212" x2="382" y2="212" />
+              <line x1="338" y1="268" x2="382" y2="268" />
+              <line x1="322" y1="296" x2="398" y2="296" /><text x="306" y="300">10</text><text x="402" y="300">10</text>
             </g>
-
-            {/* Center dot */}
-            <circle cx="0" cy="0" r="4" fill="#334155" />
-
-            {/* VOR identifier */}
-            <text x="0" y="106" textAnchor="middle" fontSize="9" fontFamily="monospace" fill="#334155" letterSpacing="3">HTO</text>
+            <path d="M207.6 152 A176 176 0 0 1 512.4 152" fill="none" stroke="#f2f6fa" strokeOpacity=".85" strokeWidth="2" />
+            <g fill="#f2f6fa">
+              <path d="M360 76 L353 60 L367 60 Z" />
+              <path d="M449 90 L455 76 L442 80 Z" /><path d="M271 90 L289 80 L276 76 Z" />
+              <circle cx="513" cy="152" r="3" /><circle cx="207" cy="152" r="3" />
+            </g>
+            <g stroke="#f2f6fa" strokeWidth="1.4" strokeOpacity=".8">
+              <line x1="392" y1="67" x2="390" y2="76" /><line x1="328" y1="67" x2="330" y2="76" />
+              <line x1="421" y1="75" x2="417" y2="83" /><line x1="299" y1="75" x2="303" y2="83" />
+              <line x1="485" y1="116" x2="478" y2="122" /><line x1="235" y1="116" x2="242" y2="122" />
+            </g>
           </g>
 
-          {/* ── Frequency strip — bottom left corner ── */}
-          <g transform="translate(26, 590)" opacity="0.09" fontFamily="monospace" fill="#1e293b">
-            <rect x="0" y="-18" width="178" height="26" rx="3" fill="#1e293b" fillOpacity="0.15" />
-            <text fontSize="11" letterSpacing="1" y="0">GND 121.700 · TWR 126.200</text>
+          {/* Roll pointer + slip/skid (fixed) */}
+          <path d="M360 84 L351 98 L369 98 Z" fill="#f2f6fa" />
+          <path d="M351 100 L369 100 L366 107 L354 107 Z" fill="none" stroke="#f2f6fa" strokeWidth="1.3" />
+
+          {/* Aircraft reference symbol */}
+          <g fill="#ffcc00" stroke="#241a04" strokeWidth="0.6">
+            <rect x="300" y="238" width="44" height="5" /><rect x="300" y="238" width="5" height="15" />
+            <rect x="376" y="238" width="44" height="5" /><rect x="415" y="238" width="5" height="15" />
+          </g>
+          <rect x="351" y="233" width="18" height="13" fill="none" stroke="#ffcc00" strokeWidth="3" />
+          <circle cx="360" cy="240" r="1.8" fill="#ffcc00" />
+
+          {/* Airspeed tape */}
+          <g fontFamily="monospace">
+            <rect x="0" y="0" width="70" height="500" fill="#0d1016" fillOpacity=".8" />
+            <line x1="70" y1="0" x2="70" y2="500" stroke="#3f4a55" />
+            <rect x="64" y="175" width="6" height="156" fill="#19e07a" />
+            <rect x="64" y="136" width="6" height="39" fill="#f5c518" />
+            <rect x="64" y="97" width="6" height="39" fill="#e2433f" />
+            <rect x="64" y="331" width="6" height="34" fill="#f2f6fa" />
+            <g fill="#f2f6fa" fontSize="13" textAnchor="end">
+              <text x="48" y="101">160</text><text x="48" y="127">150</text><text x="48" y="153">140</text>
+              <text x="48" y="179">130</text><text x="48" y="205">120</text><text x="48" y="231">110</text>
+              <text x="48" y="257">100</text><text x="48" y="283">90</text><text x="48" y="309">80</text>
+            </g>
+            <g stroke="#9aa6b2" strokeWidth="1"><line x1="54" y1="97" x2="62" y2="97" /><line x1="54" y1="123" x2="62" y2="123" /><line x1="54" y1="149" x2="62" y2="149" /><line x1="54" y1="201" x2="62" y2="201" /><line x1="54" y1="227" x2="62" y2="227" /><line x1="54" y1="253" x2="62" y2="253" /><line x1="54" y1="279" x2="62" y2="279" /><line x1="54" y1="305" x2="62" y2="305" /></g>
+            <path d="M68 240 L62 240 L62 215" fill="none" stroke="#ff3ad0" strokeWidth="2" />
+            <path d="M2 222 L62 222 L70 240 L62 258 L2 258 Z" fill="#05070b" stroke="#f2f6fa" strokeWidth="1.2" />
+            <text x="44" y="247" fill="#f2f6fa" fontSize="19" textAnchor="end" id="gc-ias">105</text>
+            <path d="M66 123 L74 117 L74 129 Z" fill="#36d6e6" />
           </g>
 
+          {/* Altitude tape + VSI */}
+          <g fontFamily="monospace">
+            <rect x="610" y="0" width="70" height="500" fill="#0d1016" fillOpacity=".8" />
+            <line x1="610" y1="0" x2="610" y2="500" stroke="#3f4a55" />
+            <rect x="590" y="64" width="20" height="372" fill="#0d1016" fillOpacity=".7" />
+            <line x1="590" y1="240" x2="610" y2="240" stroke="#f2f6fa" strokeOpacity=".7" />
+            <g stroke="#9aa6b2" strokeWidth="1"><line x1="596" y1="170" x2="610" y2="170" /><line x1="600" y1="205" x2="610" y2="205" /><line x1="596" y1="310" x2="610" y2="310" /><line x1="600" y1="275" x2="610" y2="275" /></g>
+            <text x="592" y="78" fill="#9aa6b2" fontSize="10">VS</text>
+            <path d="M610 222 L598 218 L598 226 Z" fill="#19e07a" /><text x="600" y="214" fill="#19e07a" fontSize="10" id="gc-vsi">+300</text>
+            <g fill="#f2f6fa" fontSize="13" textAnchor="start">
+              <text x="624" y="114">6000</text><text x="624" y="140">5900</text><text x="624" y="166">5800</text>
+              <text x="624" y="192">5700</text><text x="624" y="218">5600</text>
+              <text x="624" y="270">5400</text><text x="624" y="296">5300</text><text x="624" y="322">5200</text>
+            </g>
+            <rect x="614" y="6" width="62" height="24" fill="#06222a" stroke="#36d6e6" /><text x="645" y="23" fill="#36d6e6" fontSize="14" textAnchor="middle">5,800</text>
+            <path d="M610 158 L620 154 L620 166 L610 162 Z" fill="#36d6e6" />
+            <path d="M676 222 L616 222 L610 240 L616 258 L676 258 Z" fill="#05070b" stroke="#f2f6fa" strokeWidth="1.2" />
+            <text x="622" y="247" fill="#f2f6fa" fontSize="16" id="gc-alt">5,500</text>
+            <text x="618" y="480" fill="#36d6e6" fontSize="12">29.92IN</text>
+          </g>
+
+          {/* Partial HSI */}
+          <g fontFamily="monospace">
+            <path d="M210 430 A165 165 0 0 1 510 430" fill="none" stroke="#cdd6df" strokeWidth="1.4" strokeOpacity=".8" />
+            <g stroke="#cdd6df" strokeWidth="1.2" strokeOpacity=".7"><line x1="360" y1="365" x2="360" y2="377" /><line x1="305" y1="372" x2="308" y2="384" /><line x1="415" y1="372" x2="412" y2="384" /><line x1="258" y1="392" x2="264" y2="402" /><line x1="462" y1="392" x2="456" y2="402" /></g>
+            <g fill="#f2f6fa" fontSize="12" textAnchor="middle"><text x="360" y="392">36</text><text x="300" y="398">33</text><text x="420" y="398">3</text></g>
+            <path d="M360 363 L354 351 L366 351 Z" fill="#f2f6fa" />
+            <path d="M360 365 L360 430" stroke="#ff3ad0" strokeWidth="2.5" /><path d="M360 365 L353 378 L367 378 Z" fill="#ff3ad0" />
+            <rect x="340" y="372" width="13" height="9" fill="#36d6e6" opacity=".9" />
+            <text x="232" y="372" fill="#36d6e6" fontSize="12">HDG 010</text>
+            <text x="438" y="372" fill="#ff3ad0" fontSize="12">CRS 358</text>
+            <text x="232" y="404" fill="#36d6e6" fontSize="11">↙ 270° 9KT</text>
+          </g>
         </svg>
 
-        {/* Hero content — sits above the SVG */}
-        <div className="relative max-w-5xl mx-auto px-6">
+        <div className="gc-scrim" />
+
+        {/* Nav */}
+        <nav className="relative z-20 border-b border-white/10 bg-[#06070a]/45">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <span className="gc-word">CLEARSPAR</span>
+            <div className="flex items-center gap-5">
+              <Link href="/ground-school" className="text-sm text-gray-300 hover:text-white font-medium gc-hidesm">Ground School</Link>
+              <Link href="/checkride" className="text-sm text-gray-300 hover:text-white font-medium gc-hidesm">Checkrides</Link>
+              <Link href="/cheatsheet" className="text-sm text-gray-300 hover:text-white font-medium gc-hidesm">Cheat Sheet</Link>
+              <Link href="/learn" className="text-sm text-gray-300 hover:text-white font-medium gc-hidesm">Learn</Link>
+              <NavAuth dark />
+            </div>
+          </div>
+        </nav>
+
+        {/* Avionics data strip */}
+        <div className="gc-strip">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="gc-strip-in">
+              <span><i>NAV1</i> <b className="gc-grn">113.90</b> <em className="gc-arr">⇄</em> <b className="gc-wht">110.50</b></span>
+              <span className="gc-sep gc-hidesm">|</span>
+              <span className="gc-hidesm"><i>COM1</i> <b className="gc-grn gc-tx">121.700</b> <em className="gc-arr">⇄</em> <b className="gc-cy">118.300</b></span>
+              <span className="gc-mic gc-hidesm" aria-hidden="true"><span /><span /><span /><span /></span>
+              <span className="ml-auto gc-hidesm"><i>XPDR</i> <b className="gc-cy">1200</b> <small>ALT</small> <em className="gc-sep">{' '}|{' '}</em> <i>OAT</i> <b className="gc-cy">24°C</b></span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero content */}
+        <div className="relative z-20 max-w-5xl mx-auto px-6 pt-16 pb-40 sm:pb-44">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-mono px-3 py-1 rounded-full mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+            <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-300 text-xs font-mono px-3 py-1 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
               Free during beta
             </div>
-            <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
+            <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.1] mb-6 text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.85)' }}>
               Your radio calls,<br />
-              <span className="text-gray-400">graded like a CFI.</span>
+              <span className="gc-amber">graded like a CFI.</span>
             </h1>
-            <p className="text-xl text-gray-500 leading-relaxed mb-8">
+            <p className="text-xl text-gray-200 leading-relaxed mb-8 max-w-lg" style={{ textShadow: '0 1px 12px rgba(0,0,0,0.85)' }}>
               ATC gives the transmission. You read it back. AI grades every element against FAA AIM standards — missed hold shorts, wrong squawk, non-standard phrases, all of it.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="/train"
-                className="bg-gray-900 text-white px-8 py-3.5 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
+                className="bg-[#f5a623] text-[#1a1205] px-8 py-3.5 rounded-lg font-semibold text-base hover:bg-[#ffb73d] transition-colors"
               >
                 Try a scenario free
               </Link>
               <Link
                 href="/ground-school"
-                className="border border-gray-300 text-gray-700 px-8 py-3.5 rounded-lg font-medium text-base hover:border-gray-500 transition-colors"
+                className="border border-white/30 text-gray-100 px-8 py-3.5 rounded-lg font-medium text-base hover:border-white/60 transition-colors bg-black/30"
               >
                 Start Ground School
               </Link>
@@ -286,6 +213,18 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Softkey bezel */}
+        <div className="gc-keys" aria-hidden="true">
+          <span className="gc-key-on">PFD</span><span>MAP</span><span>TRAFFIC</span><span className="gc-key-on">COM</span><span>XPDR</span><span>NRST</span>
+        </div>
+
+        {/* Live drift — airspeed wobble + gentle climb with matching VSI. Tuned freqs stay fixed. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;var ias=105,alt=5500,vsi=300;var I=document.getElementById('gc-ias'),A=document.getElementById('gc-alt'),V=document.getElementById('gc-vsi');if(!I||!A||!V)return;setInterval(function(){vsi+=Math.random()*100-50;alt+=vsi/60*1.6;if(alt>5556)vsi=-Math.abs(vsi)-40;if(alt<5462)vsi=Math.abs(vsi)+40;if(vsi>560)vsi=560;if(vsi<-260)vsi=-260;if(alt>5560)alt=5560;if(alt<5458)alt=5458;ias+=Math.random()*2.4-1.2;if(ias>110)ias=110;if(ias<100)ias=100;I.textContent=Math.round(ias);A.textContent=Math.round(alt).toLocaleString('en-US');var v=Math.round(vsi/10)*10;V.textContent=(v>=0?'+':'')+v;},1600);})();`,
+          }}
+        />
       </section>
 
       {/* Avionics Radio Stack Demo */}
@@ -293,14 +232,14 @@ export default function Home() {
         <div className="max-w-2xl">
 
           {/* Radio Stack Panel */}
-          <div className="rounded-xl overflow-hidden border border-amber-500/40 shadow-lg shadow-amber-900/10 mb-4" style={{ background: '#111214' }}>
+          <div className="rounded-xl overflow-hidden border border-green-500/40 shadow-lg shadow-green-900/10 mb-4" style={{ background: '#111214' }}>
             {/* Avionics header */}
             <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-gray-800">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-xs px-2 py-0.5 rounded tracking-widest font-bold border text-amber-400 border-amber-700 bg-amber-950/60">
+                <span className="font-mono text-xs px-2 py-0.5 rounded tracking-widest font-bold border text-green-400 border-green-700 bg-green-950/60">
                   GROUND
                 </span>
-                <span className="font-mono text-lg tracking-wider leading-none tabular-nums" style={{ color: '#f5a623', textShadow: '0 0 8px rgba(245,166,35,0.5)' }}>
+                <span className="font-mono text-lg tracking-wider leading-none tabular-nums" style={{ color: '#19e07a', textShadow: '0 0 8px rgba(25,224,122,0.55)' }}>
                   121.700
                 </span>
               </div>
