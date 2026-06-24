@@ -339,14 +339,14 @@ export default function Home() {
       </section>
 
       {/* Ground School showcase */}
-      <section className="relative overflow-hidden border-b border-gray-100 py-20 bg-gradient-to-b from-blue-50/40 via-white to-white">
+      <section className="relative overflow-hidden border-b border-gray-100 py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-mono font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-widest">
               New · Ground School
             </div>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">Learn the radio like a game</h2>
-            <p className="text-lg text-gray-500 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed">
               Bite-sized drills that make the basics automatic — phonetics, numbers, hold-shorts, emergencies. Build a streak, earn XP, lose a heart when you slip. No mic, no AI, <span className="font-medium text-gray-700">works offline</span>.
             </p>
           </div>

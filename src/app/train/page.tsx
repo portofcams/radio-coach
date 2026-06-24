@@ -78,38 +78,50 @@ export default function TrainPage() {
   return (
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← back</Link>
-            <h1 className="text-2xl font-semibold">Training</h1>
+        <div className="mb-8">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm shrink-0">← back</Link>
+              <h1 className="text-2xl font-semibold">Training</h1>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link href="/challenge" className="text-sm font-medium text-blue-600 hover:underline whitespace-nowrap">Challenge →</Link>
+              <button
+                onClick={() => {
+                  const pool = scenarios
+                    .filter(s => !facilityFilter || s.facility === facilityFilter)
+                    .filter(s => !diffFilter || s.difficulty === diffFilter)
+                  if (!pool.length) return
+                  const pick = pool[Math.floor(Math.random() * pool.length)]
+                  router.push(`/train/${pick.id}`)
+                }}
+                className="text-sm font-mono font-medium px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:border-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Random
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/practice" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Practice</Link>
-            <Link href="/listen" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Listen</Link>
-            <Link href="/oral" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Oral</Link>
-            <Link href="/community" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Community</Link>
-            <Link href="/leaderboard" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Leaderboard</Link>
-            <Link href="/guides" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Guides</Link>
-            <Link href="/glossary" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Glossary</Link>
-            <Link href="/tools" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Tools</Link>
-            <Link href="/learn" className="text-sm text-gray-500 hover:text-gray-900 font-medium">Learn</Link>
-            <Link href="/challenge" className="text-sm text-blue-600 hover:underline font-medium">
-              Challenge →
-            </Link>
-            <button
-              onClick={() => {
-                const pool = scenarios
-                  .filter(s => !facilityFilter || s.facility === facilityFilter)
-                  .filter(s => !diffFilter || s.difficulty === diffFilter)
-                if (!pool.length) return
-                const pick = pool[Math.floor(Math.random() * pool.length)]
-                router.push(`/train/${pick.id}`)
-              }}
-              className="text-sm font-mono font-medium px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:border-gray-500 hover:bg-gray-50 transition-colors"
-            >
-              Random
-            </button>
-          </div>
+          <nav className="mt-3 flex flex-wrap items-center gap-1 border-t border-gray-100 pt-3">
+            {[
+              { href: '/practice', label: 'Practice' },
+              { href: '/listen', label: 'Listen' },
+              { href: '/oral', label: 'Oral' },
+              { href: '/community', label: 'Community' },
+              { href: '/leaderboard', label: 'Leaderboard' },
+              { href: '/guides', label: 'Guides' },
+              { href: '/glossary', label: 'Glossary' },
+              { href: '/tools', label: 'Tools' },
+              { href: '/learn', label: 'Learn' },
+            ].map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-2.5 py-1 rounded-md transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
         {/* Tabs */}
