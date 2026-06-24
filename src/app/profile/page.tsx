@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toPhonetic } from '@/lib/phonetic'
+import { isNative } from '@/lib/native'
 
 interface Stats {
   total: number
@@ -42,6 +43,8 @@ export default function ProfilePage() {
   const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
   const [billing, setBilling] = useState(false)
   const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
+  const [native, setNative] = useState(false)
+  useEffect(() => { setNative(isNative()) }, [])
   const [ident, setIdent] = useState('')
   const [lookup, setLookup] = useState<FieldSummary | null>(null)
   const [lookupErr, setLookupErr] = useState('')
@@ -189,7 +192,7 @@ export default function ProfilePage() {
                 className="shrink-0 text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors disabled:opacity-60">
                 Manage
               </button>
-            ) : (
+            ) : native ? null : (
               <div className="shrink-0 text-right">
                 <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
                   className="text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">

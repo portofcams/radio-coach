@@ -3,6 +3,7 @@ import { scenarios } from '@/lib/scenarios'
 import { units } from '@/lib/groundschool'
 import NavAuth from '@/components/NavAuth'
 import LandingMiniDrill from '@/components/LandingMiniDrill'
+import NativeHide from '@/components/NativeHide'
 import { FlameIcon, StarIcon, HeartIcon, LockIcon } from '@/components/icons'
 
 export default function Home() {
@@ -505,7 +506,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing — hidden in the native app (App Store 3.1.1: no non-IAP purchase UI) */}
+      <NativeHide>
       <section className="bg-gray-950 py-20">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-white mb-2">Simple pricing</h2>
@@ -591,6 +593,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </NativeHide>
 
       {/* Final CTA */}
       <section className="py-24 text-center border-t border-gray-100">

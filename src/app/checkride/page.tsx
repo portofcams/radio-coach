@@ -3,14 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FLIGHT_SESSIONS } from '@/lib/flight-sessions'
+import { isNative } from '@/lib/native'
 
 export default function CheckridePage() {
   const [loaded, setLoaded] = useState(false)
   const [pro, setPro] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
   const [upgrading, setUpgrading] = useState(false)
+  const [native, setNative] = useState(false)
 
   useEffect(() => {
+    setNative(isNative())
     fetch('/api/auth/me')
       .then((r) => r.json())
       .then((d) => { setLoggedIn(!!d.user); setPro(!!d.entitlement?.pro) })
@@ -19,6 +22,7 @@ export default function CheckridePage() {
   }, [])
 
   async function upgrade() {
+    if (isNative()) return
     if (!loggedIn) { window.location.href = '/login?mode=signup&redirect=/checkride'; return }
     setUpgrading(true)
     try {
@@ -47,7 +51,7 @@ export default function CheckridePage() {
           Fly a whole flight&rsquo;s radio work in one continuous, graded run — taxi to landing — and get a checkride-readiness verdict. Miss a hold-short and you fail, just like the real thing.
         </p>
 
-        {loaded && !pro && (
+        {loaded && !pro && !native && (
           <div className="border-2 border-gray-900 rounded-2xl p-5 mb-6 bg-gray-900 text-white">
             <div className="font-semibold mb-1">Checkride mode is a Solo Pilot feature</div>
             <p className="text-sm text-gray-300 mb-3">
@@ -75,6 +79,8 @@ export default function CheckridePage() {
             )
             return pro ? (
               <Link key={s.id} href={`/session/${s.id}`} className="block">{card}</Link>
+            ) : native ? (
+              <div key={s.id} className="block w-full text-left">{card}</div>
             ) : (
               <button key={s.id} onClick={upgrade} className="block w-full text-left">{card}</button>
             )
