@@ -2,9 +2,12 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const FROM = process.env.WEEKLY_FROM || 'Clearspar Radio Trainer <reports@wilco.binnacleai.com>'
 // reports@wilco.binnacleai.com has no inbox (subdomain has no MX), so replies
-// must route to an address that actually receives. john@binnacleai.com is
-// forwarded via Cloudflare Email Routing; override with WEEKLY_REPLY_TO if needed.
-const REPLY_TO = process.env.WEEKLY_REPLY_TO || 'john@binnacleai.com'
+// must route to an address that actually receives.
+// TODO(email): TEMPORARY — replies point at a raw Gmail. Replace with a branded
+// domain reply-to (e.g. john@binnacleai.com via Cloudflare Email Routing) and
+// verify the sending domain in Resend (DKIM/SPF) before the weekly/drip crons go
+// live. Tracked in claude-config/radio-coach/wilco-backlog.md.
+const REPLY_TO = process.env.WEEKLY_REPLY_TO || 'portofcams@gmail.com'
 
 export function emailConfigured(): boolean {
   return !!RESEND_API_KEY
