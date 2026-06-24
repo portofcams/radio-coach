@@ -45,6 +45,7 @@ export default function TrainPage() {
   const [activeTab, setActiveTab] = useState<'scenarios' | 'sessions'>('scenarios')
   const [facilityFilter, setFacilityFilter] = useState<Facility | null>(null)
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
+  const [heliOnly, setHeliOnly] = useState(false)
   const [homeList, setHomeList] = useState<Scenario[]>([])
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
 
@@ -133,20 +134,26 @@ export default function TrainPage() {
             {/* Facility filter */}
             <div className="flex flex-wrap gap-1.5">
               <button
-                onClick={() => setFacilityFilter(null)}
-                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${!facilityFilter ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                onClick={() => { setFacilityFilter(null); setHeliOnly(false) }}
+                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${!facilityFilter && !heliOnly ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
               >
                 All
               </button>
               {(['GROUND','TOWER','APPROACH','DEPARTURE','CENTER','CLEARANCE','CTAF'] as Facility[]).map(f => (
                 <button
                   key={f}
-                  onClick={() => setFacilityFilter(prev => prev === f ? null : f)}
+                  onClick={() => { setFacilityFilter(prev => prev === f ? null : f); setHeliOnly(false) }}
                   className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${facilityFilter === f ? FACILITY_COLORS[f] + ' font-bold' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
                 >
                   {f}
                 </button>
               ))}
+              <button
+                onClick={() => { setHeliOnly(v => !v); setFacilityFilter(null) }}
+                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${heliOnly ? 'text-slate-700 border-slate-300 bg-slate-100 font-bold' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+              >
+                HELI
+              </button>
             </div>
             {/* Difficulty filter + active count */}
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -174,7 +181,7 @@ export default function TrainPage() {
         {/* Scenarios tab */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
-            {!facilityFilter && !diffFilter && (() => {
+            {!facilityFilter && !diffFilter && !heliOnly && (() => {
               const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter')
               const day = new Date().toISOString().slice(0, 10)
               let h = 0
@@ -193,7 +200,7 @@ export default function TrainPage() {
                 </Link>
               )
             })()}
-            {assignments.length > 0 && !facilityFilter && !diffFilter && (
+            {assignments.length > 0 && !facilityFilter && !diffFilter && !heliOnly && (
               <div>
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Assigned by your CFI</h2>
                 <div className="space-y-2">
@@ -224,7 +231,7 @@ export default function TrainPage() {
                 </div>
               </div>
             )}
-            {homeList.length > 0 && !facilityFilter && !diffFilter && (
+            {homeList.length > 0 && !facilityFilter && !diffFilter && !heliOnly && (
               <div id="home-field">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">
@@ -285,7 +292,7 @@ export default function TrainPage() {
                 </div>
               )
             })()}
-            {phases.map((phase) => {
+            {!heliOnly && phases.map((phase) => {
               const phaseScenarios = scenarios
                 .filter((s) => s.phase === phase)
                 .filter((s) => s.category !== 'helicopter')

@@ -529,10 +529,10 @@ export const units: GsUnit[] = [
         xp: 10,
         exercises: [
           { type: 'spot', id: 'r1-1', prompt: 'Tap the non-standard word.', words: ['Copy,', 'traffic', 'in', 'sight,', 'four', 'sierra', 'uniform'], errorIndices: [0], explain: 'Never "copy" — read the instruction back, or say "traffic in sight".' },
-          { type: 'mc', id: 'r1-2', prompt: 'Which is NOT standard radio phraseology?', choices: ['Roger', 'Clearspar', '10-4', 'Affirmative'], answer: 2, explain: '"10-4" is CB slang and never used in aviation.' },
+          { type: 'mc', id: 'r1-2', prompt: 'Which is NOT standard radio phraseology?', choices: ['Roger', 'Wilco', '10-4', 'Affirmative'], answer: 2, explain: '"10-4" is CB slang and never used in aviation.' },
           { type: 'match', id: 'r1-3', prompt: 'Match each word to what it actually means.', pairs: [
             { left: 'Roger', right: 'I received your message' },
-            { left: 'Clearspar', right: 'I will comply' },
+            { left: 'Wilco', right: 'I will comply' },
             { left: 'Affirmative', right: 'Yes' },
             { left: 'Negative', right: 'No' },
           ] },

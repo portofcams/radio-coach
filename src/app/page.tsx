@@ -318,7 +318,7 @@ export default function Home() {
               <div className="flex items-start gap-2">
                 <div className="mt-1 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
                 <p className="text-green-400 font-mono text-sm sm:text-base leading-relaxed">
-                  &ldquo;Cessna Four Sierra Uniform, Hilo Ground, taxi to runway two eight left via Bravo, hold short of runway two eight right, altimeter two niner niner two.&rdquo;
+                  &ldquo;Cessna One Two Three Four Five, Hilo Ground, taxi to runway two eight left via Bravo, hold short of runway two eight right, altimeter two niner niner two.&rdquo;
                 </p>
               </div>
             </div>
@@ -333,7 +333,7 @@ export default function Home() {
           <div className="border border-gray-800 rounded-xl p-4 mb-4" style={{ background: '#111214' }}>
             <div className="text-gray-500 text-xs font-mono mb-2 uppercase tracking-widest">Your readback</div>
             <p className="text-white font-mono text-sm">
-              &ldquo;Taxi to two eight left via Bravo, Four Sierra Uniform.&rdquo;
+              &ldquo;Taxi to two eight left via Bravo, One Two Three Four Five.&rdquo;
             </p>
           </div>
 
@@ -538,7 +538,7 @@ export default function Home() {
             {Object.entries(byPhase).map(([phase, count]) => (
               <div key={phase} className="border border-gray-200 rounded-xl p-4 text-center">
                 <div className="text-2xl font-semibold">{count}</div>
-                <div className="text-xs text-gray-400 capitalize mt-1">{phase}</div>
+                <div className="text-xs text-gray-400 capitalize mt-1">{phase === 'ifr' ? 'IFR' : phase}</div>
               </div>
             ))}
           </div>
@@ -571,8 +571,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-white mb-2">Simple pricing</h2>
           <p className="text-gray-400 mb-2">Free while you&rsquo;re getting started. Upgrade when you want more.</p>
-          <p className="text-gray-500 text-sm mb-12">Save two months with annual billing — Solo $150/yr, CFI Pro $300/yr.</p>
-          <div className="grid sm:grid-cols-3 gap-4 max-w-3xl">
+          <p className="text-gray-500 text-sm mb-12">Save two months with annual billing — Solo $150/yr, CFI Pro $300/yr, Flight School $990/yr.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl">
             {[
               {
                 name: 'Free',
@@ -599,6 +599,15 @@ export default function Home() {
                 features: ['Everything in Solo', 'Assign scenarios to students', 'Student grade reports', 'Custom scenario builder'],
                 cta: 'Get CFI Pro',
                 href: '/train',
+                highlight: false,
+              },
+              {
+                name: 'Flight School',
+                price: '$99',
+                sub: '/month',
+                features: ['Everything in CFI Pro', 'Multiple instructors, one account', 'Pooled students across CFIs', 'Public school directory listing'],
+                cta: 'Get Flight School',
+                href: '/school',
                 highlight: false,
               },
             ].map((tier) => (
@@ -670,13 +679,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between text-xs text-gray-400">
-          <span className="font-mono font-semibold tracking-widest">CLEARSPAR<span className="text-gray-300 font-normal"> · Radio Trainer</span></span>
-          <span>Built for student pilots. Graded against FAA AIM Chapter 4.</span>
-        </div>
-      </footer>
+      {/* Footer is rendered site-wide via SiteFooter in layout.tsx */}
 
     </main>
   )

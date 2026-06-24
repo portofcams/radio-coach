@@ -9,8 +9,9 @@ function LoginForm() {
   const params = useSearchParams()
   const redirect = params.get('redirect') ?? '/train'
   const ref = params.get('ref')
+  const modeParam = params.get('mode')
 
-  const [mode, setMode] = useState<'login' | 'signup'>(ref ? 'signup' : 'login')
+  const [mode, setMode] = useState<'login' | 'signup'>(ref || modeParam === 'signup' ? 'signup' : 'login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')

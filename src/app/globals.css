@@ -43,5 +43,6 @@ body { background: #ffffff; color: #111827; }
 .dark .bg-cyan-50 { background-color: #0a2227 !important; }
 .dark .bg-fuchsia-50 { background-color: #2a0f24 !important; }
 .dark .bg-violet-50 { background-color: #1c1530 !important; }
+.dark .bg-purple-50 { background-color: #1c1233 !important; }
 .dark .bg-orange-50 { background-color: #2a1606 !important; }
 .dark .bg-gray-50\/60 { background-color: #161b21 !important; }

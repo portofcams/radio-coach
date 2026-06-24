@@ -19,7 +19,7 @@ export default function CheckridePage() {
   }, [])
 
   async function upgrade() {
-    if (!loggedIn) { window.location.href = '/login'; return }
+    if (!loggedIn) { window.location.href = '/login?mode=signup&redirect=/checkride'; return }
     setUpgrading(true)
     try {
       const res = await fetch('/api/checkout', {
