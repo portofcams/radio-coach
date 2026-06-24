@@ -30,7 +30,7 @@ export const COMPARE: ComparePage[] = [
     lead: 'You do not need a flight sim or a paid network to start getting comfortable on the radio. You can drill the actual calls and readbacks for free.',
     sections: [
       { h: 'What "free" usually leaves out', p: 'Listening apps are free but passive. Full ATC networks are interactive but need a flight simulator and often a subscription. The missing free option is active speaking practice with feedback.' },
-      { h: 'Free graded practice', p: 'Clearspar\'s Ground School and five graded Live Comms scenarios a day are free. You hear a real call, read it back, and see exactly which required elements you hit or missed — towered, non-towered, IFR, even emergencies.' },
+      { h: 'Free graded practice', p: 'Clearspar\'s Ground School and two graded Live Comms scenarios a day are free. You hear a real call, read it back, and see exactly which required elements you hit or missed — towered, non-towered, IFR, even emergencies.' },
       { h: 'Practice your actual home field', p: 'Enter your airport and practice its real frequencies, runways, and taxi layout — so the calls you drill are the ones you will actually make.' },
       { h: 'When to upgrade', p: 'Free covers the fundamentals. Unlimited scenarios, all airport classes, and progress tracking are a low monthly cost when you want to push harder.' },
     ],

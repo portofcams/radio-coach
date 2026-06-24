@@ -54,7 +54,7 @@ export default function CheckridePage() {
               Free covers single scenarios + the whole Ground School. Go unlimited to fly full checkrides and see your readiness verdict.
             </p>
             <button onClick={upgrade} disabled={upgrading} className="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors disabled:opacity-60">
-              {loggedIn ? 'Go Solo Pilot · $15/mo' : 'Sign up to unlock'}
+              {loggedIn ? 'Go Solo Pilot · $9/mo' : 'Sign up to unlock'}
             </button>
           </div>
         )}

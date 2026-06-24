@@ -31,7 +31,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
   }
 
   const annual = interval === 'year'
-  const price = (plan: 'solo' | 'cfi') => annual ? (plan === 'solo' ? '$150' : '$300') : (plan === 'solo' ? '$15' : '$30')
+  const price = (plan: 'solo' | 'cfi') => annual ? (plan === 'solo' ? '$90' : '$300') : (plan === 'solo' ? '$9' : '$30')
   const per = annual ? '/year' : '/month'
 
   return (
@@ -71,7 +71,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
               Sign up free to keep going
             </a>
             <p className="text-center text-sm text-gray-500">
-              A free account gives you 5 scenarios a day, synced across devices. Upgrade to unlimited anytime.
+              A free account saves your progress across devices and gives you a fresh daily set. Go unlimited for $9/mo anytime.
             </p>
           </div>
         ) : (

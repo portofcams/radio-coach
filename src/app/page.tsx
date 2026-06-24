@@ -187,7 +187,7 @@ export default function Home() {
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-300 text-xs font-mono px-3 py-1 rounded-full mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-              Free during beta
+              Free to start
             </div>
             <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.1] mb-6 text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.85)' }}>
               Your radio calls,<br />
@@ -491,7 +491,7 @@ export default function Home() {
           <div className="space-y-6">
             {[
               { q: 'Do I need a microphone?', a: 'Nope. Ground School is all taps and choices. In Live Comms you can type your read-back or use your mic — your call.' },
-              { q: 'Is it actually free?', a: 'Yes. Ground School is free and works offline. Live Comms gives you 5 AI-graded scenarios a day free; unlimited is $15/mo.' },
+              { q: 'Is it actually free?', a: 'Yes — Ground School is completely free and works offline. Live Comms gives you 2 AI-graded scenarios a day free; go unlimited for $9/mo.' },
               { q: 'Is the content FAA-accurate?', a: 'Every scenario and drill is built against the FAA Aeronautical Information Manual (AIM) Chapter 4 — the same standard your CFI and examiner use.' },
               { q: 'Will this help on my checkride?', a: 'That’s the point. Radio work trips up more student pilots than almost anything — hold-shorts, read-backs, and phraseology are exactly what gets drilled and graded here.' },
               { q: 'Does it really work offline?', a: 'Ground School drills run entirely on your device — perfect for the ramp, the run-up area, or a flight with no signal.' },
@@ -510,21 +510,21 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-white mb-2">Simple pricing</h2>
           <p className="text-gray-400 mb-2">Free while you&rsquo;re getting started. Upgrade when you want more.</p>
-          <p className="text-gray-500 text-sm mb-12">Save two months with annual billing — Solo $150/yr, CFI Pro $300/yr, Flight School $990/yr.</p>
+          <p className="text-gray-500 text-sm mb-12">Save two months with annual billing — Solo $90/yr, CFI Pro $300/yr, Flight School $990/yr.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl">
             {[
               {
                 name: 'Free',
                 price: '$0',
                 sub: 'forever',
-                features: ['Full Ground School — all drills', 'Works offline · no mic', '5 AI-graded scenarios/day'],
+                features: ['Full Ground School — all drills', 'Works offline · no mic', '2 AI-graded scenarios/day'],
                 cta: 'Start free',
                 href: '/ground-school',
                 highlight: false,
               },
               {
                 name: 'Solo Pilot',
-                price: '$15',
+                price: '$9',
                 sub: '/month',
                 features: ['Unlimited scenarios', 'All airport classes', 'All phases of flight', 'Score history'],
                 cta: 'Get Solo Pilot',

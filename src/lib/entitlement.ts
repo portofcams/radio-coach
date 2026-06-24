@@ -1,6 +1,6 @@
 import { getPool } from './db'
 
-export const FREE_DAILY_LIMIT = 5
+export const FREE_DAILY_LIMIT = 2
 
 export interface Entitlement {
   pro: boolean

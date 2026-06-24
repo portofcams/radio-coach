@@ -54,13 +54,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'pro_scenario' }, { status: 402 })
   }
 
-  // Free-tier daily cap — server-enforced for logged-in users (pro = unlimited).
-  if (user && db && !ent?.pro) {
-    if ((await dailyGradeCount(user.userId)) >= FREE_DAILY_LIMIT) {
-      return NextResponse.json(
-        { error: 'daily_limit', limit: FREE_DAILY_LIMIT },
-        { status: 402 },
-      )
+  // Free-tier daily cap (pro = unlimited). Logged-in users count via the DB;
+  // anonymous users are capped per-device with an httpOnly cookie — keeps the
+  // "try free, no account" promise while still funneling toward signup + upgrade.
+  let bumpAnonCookie: string | null = null
+  if (!ent?.pro) {
+    if (user && db) {
+      if ((await dailyGradeCount(user.userId)) >= FREE_DAILY_LIMIT) {
+        return NextResponse.json({ error: 'daily_limit', limit: FREE_DAILY_LIMIT }, { status: 402 })
+      }
+    } else {
+      const today = new Date().toISOString().slice(0, 10)
+      let used = 0
+      try {
+        const p = JSON.parse(req.cookies.get('rc_free')?.value || '{}')
+        if (p.d === today) used = p.n || 0
+      } catch { /* malformed cookie → treat as 0 */ }
+      if (used >= FREE_DAILY_LIMIT) {
+        return NextResponse.json({ error: 'daily_limit', limit: FREE_DAILY_LIMIT, anon: true }, { status: 402 })
+      }
+      bumpAnonCookie = JSON.stringify({ d: today, n: used + 1 })
     }
   }
 
@@ -98,5 +111,11 @@ export async function POST(req: NextRequest) {
     ).catch(console.error)
   }
 
-  return NextResponse.json(result)
+  const res = NextResponse.json(result)
+  if (bumpAnonCookie) {
+    res.cookies.set('rc_free', bumpAnonCookie, {
+      httpOnly: true, sameSite: 'lax', path: '/', maxAge: 60 * 60 * 36,
+    })
+  }
+  return res
 }

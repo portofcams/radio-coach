@@ -181,7 +181,7 @@ export default function ProfilePage() {
                   {ent.periodEnd && <span className="text-gray-400"> · renews {new Date(ent.periodEnd).toLocaleDateString()}</span>}
                 </div>
               ) : (
-                <div className="text-sm text-gray-500">Free — 5 Live Comms scenarios a day</div>
+                <div className="text-sm text-gray-500">Free — 2 Live Comms scenarios a day</div>
               )}
             </div>
             {ent?.pro ? (
@@ -193,11 +193,11 @@ export default function ProfilePage() {
               <div className="shrink-0 text-right">
                 <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
                   className="text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">
-                  Go unlimited · $15/mo
+                  Go unlimited · $9/mo
                 </button>
                 <button onClick={() => billingAction('/api/checkout', { plan: 'solo', interval: 'year' })} disabled={billing}
                   className="block ml-auto mt-1 text-xs text-blue-600 hover:underline disabled:opacity-60">
-                  or $150/yr — 2 months free
+                  or $90/yr — 2 months free
                 </button>
               </div>
             )}
