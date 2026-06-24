@@ -1,6 +1,6 @@
 // Minimal Resend sender. Only called when the weekly job runs in live mode.
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const FROM = process.env.WEEKLY_FROM || 'Wilco <reports@wilco.binnacleai.com>'
+const FROM = process.env.WEEKLY_FROM || 'Clearspar Radio Trainer <reports@wilco.binnacleai.com>'
 
 export function emailConfigured(): boolean {
   return !!RESEND_API_KEY

@@ -30,7 +30,7 @@ export async function fetchTaxiways(lat: number, lon: number): Promise<Taxiway[]
   try {
     const res = await fetch(OVERPASS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Wilco/1.0 (radio training; wilco.binnacleai.com)' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'ClearsparRadioTrainer/1.0 (radio training; wilco.binnacleai.com)' },
       body: 'data=' + encodeURIComponent(q),
       signal: ctrl.signal,
     })

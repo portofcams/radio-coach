@@ -32,7 +32,7 @@ export default async function SchoolProfile({ params }: { params: Promise<{ slug
         <Link href="/directory" className="text-gray-400 hover:text-gray-600 text-sm">← directory</Link>
         <div className="flex items-center gap-2 mt-3 mb-1">
           <h1 className="text-2xl font-semibold">{s.name}</h1>
-          <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-900 text-white tracking-wide">WILCO</span>
+          <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-900 text-white tracking-wide">CLEARSPAR</span>
         </div>
         {where && <p className="text-gray-500">{where}</p>}
         {s.blurb && <p className="text-gray-700 mt-4 leading-relaxed">{s.blurb}</p>}

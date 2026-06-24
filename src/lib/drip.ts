@@ -75,7 +75,7 @@ export function composeDrip(dayIndex: number, opts: { unsubUrl: string; appUrl: 
   const body = d.body.map((p) => p.replace(/APPURL/g, opts.appUrl))
   const html = `<!doctype html><html><body style="margin:0;background:#f6f7f9;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <div style="max-width:480px;margin:0 auto;padding:24px">
-    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">WILCO · RADIO CONFIDENCE</div>
+    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">CLEARSPAR · RADIO CONFIDENCE</div>
     <div style="background:#fff;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 12px 12px;padding:24px 20px">
       <p style="margin:0 0 16px;color:#111827;font-size:16px;font-weight:600">${d.subject.replace(/^Day \d+: /, '')}</p>
       <p style="margin:0 0 16px;color:#374151">${d.lead}</p>

@@ -29,7 +29,7 @@ export function composeWeeklyReport(d: WeeklyReportData): { subject: string; htm
 
   const html = `<!doctype html><html><body style="margin:0;background:#f6f7f9;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <div style="max-width:480px;margin:0 auto;padding:24px">
-    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">WILCO</div>
+    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">CLEARSPAR</div>
     <div style="background:#fff;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 12px 12px;padding:24px 20px">
       <p style="margin:0 0 8px;color:#111827;font-size:16px">Your weekly radio report, ${who}.</p>
       <p style="margin:0 0 16px;color:#374151">${intro}</p>
@@ -93,7 +93,7 @@ export function composeCfiDigest(d: CfiDigestData): { subject: string; html: str
 
   const html = `<!doctype html><html><body style="margin:0;background:#f6f7f9;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <div style="max-width:520px;margin:0 auto;padding:24px">
-    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">WILCO · CFI</div>
+    <div style="background:#0b0f14;color:#fff;border-radius:12px 12px 0 0;padding:16px 20px;font-weight:600;letter-spacing:.08em">CLEARSPAR · CFI</div>
     <div style="background:#fff;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 12px 12px;padding:24px 20px">
       <p style="margin:0 0 8px;color:#111827;font-size:16px">Your weekly roster report, ${who}.</p>
       <p style="margin:0 0 16px;color:#374151"><strong>${d.activeThisWeek}</strong> of <strong>${d.total}</strong> students flew the radio this week. ${d.ready} checkride-ready, ${d.needsWork} need work, ${d.inactive} inactive.</p>

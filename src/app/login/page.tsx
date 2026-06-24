@@ -43,7 +43,7 @@ function LoginForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <a href="/" className="font-mono text-sm font-semibold tracking-widest text-gray-900">
-            WILCO
+            CLEARSPAR
           </a>
           <h1 className="text-2xl font-semibold mt-4 mb-1">
             {mode === 'login' ? 'Welcome back' : 'Create your account'}

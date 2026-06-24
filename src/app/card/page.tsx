@@ -51,7 +51,7 @@ export default function ScoreCardPage() {
       {/* The card — screenshot this */}
       <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="bg-[#0b0f14] text-white px-6 py-4 flex items-center justify-between">
-          <span className="font-semibold tracking-wide">WILCO</span>
+          <span className="font-semibold tracking-wide">CLEARSPAR</span>
           <span className="text-[11px] text-gray-400 font-mono uppercase tracking-widest">Radio Readiness</span>
         </div>
         <div className="px-6 py-7 flex flex-col items-center text-center">

@@ -20,7 +20,7 @@ export default function EmbedPhonetic() {
         ))}
       </div>
       <div className="text-xs text-gray-500 mb-3">On the radio: {NUM.map(([n, w]) => `${n} = ${w}`).join(' · ')}</div>
-      <a href="https://wilco.binnacleai.com/?utm_source=embed&utm_medium=phonetic" target="_blank" rel="noopener" className="block text-center text-[11px] text-gray-400 hover:text-gray-600">Powered by Wilco — practice radio calls →</a>
+      <a href="https://wilco.binnacleai.com/?utm_source=embed&utm_medium=phonetic" target="_blank" rel="noopener" className="block text-center text-[11px] text-gray-400 hover:text-gray-600">Powered by Clearspar Radio Trainer — practice radio calls →</a>
     </div>
   )
 }

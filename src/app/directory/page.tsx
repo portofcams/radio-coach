@@ -33,7 +33,7 @@ export default async function DirectoryPage() {
                 <div className="font-medium group-hover:text-gray-900">{s.name}</div>
                 <div className="flex items-center gap-2 mt-0.5 text-sm text-gray-500">
                   {(s.city || s.region) && <span>{[s.city, s.region].filter(Boolean).join(', ')}</span>}
-                  <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-gray-900 text-white leading-4 tracking-wide">WILCO</span>
+                  <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-gray-900 text-white leading-4 tracking-wide">CLEARSPAR</span>
                 </div>
               </Link>
             ))}
