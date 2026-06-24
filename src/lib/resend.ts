@@ -1,6 +1,10 @@
 // Minimal Resend sender. Only called when the weekly job runs in live mode.
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const FROM = process.env.WEEKLY_FROM || 'Clearspar Radio Trainer <reports@wilco.binnacleai.com>'
+// reports@wilco.binnacleai.com has no inbox (subdomain has no MX), so replies
+// must route to an address that actually receives. john@binnacleai.com is
+// forwarded via Cloudflare Email Routing; override with WEEKLY_REPLY_TO if needed.
+const REPLY_TO = process.env.WEEKLY_REPLY_TO || 'john@binnacleai.com'
 
 export function emailConfigured(): boolean {
   return !!RESEND_API_KEY
@@ -12,7 +16,7 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html, text: opts.text }),
+      body: JSON.stringify({ from: FROM, reply_to: REPLY_TO, to: opts.to, subject: opts.subject, html: opts.html, text: opts.text }),
     })
     if (!res.ok) return { ok: false, error: `resend_${res.status}` }
     return { ok: true }
