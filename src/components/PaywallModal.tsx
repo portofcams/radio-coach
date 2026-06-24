@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { isNative } from '@/lib/native'
 
 interface Props {
   onClose: () => void
@@ -13,6 +14,11 @@ interface Props {
 export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false, reason = 'daily' }: Props) {
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
   const [interval, setInterval] = useState<'month' | 'year'>('month')
+  // On iOS, App Store rules (3.1.1) forbid non-IAP purchase UI. Until the IAP
+  // build ships, native shows a no-purchase fallback; later this branch drives
+  // the StoreKit/RevenueCat flow.
+  const [native, setNative] = useState(false)
+  useEffect(() => { setNative(isNative()) }, [])
 
   async function checkout(plan: 'solo' | 'cfi') {
     setLoading(plan)
@@ -62,7 +68,19 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
           )}
         </div>
 
-        {!isLoggedIn ? (
+        {native ? (
+          <div className="space-y-3 text-center">
+            <p className="text-sm text-gray-500">
+              {reason === 'pro'
+                ? 'Advanced scenarios are part of the unlimited plan.'
+                : 'You’ve used today’s free scenarios.'}{' '}
+              Keep drilling Ground School free anytime — more free scenarios unlock tomorrow.
+            </p>
+            <button onClick={onClose} className="w-full bg-gray-900 text-white rounded-xl px-5 py-3.5 font-semibold hover:bg-gray-800 transition-colors">
+              Keep practicing
+            </button>
+          </div>
+        ) : !isLoggedIn ? (
           <div className="space-y-3">
             <a
               href="/login"
@@ -126,7 +144,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
         )}
 
         <p className="text-center text-xs text-gray-400 mt-5">
-          {isLoggedIn ? 'Cancel anytime · Secure checkout via Stripe' : 'No card needed to sign up'}
+          {native ? 'Ground School is free, always' : isLoggedIn ? 'Cancel anytime · Secure checkout via Stripe' : 'No card needed to sign up'}
         </p>
       </div>
     </div>
