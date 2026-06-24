@@ -344,6 +344,21 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS blurb TEXT
   `)
   await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS rc_schools_slug ON rc_schools(slug) WHERE slug IS NOT NULL`)
+
+  // First-party analytics events (anonymous pageviews + platform tag).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_events (
+      id BIGSERIAL PRIMARY KEY,
+      ts TIMESTAMPTZ NOT NULL DEFAULT now(),
+      anon_id TEXT,
+      event TEXT NOT NULL,
+      path TEXT,
+      platform TEXT NOT NULL DEFAULT 'web',
+      referrer TEXT
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_events_ts ON rc_events(ts DESC)`)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_events_anon ON rc_events(anon_id)`)
 }
 
 // Run init once on first import in server context

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { isNative } from '@/lib/native'
 
 interface Member { id: number; status: string; role: string; email: string; joined: boolean; joinUrl: string | null; students: number }
 
@@ -17,6 +18,8 @@ export default function SchoolPage() {
   const [copied, setCopied] = useState<number | null>(null)
   const [listing, setListing] = useState({ public_listing: false, slug: '', city: '', region: '', website: '', blurb: '' })
   const [savedListing, setSavedListing] = useState(false)
+  const [native, setNative] = useState(false)
+  useEffect(() => { setNative(isNative()) }, [])
 
   async function load() {
     const res = await fetch('/api/school')
@@ -56,6 +59,7 @@ export default function SchoolPage() {
   }
   async function remove(id: number) { await fetch(`/api/school/members/${id}`, { method: 'DELETE' }); load() }
   async function upgrade() {
+    if (isNative()) return
     setBusy(true)
     const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan: 'school' }) })
     const d = await res.json()
@@ -68,9 +72,11 @@ export default function SchoolPage() {
       <h1 className="text-xl font-semibold mb-2">Flight School</h1>
       <p className="text-gray-500 mb-2">One account for your whole school — add your instructors, each gets full CFI Pro tools for their students.</p>
       <p className="text-gray-400 text-sm mb-6">Unlimited instructors and students under one subscription.</p>
-      <button onClick={upgrade} disabled={busy} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800 disabled:opacity-60">
-        {busy ? 'Starting…' : 'Start Flight School · $99/mo'}
-      </button>
+      {!native && (
+        <button onClick={upgrade} disabled={busy} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800 disabled:opacity-60">
+          {busy ? 'Starting…' : 'Start Flight School · $99/mo'}
+        </button>
+      )}
     </main>
   )
 

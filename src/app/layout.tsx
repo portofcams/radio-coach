@@ -4,6 +4,7 @@ import NativeInit from '@/components/NativeInit'
 import InstallPrompt from '@/components/InstallPrompt'
 import ThemeToggle from '@/components/ThemeToggle'
 import SiteFooter from '@/components/SiteFooter'
+import Analytics from '@/components/Analytics'
 
 // Set the theme class before paint (no flash of the wrong theme).
 const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('wilco_theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <NativeInit />
+        <Analytics />
         {children}
         <SiteFooter />
         <InstallPrompt />

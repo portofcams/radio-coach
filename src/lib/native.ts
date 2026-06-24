@@ -9,6 +9,16 @@ export function isNative(): boolean {
   try { return Capacitor.isNativePlatform() } catch { return false }
 }
 
+/** Platform tag for analytics: 'ios' | 'android' | 'web'. */
+export function platformTag(): 'ios' | 'android' | 'web' {
+  try {
+    const p = Capacitor.getPlatform()
+    return p === 'ios' || p === 'android' ? p : 'web'
+  } catch {
+    return 'web'
+  }
+}
+
 /** Tactile feedback on a graded readback — success vs. warning. */
 export async function gradeHaptic(pass: boolean): Promise<void> {
   if (!isNative()) return
