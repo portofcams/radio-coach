@@ -1,6 +1,8 @@
 'use client'
 
-export const FREE_DAILY_LIMIT = 5
+// Keep in sync with FREE_DAILY_LIMIT in entitlement.ts — the server enforces the
+// same cap (this client copy exists only so the UI counter doesn't import pg).
+export const FREE_DAILY_LIMIT = 2
 
 function todayKey() {
   return `rc_free_${new Date().toISOString().slice(0, 10)}`
