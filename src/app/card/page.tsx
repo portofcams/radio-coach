@@ -18,6 +18,7 @@ export default function ScoreCardPage() {
   const [coach, setCoach] = useState<Coach | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -44,6 +45,18 @@ export default function ScoreCardPage() {
 
   async function copyShare() {
     try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* */ }
+  }
+
+  // Shareable link whose preview image shows this exact score (the viral loop).
+  const shareUrl = `https://wilco.binnacleai.com/s?score=${rd.score}&passed=${stats.passed}&rate=${stats.passRate}&label=${encodeURIComponent(rd.label)}${me.callsign ? `&cs=${encodeURIComponent(me.callsign)}` : ''}`
+  async function shareLink() {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({ title: 'My Clearspar radio readiness', text: shareText, url: shareUrl })
+        return
+      }
+      await navigator.clipboard.writeText(shareUrl); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000)
+    } catch { /* cancelled */ }
   }
 
   return (
@@ -97,10 +110,13 @@ export default function ScoreCardPage() {
 
       {/* Controls — not part of the card */}
       <div className="mt-6 flex flex-col items-center gap-3">
-        <p className="text-xs text-gray-400 text-center max-w-xs">Screenshot the card to share, or copy the caption for r/flying, r/studentpilot, or your CFI.</p>
+        <p className="text-xs text-gray-400 text-center max-w-xs">Share your card — the link preview shows your score. Or screenshot it / copy the caption for r/flying, r/studentpilot, or your CFI.</p>
         <div className="flex gap-3">
+          <button onClick={shareLink} className="text-sm bg-[#f5a623] text-[#1a1205] font-semibold rounded-lg px-4 py-2 hover:bg-[#ffb73d] transition-colors">
+            {linkCopied ? 'Link copied!' : 'Share my card'}
+          </button>
           <button onClick={copyShare} className="text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors">
-            {copied ? 'Copied!' : 'Copy share text'}
+            {copied ? 'Copied!' : 'Copy text'}
           </button>
           <a href="/profile" className="text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors">Back to profile</a>
         </div>
