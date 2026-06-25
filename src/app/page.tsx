@@ -18,8 +18,55 @@ export default function Home() {
   }
   const gsLessons = units.reduce((n, u) => n + u.lessons.length, 0)
 
+  const FAQ = [
+    { q: 'Do I need a microphone?', a: 'Nope. Ground School is all taps and choices. In Live Comms you can type your read-back or use your mic — your call.' },
+    { q: 'Is it actually free?', a: 'Yes — Ground School is completely free and works offline. Live Comms gives you 2 AI-graded scenarios a day free; go unlimited for $9/mo.' },
+    { q: 'Is the content FAA-accurate?', a: 'Every scenario and drill is built against the FAA Aeronautical Information Manual (AIM) Chapter 4 — the same standard your CFI and examiner use.' },
+    { q: 'Will this help on my checkride?', a: 'That’s the point. Radio work trips up more student pilots than almost anything — hold-shorts, read-backs, and phraseology are exactly what gets drilled and graded here.' },
+    { q: 'Does it really work offline?', a: 'Ground School drills run entirely on your device — perfect for the ramp, the run-up area, or a flight with no signal.' },
+  ]
+
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://wilco.binnacleai.com/#org',
+        name: 'Clearspar',
+        url: 'https://wilco.binnacleai.com',
+        logo: 'https://wilco.binnacleai.com/icon-192.png',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://wilco.binnacleai.com/#website',
+        url: 'https://wilco.binnacleai.com',
+        name: 'Clearspar Radio Trainer',
+        publisher: { '@id': 'https://wilco.binnacleai.com/#org' },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: 'Clearspar Radio Trainer',
+        operatingSystem: 'iOS, Web',
+        applicationCategory: 'EducationalApplication',
+        description:
+          'Aviation radio (ATC) training. Free Ground School drills plus live, AI-graded ATC read-backs against the FAA Aeronautical Information Manual.',
+        url: 'https://wilco.binnacleai.com',
+        offers: { '@type': 'AggregateOffer', lowPrice: '0', highPrice: '9', priceCurrency: 'USD' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: FAQ.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
 
       {/* ── Nav + Hero — G1000 glass-cockpit panel ── */}
       <style>{`
@@ -490,13 +537,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-2xl font-semibold mb-10">Questions, answered</h2>
           <div className="space-y-6">
-            {[
-              { q: 'Do I need a microphone?', a: 'Nope. Ground School is all taps and choices. In Live Comms you can type your read-back or use your mic — your call.' },
-              { q: 'Is it actually free?', a: 'Yes — Ground School is completely free and works offline. Live Comms gives you 2 AI-graded scenarios a day free; go unlimited for $9/mo.' },
-              { q: 'Is the content FAA-accurate?', a: 'Every scenario and drill is built against the FAA Aeronautical Information Manual (AIM) Chapter 4 — the same standard your CFI and examiner use.' },
-              { q: 'Will this help on my checkride?', a: 'That’s the point. Radio work trips up more student pilots than almost anything — hold-shorts, read-backs, and phraseology are exactly what gets drilled and graded here.' },
-              { q: 'Does it really work offline?', a: 'Ground School drills run entirely on your device — perfect for the ramp, the run-up area, or a flight with no signal.' },
-            ].map((item) => (
+            {FAQ.map((item) => (
               <div key={item.q} className="border-b border-gray-100 pb-6">
                 <h3 className="font-semibold mb-2">{item.q}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{item.a}</p>

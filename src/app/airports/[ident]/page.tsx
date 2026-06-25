@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { lookupAirport } from '@/lib/airports'
 import { runwayPhonetic } from '@/lib/homefield'
 import { airportCalls, type CallBlock } from '@/lib/airportcalls'
+import { breadcrumbLd } from '@/lib/seo'
 
 const FREQ_LABELS: Record<string, string> = {
   twr: 'Tower', gnd: 'Ground', cld: 'Clearance Delivery', atis: 'ATIS', ctaf: 'CTAF', unicom: 'UNICOM', appdep: 'Approach / Departure',
@@ -68,9 +69,16 @@ export default async function AirportPage({ params }: { params: Promise<{ ident:
     ],
   }
 
+  const breadcrumb = breadcrumbLd([
+    { name: 'Home', path: '/' },
+    { name: 'Airports', path: '/airports' },
+    { name: `${f.name} (${id})`, path: `/airports/${id}` },
+  ])
+
   return (
     <main className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <a href="/airports" className="text-gray-400 hover:text-gray-600 text-sm">← all airports</a>
         <h1 className="text-2xl font-semibold mt-3 mb-1">Radio calls at {f.name}</h1>
