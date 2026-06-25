@@ -13,6 +13,23 @@ export interface BlogPost {
 
 export const POSTS: BlogPost[] = [
   {
+    slug: 'ground-tower-departure-every-call',
+    title: 'What to say to Ground, Tower, and Departure — every call, in order',
+    description: 'The complete towered-airport departure sequence — clearance delivery, ground, tower, and the departure handoff — with the exact words and readbacks for each frequency.',
+    date: '2026-06-24',
+    author: 'Clearspar',
+    readMins: 7,
+    lead: 'A departure from a towered airport is a relay race across three or four frequencies, and each one has a specific call. Once you know the order and the script for each handoff, the whole chain stops feeling like improvisation. Here is every call, start to wheels-up and beyond.',
+    sections: [
+      { h: '1. ATIS — copy it before you key up', p: 'Tune the ATIS first and write down the active runway, altimeter, and the information letter. You will quote it on your first call — "with information Charlie" — so the controller knows you already have the weather and does not have to read it to you. Skipping this is the fastest way to fall behind before you have said a word.' },
+      { h: '2. Clearance Delivery — when the field has one', p: 'At busier Class C and B fields, get your clearance before you taxi. VFR it is short: "Clearance Delivery, Cessna One Two Three Four Five, VFR to the north, request departure." You will usually get a squawk code and sometimes a heading or altitude — read all of it back. IFR, tell them "ready to copy" and read back the full clearance: cleared-to, route, altitude, frequency, transponder. Smaller Class D fields skip this and you go straight to Ground.' },
+      { h: '3. Ground — taxi to the runway', p: 'From the ramp: "Ground, Cessna One Two Three Four Five, at the south ramp, taxi for departure, with information Charlie." Read back the full taxi route and — verbatim, including the runway number — any hold-short instruction: "Taxi to runway two five via Alpha, hold short of runway one niner, Cessna One Two Three Four Five." The hold-short is the one item you never paraphrase.' },
+      { h: '4. Tower — takeoff clearance', p: 'At the hold-short line, switch to Tower: "Tower, Cessna One Two Three Four Five, holding short runway two five, ready for departure." When the clearance comes, read it back with the runway: "Cleared for takeoff runway two five, Cessna One Two Three Four Five." If you are told to "line up and wait," read that back too — it is not a clearance to depart.' },
+      { h: '5. Departure — the handoff after takeoff', p: 'Once airborne, Tower hands you off: "Contact Departure." Switch to the new frequency and check in with who you are and your altitude: "SoCal Departure, Cessna One Two Three Four Five, two thousand, climbing four thousand five hundred." Read back any heading or altitude they assign. If you asked for flight following, this is where the traffic advisories start.' },
+      { h: 'The thread that ties it together', p: 'Every readback ends with your call sign, and anything that changes where the airplane goes — runway, hold-short, heading, altitude, frequency, squawk — gets said back in full. "Roger" is not a readback. If a transmission comes fast, "say again" is always the professional move. Run the chain a few times on the ground and it becomes a script you follow, not a test you fail.' },
+    ],
+  },
+  {
     slug: 'stop-freezing-on-the-radio',
     title: 'Why student pilots freeze on the radio — and how to fix it',
     description: 'Blanking when ATC calls is the most common fear in primary training. Here is why your brain locks up, and the specific habits and drills that make radio calls automatic.',
