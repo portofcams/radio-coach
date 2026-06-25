@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <div className="max-w-2xl mx-auto px-6 py-12">
         <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← home</Link>
         <h1 className="text-2xl font-semibold mt-3 mb-1">Privacy Policy</h1>
-        <p className="text-gray-500 text-sm mb-8">Effective June 23, 2026. Plain-language summary of how we handle your data.</p>
+        <p className="text-gray-500 text-sm mb-8">Effective June 24, 2026. Plain-language summary of how we handle your data.</p>
 
         <div className="space-y-6 text-sm text-gray-700 leading-relaxed">
           <section>
@@ -22,6 +22,7 @@ export default function PrivacyPage() {
               <li><strong>Training data:</strong> your practice scores, graded readbacks, streaks, and progress, so we can show your history and weak spots.</li>
               <li><strong>Optional details you enter:</strong> call sign, home airport, saved aircraft, logbook entries — only what you choose to add.</li>
               <li><strong>Basic logs:</strong> errors and request data needed to keep the service running and secure.</li>
+              <li><strong>Anonymous usage analytics:</strong> which pages get viewed and whether you&rsquo;re on the web or the app, tied only to a random ID stored on your device — never your name or email, never shared with advertisers, and never used to track you across other apps or websites.</li>
             </ul>
           </section>
 
@@ -41,8 +42,8 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-gray-900 mb-1">Cookies</h2>
-            <p>We use a single secure cookie to keep you signed in. There are no advertising cookies.</p>
+            <h2 className="font-semibold text-gray-900 mb-1">Cookies &amp; local storage</h2>
+            <p>A secure cookie keeps you signed in. We also store a random anonymous ID and a daily free-scenario counter on your device — used only for the analytics above and the free tier. There are no advertising cookies and no cross-site tracking.</p>
           </section>
 
           <section>
