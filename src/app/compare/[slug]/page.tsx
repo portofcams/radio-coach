@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { COMPARE, getCompare } from '@/lib/compare'
+import { breadcrumbLd } from '@/lib/seo'
 
 export function generateStaticParams() {
   return COMPARE.map((c) => ({ slug: c.slug }))
@@ -33,6 +34,7 @@ export default async function ComparePage({ params }: { params: Promise<{ slug: 
     <main className="min-h-screen">
       <article className="max-w-2xl mx-auto px-6 py-10">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Compare', path: '/compare' }, { name: c.title, path: `/compare/${slug}` }])) }} />
         <Link href="/compare" className="text-gray-400 hover:text-gray-600 text-sm">← guides</Link>
         <h1 className="text-3xl font-semibold mt-3 mb-4 leading-tight">{c.title}</h1>
         <p className="text-lg text-gray-600 leading-relaxed mb-8">{c.lead}</p>

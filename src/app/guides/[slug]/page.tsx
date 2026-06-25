@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { GUIDES, getGuide } from '@/lib/guides'
+import { breadcrumbLd } from '@/lib/seo'
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }))
@@ -31,6 +32,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   return (
     <main className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Guides', path: '/guides' }, { name: g.title, path: `/guides/${slug}` }])) }} />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <a href="/guides" className="text-gray-400 hover:text-gray-600 text-sm">← all guides</a>
         <h1 className="text-2xl font-semibold mt-3 mb-2">{g.title}</h1>

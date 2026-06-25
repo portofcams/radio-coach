@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { GLOSSARY } from '@/lib/glossary'
+import { breadcrumbLd } from '@/lib/seo'
 import Glossary from '@/components/Glossary'
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function GlossaryPage() {
   return (
     <main className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Glossary', path: '/glossary' }])) }} />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <div className="flex items-center gap-3 mb-3">
           <Link href="/guides" className="text-gray-400 hover:text-gray-600 text-sm">← guides</Link>
