@@ -13,6 +13,22 @@ export interface BlogPost {
 
 export const POSTS: BlogPost[] = [
   {
+    slug: 'stop-freezing-on-the-radio',
+    title: 'Why student pilots freeze on the radio — and how to fix it',
+    description: 'Blanking when ATC calls is the most common fear in primary training. Here is why your brain locks up, and the specific habits and drills that make radio calls automatic.',
+    date: '2026-06-24',
+    author: 'Clearspar',
+    readMins: 6,
+    lead: 'Almost every student pilot hits the same wall: ATC keys up, your mind goes blank, you read back something garbled, then spend the next two minutes replaying it instead of flying the airplane. It is not a talent problem — it is a working-memory problem, and it is fixable.',
+    sections: [
+      { h: 'Why your brain blanks', p: 'Early in training, flying the airplane already uses almost all of your attention. When a fast clearance arrives there is no spare working memory left to hold it, so it evaporates the instant the controller stops talking. This is task saturation, and it happens to every new pilot. The fix is not "try harder in the moment" — it is to make the radio cost less attention so there is room for it.' },
+      { h: 'Pre-load the call before you key up', p: 'Most of the freeze comes from improvising. Instead, think the expected call before you transmit. Before calling ground, line up the things you will read back: taxi route, hold short, altimeter. Now you are confirming a script you already have rather than composing one under pressure. Pilots who pre-load almost never blank.' },
+      { h: 'Learn the script — most calls are templates', p: 'ATC communication is far more scripted than it sounds. A ground call, a position report, a flight-following request each follows a fixed pattern: who you are calling, who you are, where and what, your request. Once the templates are memorized, a real transmission is just filling in the blanks — a fraction of the attention.' },
+      { h: 'Drill readbacks until they are automatic', p: 'The call blanks because it is not yet automatic, and you cannot make it automatic by only practicing in the airplane, where reps are rare and expensive. The fix is reps on the ground: hear a clearance, read it back, see exactly which required elements you dropped, and repeat until the words come without thought. Ten minutes a day of graded readbacks beats a dozen flights of hoping it clicks.' },
+      { h: 'In the moment: slow down and ask', p: 'When you do fall behind, the professional move is to ask. "Say again" — or "say again slower" — is normal; airline crews use it every day. Write the clearance down as you copy it. A two-second pause to get it right beats a confident readback of the wrong runway, and controllers would far rather repeat than untangle a mistake.' },
+    ],
+  },
+  {
     slug: 'first-call-towered-airport',
     title: 'How to talk to ATC at a towered field for the first time',
     description: 'The exact calls — ground, tower, and the readbacks — for your first flight into a towered airport, with examples you can copy.',
