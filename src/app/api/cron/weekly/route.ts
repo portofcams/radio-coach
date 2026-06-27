@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'node:crypto'
 import { getPool } from '@/lib/db'
-import { computeReadiness } from '@/lib/readiness'
-import { computeWeakspots } from '@/lib/weakspots'
 import { composeWeeklyReport, composeCfiDigest } from '@/lib/weekly-email'
+import { buildWeeklyReportFor } from '@/lib/weekly-data'
 import { emailConfigured, sendEmail } from '@/lib/resend'
 import { isCfi, getRoster } from '@/lib/cfi'
 
@@ -61,35 +60,10 @@ export async function GET(req: NextRequest) {
       await db.query('UPDATE rc_users SET email_unsub_token = $1 WHERE id = $2', [token, u.id])
     }
 
-    const agg = await db.query(
-      `SELECT
-         (SELECT COUNT(*) FROM rc_grades WHERE user_id=$1) AS attempts,
-         (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id=$1) AS passed,
-         (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades WHERE user_id=$1 AND passed) AS distinct_passed,
-         (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades WHERE user_id=$1 ORDER BY created_at DESC LIMIT 30) t) AS recent_avg,
-         (SELECT COUNT(*) FROM rc_grades WHERE user_id=$1 AND created_at > now()-interval '7 days') AS week_scenarios,
-         (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id=$1 AND created_at > now()-interval '7 days') AS week_passed`,
-      [u.id],
-    )
-    const a = agg.rows[0]
-    const readiness = computeReadiness({
-      attempts: parseInt(a.attempts) || 0,
-      passedCount: parseInt(a.passed) || 0,
-      distinctPassed: parseInt(a.distinct_passed) || 0,
-      recentAvg: parseInt(a.recent_avg) || 0,
-    })
-    const grades = await db.query('SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id=$1 ORDER BY created_at DESC LIMIT 300', [u.id])
-    const top = computeWeakspots(grades.rows)[0]
-
-    const report = composeWeeklyReport({
+    const report = await buildWeeklyReportFor(db, u.id, {
       callsign: u.callsign,
-      weekScenarios: parseInt(a.week_scenarios) || 0,
-      weekPassed: parseInt(a.week_passed) || 0,
-      readinessScore: readiness.score,
-      readinessLabel: readiness.label,
-      topWeakspot: top?.label ?? null,
-      unsubUrl: `${APP_URL}/api/unsubscribe?token=${token}`,
       appUrl: APP_URL,
+      unsubUrl: `${APP_URL}/api/unsubscribe?token=${token}`,
     })
 
     if (live) {

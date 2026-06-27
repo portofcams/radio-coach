@@ -38,7 +38,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
          (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades WHERE user_id=$1 ORDER BY created_at DESC LIMIT 30) t) AS recent_avg`,
       [sid],
     ),
-    db.query('SELECT scenario_id, score, passed, created_at FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 12', [sid]),
+    db.query('SELECT id, scenario_id, score, passed, created_at FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 12', [sid]),
     db.query(
       `SELECT a.scenario_id, a.created_at,
               EXISTS(SELECT 1 FROM rc_grades g WHERE g.user_id = $2 AND g.scenario_id = a.scenario_id AND g.passed) AS done
@@ -46,7 +46,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       [user.userId, sid],
     ),
     db.query('SELECT email, callsign FROM rc_users WHERE id = $1', [sid]),
-    db.query('SELECT id, body, scenario_id, created_at FROM rc_cfi_comments WHERE cfi_user_id = $1 AND student_user_id = $2 ORDER BY created_at DESC LIMIT 50', [user.userId, sid]),
+    db.query('SELECT id, body, scenario_id, grade_id, created_at FROM rc_cfi_comments WHERE cfi_user_id = $1 AND student_user_id = $2 ORDER BY created_at DESC LIMIT 50', [user.userId, sid]),
     db.query('SELECT kind FROM rc_endorsements WHERE cfi_user_id = $1 AND student_user_id = $2', [user.userId, sid]),
   ])
 

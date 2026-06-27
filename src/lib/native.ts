@@ -40,14 +40,16 @@ export async function startNativeRecording(): Promise<boolean> {
   } catch { return false }
 }
 
-/** Stop native recording and transcribe via ElevenLabs Scribe (better than on-device ASR). */
-export async function stopNativeRecordingTranscribe(): Promise<string | null> {
-  if (!isNative()) return null
+/** Stop native recording and transcribe via ElevenLabs Scribe (better than
+ * on-device ASR). Returns the transcript AND the raw audio blob so the caller
+ * can offer playback-through-the-radio. */
+export async function stopNativeRecordingTranscribe(): Promise<{ text: string | null; blob: Blob | null }> {
+  if (!isNative()) return { text: null, blob: null }
   try {
     const { VoiceRecorder } = await import('capacitor-voice-recorder')
     const res = await VoiceRecorder.stopRecording()
     const { recordDataBase64, mimeType } = res.value
-    if (!recordDataBase64) return null
+    if (!recordDataBase64) return { text: null, blob: null }
     const bin = atob(recordDataBase64)
     const bytes = new Uint8Array(bin.length)
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
@@ -55,9 +57,9 @@ export async function stopNativeRecordingTranscribe(): Promise<string | null> {
     const fd = new FormData()
     fd.append('audio', blob, 'readback.m4a')
     const r = await fetch('/api/stt', { method: 'POST', body: fd })
-    if (!r.ok) return null
-    return (await r.json()).text ?? null
-  } catch { return null }
+    if (!r.ok) return { text: null, blob }
+    return { text: (await r.json()).text ?? null, blob }
+  } catch { return { text: null, blob: null } }
 }
 
 /** Register for remote push (APNs/FCM) and send the device token to the server.
@@ -74,6 +76,14 @@ export async function registerPush(): Promise<void> {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: t.value, platform }),
       }).catch(() => {})
+    })
+    // Tapping a notification deep-links into the relevant screen.
+    PushNotifications.addListener('pushNotificationActionPerformed', (a: { notification?: { data?: Record<string, string> } }) => {
+      const type = a?.notification?.data?.type
+      try {
+        if (type === 'coach-note') location.assign('/progress')
+        else if (type === 'streak') location.assign('/train')
+      } catch { /* navigation unavailable */ }
     })
     await PushNotifications.register()
   } catch { /* push unavailable */ }

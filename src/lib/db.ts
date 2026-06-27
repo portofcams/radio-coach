@@ -132,7 +132,11 @@ export async function initDB(): Promise<void> {
     )
   `)
   await db.query(`ALTER TABLE rc_cfi_comments ADD COLUMN IF NOT EXISTS scenario_id TEXT`)
+  // grade_id: when set, the note is attached to ONE specific graded attempt
+  // (rc_grades.id), not just the scenario. Soft reference — survives grade purge.
+  await db.query(`ALTER TABLE rc_cfi_comments ADD COLUMN IF NOT EXISTS grade_id INTEGER`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_comments_student ON rc_cfi_comments(student_user_id)`)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_cfi_comments_grade ON rc_cfi_comments(grade_id)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_endorsements_student ON rc_endorsements(student_user_id)`)
   // CFI Pro — custom scenarios a CFI authors (assignable to students).
   await db.query(`

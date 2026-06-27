@@ -20,7 +20,12 @@ export async function GET() {
 
   const [endorse, comments] = await Promise.all([
     db.query('SELECT DISTINCT kind FROM rc_endorsements WHERE student_user_id = $1', [user.userId]),
-    db.query('SELECT body, scenario_id, created_at FROM rc_cfi_comments WHERE student_user_id = $1 ORDER BY created_at DESC LIMIT 20', [user.userId]),
+    db.query(
+      `SELECT c.body, c.scenario_id, c.grade_id, c.created_at, g.score, g.passed
+       FROM rc_cfi_comments c LEFT JOIN rc_grades g ON g.id = c.grade_id
+       WHERE c.student_user_id = $1 ORDER BY c.created_at DESC LIMIT 20`,
+      [user.userId],
+    ),
   ])
 
   return NextResponse.json({

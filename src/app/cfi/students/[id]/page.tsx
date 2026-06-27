@@ -12,9 +12,9 @@ interface Report {
   callsign: string | null
   weakspots: Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number }>
   readiness: { score: number; level: string; label: string; factors: { recentAccuracy: number; passRate: number; coverage: number } } | null
-  recent: Array<{ scenario_id: string; score: number; passed: boolean; created_at: string }>
+  recent: Array<{ id: number; scenario_id: string; score: number; passed: boolean; created_at: string }>
   assignments: Array<{ scenario_id: string; done: boolean; created_at: string; due_at?: string | null }>
-  comments: Array<{ id: number; body: string; scenario_id: string | null; created_at: string }>
+  comments: Array<{ id: number; body: string; scenario_id: string | null; grade_id: number | null; created_at: string }>
   endorsements: string[]
 }
 
@@ -70,9 +70,9 @@ export default function StudentReport() {
     } finally { setAssigning(false) }
   }
 
-  async function noteOn(scenarioId: string, body: string) {
+  async function noteOn(gradeId: number, scenarioId: string, body: string) {
     if (!body.trim()) return
-    await fetch(`/api/cfi/students/${id}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, scenarioId }) })
+    await fetch(`/api/cfi/students/${id}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, scenarioId, gradeId }) })
     await load()
   }
 
@@ -259,24 +259,28 @@ export default function StudentReport() {
               <div className="border border-gray-200 rounded-xl p-5">
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Recent scenarios</div>
                 <div className="space-y-1.5">
-                  {r.recent.map((g, i) => {
-                    const noteCount = r.comments.filter((c) => c.scenario_id === g.scenario_id).length
+                  {r.recent.map((g) => {
+                    const key = `g-${g.id}`
+                    const notes = r.comments.filter((c) => c.grade_id === g.id)
                     return (
-                      <div key={i}>
+                      <div key={g.id}>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600 capitalize">{g.scenario_id.replace(/-/g, ' ')}</span>
+                          <span className="text-gray-600 capitalize">{g.scenario_id.replace(/-/g, ' ')}<span className="text-[10px] text-gray-300 ml-1.5 normal-case">{new Date(g.created_at).toLocaleDateString()}</span></span>
                           <div className="flex items-center gap-2">
-                            {noteCount > 0 && <span className="text-[10px] text-blue-600">{noteCount} note{noteCount > 1 ? 's' : ''}</span>}
-                            <button onClick={() => { setNoteFor(noteFor === `${g.scenario_id}-${i}` ? null : `${g.scenario_id}-${i}`); setNoteText('') }} className="text-[11px] text-gray-400 hover:text-gray-700">+ note</button>
+                            {notes.length > 0 && <span className="text-[10px] text-blue-600">{notes.length} note{notes.length > 1 ? 's' : ''}</span>}
+                            <button onClick={() => { setNoteFor(noteFor === key ? null : key); setNoteText('') }} className="text-[11px] text-gray-400 hover:text-gray-700">+ note</button>
                             <span className={`font-mono text-xs ${g.passed ? 'text-green-600' : 'text-red-500'}`}>{g.score}</span>
                           </div>
                         </div>
-                        {noteFor === `${g.scenario_id}-${i}` && (
+                        {notes.map((c) => (
+                          <div key={c.id} className="text-[11px] text-gray-500 bg-gray-50 rounded px-2 py-1 mt-1">{c.body}</div>
+                        ))}
+                        {noteFor === key && (
                           <div className="flex gap-2 mt-1.5 mb-1">
                             <input value={noteText} onChange={(e) => setNoteText(e.target.value)} autoFocus
-                              onKeyDown={(e) => { if (e.key === 'Enter') { noteOn(g.scenario_id, noteText); setNoteFor(null); setNoteText('') } }}
+                              onKeyDown={(e) => { if (e.key === 'Enter') { noteOn(g.id, g.scenario_id, noteText); setNoteFor(null); setNoteText('') } }}
                               placeholder={`Note on this ${g.scenario_id.replace(/-/g, ' ')} attempt…`} className="flex-1 border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-gray-900" />
-                            <button onClick={() => { noteOn(g.scenario_id, noteText); setNoteFor(null); setNoteText('') }} className="text-xs bg-gray-900 text-white rounded-lg px-3 hover:bg-gray-800">Save</button>
+                            <button onClick={() => { noteOn(g.id, g.scenario_id, noteText); setNoteFor(null); setNoteText('') }} className="text-xs bg-gray-900 text-white rounded-lg px-3 hover:bg-gray-800">Save</button>
                           </div>
                         )}
                       </div>

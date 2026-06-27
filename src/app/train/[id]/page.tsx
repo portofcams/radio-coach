@@ -14,6 +14,7 @@ import { personalizeText } from '@/lib/personalize'
 import { voiceForKey } from '@/lib/voices'
 import { explainElement } from '@/lib/explain'
 import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from '@/lib/native'
+import { saveRecording, loadRecording } from '@/lib/recordings'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
 
@@ -85,6 +86,12 @@ export default function ScenarioPage() {
   const fxRef = useRef<RadioFxController | null>(null)
   const [fx, setFx] = useState<RadioFxSettings>({ mode: 'radio', speed: 'normal' })
   const fxValueRef = useRef(fx)
+  // Item 3: hear your own readback played back through the radio FX.
+  const replayAudioRef = useRef<HTMLAudioElement | null>(null)
+  const replayFxRef = useRef<RadioFxController | null>(null)
+  const replayUrlRef = useRef<string | null>(null)
+  const [replayUrl, setReplayUrl] = useState<string | null>(null)
+  const [replaying, setReplaying] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const autoPlayedRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -198,6 +205,59 @@ export default function ScenarioPage() {
   }, [timerEnabled])
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current) }, [])
 
+  // ── Item 3: record-yourself playback through the radio FX ──────────────
+  const captureRecording = useCallback((blob: Blob) => {
+    const sid = scenario?.id
+    if (!sid) return
+    try {
+      if (replayUrlRef.current) URL.revokeObjectURL(replayUrlRef.current)
+      const url = URL.createObjectURL(blob)
+      replayUrlRef.current = url
+      setReplayUrl(url)
+      saveRecording(sid, blob).catch(() => {})
+    } catch { /* storage / object-URL unavailable */ }
+  }, [scenario?.id])
+
+  const stopReplay = useCallback(() => {
+    try { replayAudioRef.current?.pause() } catch {}
+    replayFxRef.current?.release()
+    setReplaying(false)
+  }, [])
+
+  const toggleReplay = useCallback(async () => {
+    const url = replayUrlRef.current
+    if (!url) return
+    if (replaying) { stopReplay(); return }
+    try {
+      let el = replayAudioRef.current
+      if (!el) { el = new Audio(); replayAudioRef.current = el }
+      el.src = url
+      if (!replayFxRef.current) replayFxRef.current = attachRadioFx(el, fxValueRef.current.mode)
+      else replayFxRef.current.setMode(fxValueRef.current.mode)
+      el.onended = () => { replayFxRef.current?.release(); setReplaying(false) }
+      replayFxRef.current?.cue()
+      setReplaying(true)
+      await el.play()
+    } catch { stopReplay() }
+  }, [replaying, stopReplay])
+
+  // Load any saved recording when the scenario changes; clear the old one.
+  useEffect(() => {
+    const sid = scenario?.id
+    if (!sid) return
+    stopReplay()
+    if (replayUrlRef.current) { URL.revokeObjectURL(replayUrlRef.current); replayUrlRef.current = null }
+    setReplayUrl(null)
+    loadRecording(sid).then((b) => {
+      if (!b) return
+      const url = URL.createObjectURL(b)
+      replayUrlRef.current = url
+      setReplayUrl(url)
+    }).catch(() => {})
+    return () => { stopReplay() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenario?.id])
+
   // Stop any active recognition
   const stopRecognition = useCallback(() => {
     if (nativeListenerRef.current) {
@@ -223,8 +283,9 @@ export default function ScenarioPage() {
       recognitionRef.current = {
         stop: () => {
           setInterimText('Transcribing…')
-          stopNativeRecordingTranscribe().then((text) => {
+          stopNativeRecordingTranscribe().then(({ text, blob }) => {
             setInterimText('')
+            if (blob) captureRecording(blob)
             if (text) { setReadback(text); setRadioState('transcribed') }
             else setRadioState('ready')
           })
@@ -246,6 +307,7 @@ export default function ScenarioPage() {
           setInterimText('Transcribing…')
           try {
             const blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' })
+            captureRecording(blob)
             const fd = new FormData()
             fd.append('audio', blob, 'readback.webm')
             const res = await fetch('/api/stt', { method: 'POST', body: fd })
@@ -713,6 +775,11 @@ export default function ScenarioPage() {
               <div>
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">You said</div>
                 <p className="text-sm font-mono text-gray-700 bg-gray-50 rounded px-3 py-2">&ldquo;{readback}&rdquo;</p>
+                {replayUrl && (
+                  <button onClick={toggleReplay} className="mt-2 text-xs text-blue-600 hover:text-blue-700 font-medium">
+                    {replaying ? '■ stop' : '▶ hear your readback (through the radio)'}
+                  </button>
+                )}
               </div>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Standard readback</div>

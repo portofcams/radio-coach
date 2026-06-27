@@ -12,6 +12,7 @@ export async function GET(req: Request) {
   const passed = searchParams.get('passed')
   const rate = searchParams.get('rate')
   const cs = (searchParams.get('cs') || '').slice(0, 12)
+  const heading = (searchParams.get('title') || '').slice(0, 100)
   const personalized = !!score
 
   return new ImageResponse(
@@ -39,6 +40,11 @@ export async function GET(req: Request) {
               {label ? <div style={{ display: 'flex', fontSize: 46, color: '#ffffff', marginLeft: 30, marginBottom: 28 }}>{label}</div> : <div style={{ display: 'flex' }} />}
             </div>
             <div style={{ display: 'flex', fontSize: 30, color: '#aab3bf', marginTop: 10 }}>{(passed || '0') + ' scenarios passed' + (rate ? ' · ' + rate + '% pass rate' : '')}</div>
+          </div>
+        ) : heading ? (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', fontSize: 24, letterSpacing: 4, color: '#36d6e6', marginBottom: 20 }}>FIELD NOTES</div>
+            <div style={{ display: 'flex', fontSize: 58, fontWeight: 700, lineHeight: 1.15, color: '#ffffff' }}>{heading}</div>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>

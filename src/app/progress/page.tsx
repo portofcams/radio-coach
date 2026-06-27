@@ -14,6 +14,8 @@ interface Stats {
   trend: Array<{ day: string; n: string; avg: string; passed: string }>
 }
 
+interface CoachComment { body: string; scenario_id: string | null; grade_id: number | null; score: number | null; passed: boolean | null; created_at: string }
+
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergencies', other: 'Other',
 }
@@ -23,6 +25,10 @@ export default function ProgressPage() {
   const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
   const [rd, setRd] = useState<Readiness | null>(null)
+  const [coach, setCoach] = useState<CoachComment[]>([])
+  const [email, setEmail] = useState<string | null>(null)
+  const [emailing, setEmailing] = useState(false)
+  const [emailMsg, setEmailMsg] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -30,12 +36,31 @@ export default function ProgressPage() {
       fetch('/api/auth/me').then((r) => r.json()),
       fetch('/api/user/stats').then((r) => r.json()),
       fetch('/api/user/readiness').then((r) => r.json()),
-    ]).then(([me, s, r]) => {
+      fetch('/api/user/coach').then((r) => r.json()),
+    ]).then(([me, s, r, c]) => {
       if (!me.user) { router.push('/login'); return }
+      setEmail(me.user.email ?? null)
       if (!s.error) setStats(s)
       if (r && typeof r.score === 'number') setRd(r)
+      if (c?.coach?.comments) setCoach(c.coach.comments)
     }).finally(() => setLoading(false))
   }, [router])
+
+  async function emailReport() {
+    setEmailing(true); setEmailMsg(null)
+    try {
+      const res = await fetch('/api/user/weekly-report', { method: 'POST' })
+      const d = await res.json()
+      setEmailMsg(
+        res.ok ? `Sent to ${d.to}`
+        : d.error === 'rate_limited' ? 'Already sent recently — check your inbox.'
+        : d.error === 'no_email_key' ? 'Email isn’t set up yet.'
+        : d.error === 'no_email' ? 'Add an email to your account first.'
+        : 'Could not send — try again.',
+      )
+    } catch { setEmailMsg('Could not send — try again.') }
+    finally { setEmailing(false) }
+  }
 
   if (loading) return <div className="max-w-2xl mx-auto px-6 py-16 text-gray-400">Loading...</div>
   if (!stats) return null
@@ -59,8 +84,16 @@ export default function ProgressPage() {
             <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
             <h1 className="text-xl font-semibold">Your progress</h1>
           </div>
-          <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share card</a>
+          <div className="flex items-center gap-3">
+            {email && (
+              <button onClick={emailReport} disabled={emailing} className="text-xs text-blue-600 hover:underline disabled:opacity-50">
+                {emailing ? 'Sending…' : 'Email my report'}
+              </button>
+            )}
+            <a href="/card" className="text-xs text-gray-400 hover:text-gray-600">Share card</a>
+          </div>
         </div>
+        {emailMsg && <div className="text-xs text-gray-500 -mt-5 mb-6 text-right">{emailMsg}</div>}
 
         {/* Readiness + headline numbers */}
         <div className="border border-gray-200 rounded-xl p-5 mb-6 flex items-center gap-5">
@@ -80,6 +113,26 @@ export default function ProgressPage() {
             ))}
           </div>
         </div>
+
+        {/* Notes from your instructor */}
+        {coach.length > 0 && (
+          <div className="border border-blue-200 bg-blue-50 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">Notes from your instructor</div>
+            <div className="space-y-2">
+              {coach.map((c, i) => (
+                <div key={i} className="text-sm text-blue-900">
+                  {(c.scenario_id || c.score != null) && (
+                    <span className="text-[10px] font-mono text-blue-600 block mb-0.5">
+                      {c.scenario_id ? `on ${c.scenario_id.replace(/-/g, ' ')}` : ''}{c.score != null ? ` · scored ${c.score}` : ''}
+                    </span>
+                  )}
+                  {c.body}
+                  <span className="block text-[10px] text-blue-400 mt-0.5">{new Date(c.created_at).toLocaleDateString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Score trend (last 30 days) */}
         <div className="border border-gray-200 rounded-xl p-5 mb-6">
