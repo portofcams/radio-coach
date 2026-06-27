@@ -40,7 +40,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     ),
     db.query('SELECT id, scenario_id, score, passed, created_at FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 12', [sid]),
     db.query(
-      `SELECT a.scenario_id, a.created_at,
+      `SELECT a.scenario_id, a.created_at, a.due_at,
               EXISTS(SELECT 1 FROM rc_grades g WHERE g.user_id = $2 AND g.scenario_id = a.scenario_id AND g.passed) AS done
        FROM rc_assignments a WHERE a.cfi_user_id = $1 AND a.student_user_id = $2 ORDER BY a.created_at DESC`,
       [user.userId, sid],

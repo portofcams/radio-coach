@@ -242,19 +242,26 @@ export default function ScenarioPage() {
   }, [replaying, stopReplay])
 
   // Load any saved recording when the scenario changes; clear the old one.
+  // Guard against a slow IndexedDB read resolving after the scenario already
+  // changed (which would replay the wrong scenario's audio + leak a URL).
   useEffect(() => {
     const sid = scenario?.id
     if (!sid) return
+    let cancelled = false
     stopReplay()
     if (replayUrlRef.current) { URL.revokeObjectURL(replayUrlRef.current); replayUrlRef.current = null }
     setReplayUrl(null)
     loadRecording(sid).then((b) => {
-      if (!b) return
+      if (cancelled || !b || scenario?.id !== sid) return
       const url = URL.createObjectURL(b)
       replayUrlRef.current = url
       setReplayUrl(url)
     }).catch(() => {})
-    return () => { stopReplay() }
+    return () => {
+      cancelled = true
+      stopReplay()
+      if (replayUrlRef.current) { URL.revokeObjectURL(replayUrlRef.current); replayUrlRef.current = null }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario?.id])
 
