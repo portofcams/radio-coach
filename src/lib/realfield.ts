@@ -246,6 +246,16 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       commonMistakes: ['Forgetting to state the field name', 'Not announcing the runway'],
     },
     {
+      id: 'home-ctaf-inbound', title: `${name} CTAF — inbound`,
+      phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'CTAF', frequency: ctaf,
+      realField: baseDiagram,
+      setup: `Ten miles out, inbound to non-towered ${name} (${field.icao})${ctafNote}. Make your inbound position call so the pattern knows you are coming.`,
+      atcTransmission: `${name} traffic, Cherokee Six Two Mike, left base runway ${rw}, ${name}.`,
+      requiredElements: ['inbound', `runway ${rw}`, 'call sign'],
+      correctReadback: `${name} traffic, ${cs}, ten miles south, inbound landing runway ${rw}, ${name}.`,
+      commonMistakes: ['Not stating your distance and direction', 'Omitting the field-name bookend'],
+    },
+    {
       id: 'home-ctaf-downwind', title: `${name} CTAF — left downwind`,
       phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'CTAF', frequency: ctaf,
       realField: baseDiagram,

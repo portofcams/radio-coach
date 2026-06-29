@@ -47,6 +47,7 @@ export default function TrainPage() {
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
   const [heliOnly, setHeliOnly] = useState(false)
   const [homeList, setHomeList] = useState<Scenario[]>([])
+  const [homeChecked, setHomeChecked] = useState(false)
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function TrainPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.user?.home) setHomeList(homeScenarios(d.user.home, d.user.callsign))
+        setHomeChecked(true)
         if (d.user) fetch('/api/user/assignments').then((r) => r.json()).then((a) => { if (Array.isArray(a.assignments)) setAssignments(a.assignments) }).catch(() => {})
         if (d.user) {
           return fetch('/api/user/stats')
@@ -269,6 +271,17 @@ export default function TrainPage() {
                       </Link>
                     )
                   })}
+                </div>
+              </div>
+            )}
+            {homeChecked && homeList.length === 0 && !facilityFilter && !diffFilter && !heliOnly && (
+              <div id="home-field" className="border border-dashed border-cyan-300 bg-cyan-50/40 rounded-xl px-4 py-4 mb-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase tracking-widest text-cyan-700 mb-1">Practice at your home field</div>
+                    <p className="text-sm text-gray-600">Set your home airport and get graded ground, tower, and departure calls using its real frequencies and runways.</p>
+                  </div>
+                  <Link href="/profile" className="shrink-0 bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-800 whitespace-nowrap">Set field →</Link>
                 </div>
               </div>
             )}
