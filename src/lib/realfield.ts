@@ -49,6 +49,14 @@ export interface AirportData {
   taxiways?: Taxiway[]
 }
 
+/** NATO word for a single-letter taxiway id (used only with REAL OSM taxiway refs). */
+const NATO: Record<string, string> = {
+  A: 'Alpha', B: 'Bravo', C: 'Charlie', D: 'Delta', E: 'Echo', F: 'Foxtrot',
+  G: 'Golf', H: 'Hotel', J: 'Juliet', K: 'Kilo', L: 'Lima', M: 'Mike',
+  N: 'November', P: 'Papa', Q: 'Quebec', R: 'Romeo', S: 'Sierra', T: 'Tango',
+  U: 'Uniform', V: 'Victor', W: 'Whiskey', X: 'X-ray', Y: 'Yankee', Z: 'Zulu',
+}
+
 function spokenCallsign(callsign?: string | null): string {
   const cs = callsign?.trim().toUpperCase()
   return cs ? toPhonetic(cs) : 'Cessna One Two Three Four Five'
@@ -172,6 +180,52 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         commonMistakes: ['Not reading back the altimeter', 'Forgetting the information code'],
       })
     }
+
+    // Ground taxi + hold short — the most-failed readback. Built from real data: a
+    // ground freq + a real second runway to hold short of. We name a taxiway ONLY
+    // when real OSM data gives one (else omit it) — never invent a route.
+    const holdShort = field.runways.find((r) => r.le !== rwy.le)
+    if (field.freqs.gnd && holdShort) {
+      const taxiRef = field.taxiways?.map((t) => t.ref).find((r): r is string => !!r && /^[A-Z]$/.test(r) && !!NATO[r])
+      const via = taxiRef ? ` via ${NATO[taxiRef]}` : ''
+      const hsRw = runwayPhonetic(holdShort.le)
+      list.push({
+        id: 'home-ground', title: `${name} Ground — taxi & hold short`,
+        phase: 'ground', difficulty: 2, airport: field.icao, facility: 'GROUND', frequency: field.freqs.gnd,
+        realField: baseDiagram,
+        setup: `Taxiing out at ${name} (${field.icao}) on Ground ${field.freqs.gnd}. Read back the full taxi instruction AND the hold-short — verbatim, including the runway number.`,
+        atcTransmission: `${cs}, ${name} Ground, taxi to runway ${rw}${via}, hold short of runway ${hsRw}.`,
+        requiredElements: [`runway ${rw}`, ...(via ? [`via ${NATO[taxiRef!]}`] : []), `hold short runway ${hsRw}`, 'call sign'],
+        correctReadback: `Taxi to runway ${rw}${via}, hold short runway ${hsRw}, ${cs}.`,
+        commonMistakes: ['Dropping the hold-short — the #1 readback DPEs fail you on', 'Saying "hold short" without the runway number', 'Forgetting your call sign'],
+      })
+    }
+
+    // Departure handoff — Tower sends you to Departure; check in, read back the climb.
+    if (field.freqs.appdep) {
+      list.push({
+        id: 'home-departure', title: `${name} Departure — radar check-in`,
+        phase: 'departure', difficulty: 2, airport: field.icao, facility: 'DEPARTURE', frequency: field.freqs.appdep,
+        realField: baseDiagram,
+        setup: `Just airborne off runway ${rwRaw} at ${name}; Tower says "contact Departure." You check in with your altitude and Departure assigns a climb.`,
+        atcTransmission: `${cs}, ${name} Departure, radar contact, climb and maintain four thousand five hundred.`,
+        requiredElements: ['climb and maintain', 'four thousand five hundred', 'call sign'],
+        correctReadback: `Climb and maintain four thousand five hundred, ${cs}.`,
+        commonMistakes: ['Not reading back the assigned altitude', 'Forgetting your call sign'],
+      })
+    }
+
+    // Go-around — short, urgent, fly-first readback.
+    list.push({
+      id: 'home-goaround', title: `${name} Tower — go around`,
+      phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'TOWER', frequency: twr,
+      realField: { ...baseDiagram, ownship: threshold },
+      setup: `On short final for runway ${rwRaw} at ${name} when an aircraft taxis onto the runway. Keep it short and fly.`,
+      atcTransmission: `${cs}, ${name} Tower, go around, traffic on the runway, make left traffic.`,
+      requiredElements: ['going around', 'call sign'],
+      correctReadback: `Going around, ${cs}.`,
+      commonMistakes: ['Continuing the approach', 'Long-winded readback — fly first, talk second'],
+    })
 
     return list
   }
