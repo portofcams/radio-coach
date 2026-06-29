@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Clearspar Radio Trainer',
   webDir: 'public',
   server: {
-    url: 'https://wilco.binnacleai.com',
+    url: 'https://clearsparradio.binnacleai.com',
   },
   ios: {
     contentInset: 'automatic',
