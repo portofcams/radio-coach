@@ -13,6 +13,25 @@ export interface BlogPost {
 
 export const POSTS: BlogPost[] = [
   {
+    slug: 'airspace-entry-radio-calls',
+    title: 'Class B, C, D, E, G: what you actually have to say to enter each',
+    description: 'The radio call — or lack of one — you need to enter each class of US airspace. The exact words for Class B, the two-way rule for C and D, and what E and G require.',
+    date: '2026-06-28',
+    author: 'Clearspar',
+    readMins: 6,
+    lead: 'Airspace looks complicated on a sectional, but the radio side comes down to one question per class: do you need a clearance, just two-way contact, or nothing at all? Here is the answer, class by class, with the words.',
+    sections: [
+      { h: 'The one question that matters', p: 'For VFR, every class of airspace answers the same question — what do you need before you enter? Class B needs an explicit clearance. Class C and D need two-way radio contact established. Class E and G usually need nothing on the radio. Get that framework and the phraseology follows.' },
+      { h: 'Class B — you need the magic words', p: 'Class B (the big metro airports) requires an explicit clearance to enter. You call approach with your position and request, and you may not enter until you hear the specific words: “Cleared into the Class Bravo.” “Radar contact” or “standby” is not a clearance. No clearance, no entry.' },
+      { h: 'Class C — two-way contact is the key', p: 'Class C does not need a clearance — it needs two-way radio communication established. The trigger is ATC using your call sign. If you call “Approach, Cessna One Two Three Four Five” and they answer “Cessna One Two Three Four Five, standby,” you are cleared to enter — they used your call sign. If they say “aircraft calling, standby,” they have not, and you stay out.' },
+      { h: 'Class D — same rule as C', p: 'Class D (a tower without radar service) works the same way: establish two-way communication with the tower before entering. They say your call sign, you are in. They say “aircraft calling Tower, standby,” you hold outside the Class D until they address you directly.' },
+      { h: 'Class E — usually nothing for VFR', p: 'Class E is controlled airspace, but as a VFR pilot you generally need no clearance and no radio call to fly in it. (IFR is different — that needs a clearance.) This is most of the airspace you are in on a cross-country at altitude.' },
+      { h: 'Class G — uncontrolled, talk to traffic', p: 'Class G is uncontrolled — there is no ATC to call. Near a non-towered airport you self-announce on the CTAF so other traffic knows where you are. There is no clearance to get; the radio work is position reports to the other pilots.' },
+      { h: 'The mistake that gets people', p: 'The classic error is treating a generic “standby” as your green light, or entering Class C or D before the controller has actually said your call sign. Listen for your call sign — that, not “aircraft calling, standby,” is your clearance to enter C and D. For B, listen for “cleared into the Class Bravo,” nothing less.' },
+      { h: 'Drill the calls', p: 'Airspace entry is pure pattern once you know the rule per class. Practice graded Class B, C, and D entries on Clearspar — free, and it flags when you would have entered without the right words.' },
+    ],
+  },
+  {
     slug: 'copy-ifr-clearance-craft',
     title: 'How to copy an IFR clearance: the CRAFT method',
     description: 'Copy any IFR clearance without falling behind — what CRAFT stands for, the shorthand for each line, and exactly how to read it back.',
