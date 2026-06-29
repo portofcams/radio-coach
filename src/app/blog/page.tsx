@@ -5,7 +5,7 @@ import { POSTS } from '@/lib/blog'
 export const metadata: Metadata = {
   title: 'Clearspar blog — learn ATC radio communications',
   description: 'Plain-English articles on talking to ATC: first calls at towered fields, checkride readbacks, non-towered self-announce, flight following, and more.',
-  alternates: { canonical: 'https://wilco.binnacleai.com/blog' },
+  alternates: { canonical: 'https://clearsparradio.binnacleai.com/blog' },
 }
 
 export default function BlogIndex() {

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${s.name}${where ? ` — ${where}` : ''} · trains with Clearspar`,
     description: s.blurb ?? `${s.name} uses Clearspar to train pilots on ATC radio communications.`,
-    alternates: { canonical: `https://wilco.binnacleai.com/directory/${slug}` },
+    alternates: { canonical: `https://clearsparradio.binnacleai.com/directory/${slug}` },
   }
 }
 

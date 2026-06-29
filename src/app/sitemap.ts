@@ -5,7 +5,7 @@ import { POSTS } from '@/lib/blog'
 import { AIRSPACE } from '@/lib/airspace'
 import { COMPARE } from '@/lib/compare'
 
-const BASE = 'https://wilco.binnacleai.com'
+const BASE = 'https://clearsparradio.binnacleai.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const core = ['', '/train', '/practice', '/listen', '/oral', '/leaderboard', '/guides', '/glossary', '/blog', '/airspace', '/directory', '/written', '/flashcards', '/acs', '/brief', '/tools', '/metar', '/taf', '/notam', '/crosswind', '/density-altitude', '/e6b', '/compare', '/widgets', '/confidence', '/community', '/top-pilots', '/airports', '/ground-school', '/cheatsheet', '/learn']

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${c.title} · Clearspar`,
     description: c.description,
-    alternates: { canonical: `https://wilco.binnacleai.com/compare/${slug}` },
+    alternates: { canonical: `https://clearsparradio.binnacleai.com/compare/${slug}` },
   }
 }
 

@@ -1,6 +1,6 @@
 // Shared structured-data helpers. BreadcrumbList still earns rich results
 // (the breadcrumb trail in SERPs), unlike HowTo/FAQ which Google deprecated in 2023.
-const BASE = 'https://wilco.binnacleai.com'
+const BASE = 'https://clearsparradio.binnacleai.com'
 
 export function breadcrumbLd(items: Array<{ name: string; path: string }>) {
   return {

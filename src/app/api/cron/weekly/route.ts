@@ -6,7 +6,7 @@ import { buildWeeklyReportFor } from '@/lib/weekly-data'
 import { emailConfigured, sendEmail } from '@/lib/resend'
 import { isCfi, getRoster } from '@/lib/cfi'
 
-const APP_URL = process.env.APP_URL || 'https://wilco.binnacleai.com'
+const APP_URL = process.env.APP_URL || 'https://clearsparradio.binnacleai.com'
 const MAX_RECIPIENTS = 500
 
 /**

@@ -31,17 +31,17 @@ export default function Home() {
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': 'https://wilco.binnacleai.com/#org',
+        '@id': 'https://clearsparradio.binnacleai.com/#org',
         name: 'Clearspar',
-        url: 'https://wilco.binnacleai.com',
-        logo: 'https://wilco.binnacleai.com/icon-192.png',
+        url: 'https://clearsparradio.binnacleai.com',
+        logo: 'https://clearsparradio.binnacleai.com/icon-192.png',
       },
       {
         '@type': 'WebSite',
-        '@id': 'https://wilco.binnacleai.com/#website',
-        url: 'https://wilco.binnacleai.com',
+        '@id': 'https://clearsparradio.binnacleai.com/#website',
+        url: 'https://clearsparradio.binnacleai.com',
         name: 'Clearspar Radio Trainer',
-        publisher: { '@id': 'https://wilco.binnacleai.com/#org' },
+        publisher: { '@id': 'https://clearsparradio.binnacleai.com/#org' },
       },
       {
         '@type': 'SoftwareApplication',
@@ -50,7 +50,7 @@ export default function Home() {
         applicationCategory: 'EducationalApplication',
         description:
           'Aviation radio (ATC) training. Free Ground School drills plus live, AI-graded ATC read-backs against the FAA Aeronautical Information Manual.',
-        url: 'https://wilco.binnacleai.com',
+        url: 'https://clearsparradio.binnacleai.com',
         offers: { '@type': 'AggregateOffer', lowPrice: '0', highPrice: '9', priceCurrency: 'USD' },
       },
       {

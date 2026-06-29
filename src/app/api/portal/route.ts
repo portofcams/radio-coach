@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   if (!customerId) return NextResponse.json({ error: 'no_customer' }, { status: 400 })
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: API_VERSION })
-  const origin = req.headers.get('origin') ?? 'https://wilco.binnacleai.com'
+  const origin = req.headers.get('origin') ?? 'https://clearsparradio.binnacleai.com'
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: `${origin}/profile`,

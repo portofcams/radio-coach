@@ -57,7 +57,7 @@ export async function GET(req: Request) {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', fontSize: 28, color: '#8b94a1' }}>wilco.binnacleai.com</div>
+          <div style={{ display: 'flex', fontSize: 28, color: '#8b94a1' }}>clearsparradio.binnacleai.com</div>
           <div style={{ display: 'flex', fontSize: 22, color: '#5a626c' }}>FAA AIM phraseology · live grading</div>
         </div>
       </div>

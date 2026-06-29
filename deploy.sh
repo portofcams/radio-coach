@@ -42,4 +42,4 @@ ssh $SERVER "
     $APP
   docker ps | grep $APP
 "
-echo "Done — https://wilco.binnacleai.com"
+echo "Done — https://clearsparradio.binnacleai.com"

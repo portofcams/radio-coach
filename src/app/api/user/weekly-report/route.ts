@@ -6,7 +6,7 @@ import { emailConfigured, sendEmail } from '@/lib/resend'
 import { buildWeeklyReportFor } from '@/lib/weekly-data'
 import { rateLimit, clientIp } from '@/lib/ratelimit'
 
-const APP_URL = process.env.APP_URL || 'https://wilco.binnacleai.com'
+const APP_URL = process.env.APP_URL || 'https://clearsparradio.binnacleai.com'
 
 /** Send the logged-in pilot their OWN weekly radio report on demand.
  * User-initiated + transactional, so opt-out doesn't apply; rate-limited. */

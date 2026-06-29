@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Pilot tools — METAR decoder, crosswind & density altitude · Clearspar',
   description: 'Free quick tools for pilots: decode a METAR into plain English, compute crosswind components, figure density altitude, and generate a flight radio brief.',
-  alternates: { canonical: 'https://wilco.binnacleai.com/tools' },
+  alternates: { canonical: 'https://clearsparradio.binnacleai.com/tools' },
 }
 
 const TOOLS = [

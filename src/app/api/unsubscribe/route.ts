@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       <div style="font-weight:600;letter-spacing:.08em;color:#0b0f14;margin-bottom:12px">CLEARSPAR</div>
       <h1 style="font-size:18px;color:#111827;margin:0 0 8px">${ok ? 'Unsubscribed' : 'Link not recognized'}</h1>
       <p style="color:#6b7280;font-size:14px;margin:0 0 16px">${ok ? "You won't receive weekly radio reports anymore. Your account and progress are untouched." : 'This unsubscribe link is invalid or expired.'}</p>
-      <a href="https://wilco.binnacleai.com/train" style="color:#2563eb;font-size:14px">Back to Clearspar Radio Trainer</a>
+      <a href="https://clearsparradio.binnacleai.com/train" style="color:#2563eb;font-size:14px">Back to Clearspar Radio Trainer</a>
     </div></body></html>`
   return new NextResponse(body, { status: ok ? 200 : 404, headers: { 'Content-Type': 'text/html' } })
 }

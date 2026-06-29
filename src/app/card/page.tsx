@@ -41,14 +41,14 @@ export default function ScoreCardPage() {
   const homeName = me.home?.mode === 'real' ? (me.home.field.radioName || me.home.field.name) : me.home?.mode === 'manual' ? me.home.name : null
   const col = rd.level === 'ready' ? '#16a34a' : rd.level === 'almost' ? '#d97706' : '#dc2626'
   const c = 2 * Math.PI * 52
-  const shareText = `I'm ${rd.score}% radio-ready on Clearspar — ${rd.label}. ${stats.passed} scenarios passed, ${stats.passRate}% pass rate. Free aviation radio training → wilco.binnacleai.com`
+  const shareText = `I'm ${rd.score}% radio-ready on Clearspar — ${rd.label}. ${stats.passed} scenarios passed, ${stats.passRate}% pass rate. Free aviation radio training → clearsparradio.binnacleai.com`
 
   async function copyShare() {
     try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* */ }
   }
 
   // Shareable link whose preview image shows this exact score (the viral loop).
-  const shareUrl = `https://wilco.binnacleai.com/s?score=${rd.score}&passed=${stats.passed}&rate=${stats.passRate}&label=${encodeURIComponent(rd.label)}${me.callsign ? `&cs=${encodeURIComponent(me.callsign)}` : ''}`
+  const shareUrl = `https://clearsparradio.binnacleai.com/s?score=${rd.score}&passed=${stats.passed}&rate=${stats.passRate}&label=${encodeURIComponent(rd.label)}${me.callsign ? `&cs=${encodeURIComponent(me.callsign)}` : ''}`
   async function shareLink() {
     try {
       if (typeof navigator !== 'undefined' && navigator.share) {
@@ -104,7 +104,7 @@ export default function ScoreCardPage() {
           </div>
         </div>
         <div className="px-6 py-3 border-t border-gray-100 text-center text-[11px] text-gray-400">
-          {coach?.orgName ? <>Coached by {coach.orgName} · </> : null}Aviation radio training · wilco.binnacleai.com
+          {coach?.orgName ? <>Coached by {coach.orgName} · </> : null}Aviation radio training · clearsparradio.binnacleai.com
         </div>
       </div>
 

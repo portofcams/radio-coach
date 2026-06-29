@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (db) await db.query('UPDATE rc_users SET stripe_customer_id = $2 WHERE id = $1', [user.userId, customerId])
   }
 
-  const origin = req.headers.get('origin') ?? 'https://wilco.binnacleai.com'
+  const origin = req.headers.get('origin') ?? 'https://clearsparradio.binnacleai.com'
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
     customer: customerId,

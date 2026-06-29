@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   title: 'Clearspar Radio Trainer — ATC Radio Training',
   description:
     'Clearspar Radio Trainer — learn aviation radio comms like a game. Free Ground School drills plus live, graded ATC readbacks. No mic, works offline.',
-  metadataBase: new URL('https://wilco.binnacleai.com'),
+  metadataBase: new URL('https://clearsparradio.binnacleai.com'),
   openGraph: {
     title: 'Clearspar Radio Trainer — your radio calls, graded like a CFI',
     description: 'Free ATC readback training. AI grades every element against the FAA AIM. No mic, works offline.',
-    url: 'https://wilco.binnacleai.com',
+    url: 'https://clearsparradio.binnacleai.com',
     siteName: 'Clearspar Radio Trainer',
     images: [{ url: '/api/og', width: 1200, height: 630 }],
     type: 'website',

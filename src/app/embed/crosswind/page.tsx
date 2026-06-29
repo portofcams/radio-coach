@@ -39,7 +39,7 @@ export default function EmbedCrosswind() {
           </div>
         </div>
       )}
-      <a href="https://wilco.binnacleai.com/?utm_source=embed&utm_medium=crosswind" target="_blank" rel="noopener" className="block text-center text-[11px] text-gray-400 hover:text-gray-600">Powered by Clearspar Radio Trainer — practice radio calls →</a>
+      <a href="https://clearsparradio.binnacleai.com/?utm_source=embed&utm_medium=crosswind" target="_blank" rel="noopener" className="block text-center text-[11px] text-gray-400 hover:text-gray-600">Powered by Clearspar Radio Trainer — practice radio calls →</a>
     </div>
   )
 }

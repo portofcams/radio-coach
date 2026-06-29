@@ -1,7 +1,7 @@
 // Minimal Resend sender. Only called when the weekly job runs in live mode.
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const FROM = process.env.WEEKLY_FROM || 'Clearspar Radio Trainer <reports@wilco.binnacleai.com>'
-// reports@wilco.binnacleai.com has no inbox (subdomain has no MX), so replies
+const FROM = process.env.WEEKLY_FROM || 'Clearspar Radio Trainer <reports@clearsparradio.binnacleai.com>'
+// reports@clearsparradio.binnacleai.com has no inbox (subdomain has no MX), so replies
 // must route to an address that actually receives.
 // TODO(email): TEMPORARY — replies point at a raw Gmail. Replace with a branded
 // domain reply-to (e.g. john@binnacleai.com via Cloudflare Email Routing) and

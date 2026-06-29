@@ -3,7 +3,7 @@ import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { referralStats } from '@/lib/referral'
 
-const APP_URL = process.env.APP_URL || 'https://wilco.binnacleai.com'
+const APP_URL = process.env.APP_URL || 'https://clearsparradio.binnacleai.com'
 
 export async function GET() {
   const user = await getAuthUser()

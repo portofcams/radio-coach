@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-const BASE = 'https://wilco.binnacleai.com'
+const BASE = 'https://clearsparradio.binnacleai.com'
 const WIDGETS = [
   { key: 'crosswind', name: 'Crosswind calculator', height: 230, desc: 'A runway + wind → crosswind component calculator.' },
   { key: 'phonetic', name: 'Phonetic alphabet', height: 260, desc: 'A clean phonetic-alphabet reference card.' },

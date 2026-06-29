@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ ident: st
   return {
     title: `Radio calls at ${f.name} (${id}) — frequencies & what to say · Clearspar`,
     description: `How to talk to ATC at ${f.name} (${id})${f.city ? ` in ${f.city}` : ''}: the exact ${f.towered ? 'ground, tower and approach' : 'CTAF self-announce'} calls, real frequencies, and free graded practice.`,
-    alternates: { canonical: `https://wilco.binnacleai.com/airports/${id}` },
+    alternates: { canonical: `https://clearsparradio.binnacleai.com/airports/${id}` },
   }
 }
 

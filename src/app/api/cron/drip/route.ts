@@ -3,7 +3,7 @@ import { getPool } from '@/lib/db'
 import { composeDrip, DRIP } from '@/lib/drip'
 import { emailConfigured, sendEmail } from '@/lib/resend'
 
-const APP_URL = process.env.APP_URL || 'https://wilco.binnacleai.com'
+const APP_URL = process.env.APP_URL || 'https://clearsparradio.binnacleai.com'
 
 /**
  * Drip sender. DRY-RUN BY DEFAULT — sends nothing unless ?send=1 AND a Resend key

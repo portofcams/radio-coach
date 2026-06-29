@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Flight schools & CFIs training with Clearspar · Directory',
   description: 'Find a flight school or instructor using Clearspar to train radio communications. Schools: list yours free and show students you teach to the FAA standard.',
-  alternates: { canonical: 'https://wilco.binnacleai.com/directory' },
+  alternates: { canonical: 'https://clearsparradio.binnacleai.com/directory' },
 }
 
 export default async function DirectoryPage() {

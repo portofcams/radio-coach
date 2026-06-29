@@ -4,7 +4,7 @@ import { curatedAirports, usStatesWithFields } from '@/lib/airports'
 export const metadata: Metadata = {
   title: 'Airport radio frequencies & ATC practice · Clearspar',
   description: 'Tower, ground, ATIS and clearance frequencies for US airports — plus free radio-communication practice with instant grading.',
-  alternates: { canonical: 'https://wilco.binnacleai.com/airports' },
+  alternates: { canonical: 'https://clearsparradio.binnacleai.com/airports' },
 }
 
 export default function AirportsIndex() {
