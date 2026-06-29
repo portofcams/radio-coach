@@ -5,6 +5,13 @@ import NavAuth from '@/components/NavAuth'
 import LandingMiniDrill from '@/components/LandingMiniDrill'
 import NativeHide from '@/components/NativeHide'
 import { FlameIcon, StarIcon, HeartIcon, LockIcon } from '@/components/icons'
+import type { Metadata } from 'next'
+
+// Self-canonical to the new home so the homepage (served on both wilco + clearspar
+// during the migration) consolidates to clearspar instead of reading as a duplicate.
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://clearsparradio.binnacleai.com' },
+}
 
 export default function Home() {
   const total = scenarios.length
