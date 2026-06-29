@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 const TOOLS = [
   { href: '/metar', name: 'METAR decoder', desc: 'Raw report → plain English + flight category.' },
   { href: '/taf', name: 'TAF decoder', desc: 'Terminal forecast → plain-English periods.' },
+  { href: '/go-no-go', name: 'Route weather (go / no-go)', desc: 'Flight category + forecast for every field on your route.' },
   { href: '/notam', name: 'NOTAM decoder', desc: 'Expand the contractions into readable English.' },
   { href: '/crosswind', name: 'Crosswind calculator', desc: 'Runway + wind → headwind & crosswind.' },
   { href: '/density-altitude', name: 'Density altitude', desc: 'Elevation, altimeter & temp → performance.' },

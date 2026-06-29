@@ -8,7 +8,7 @@ import { COMPARE } from '@/lib/compare'
 const BASE = 'https://clearsparradio.binnacleai.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const core = ['', '/train', '/practice', '/listen', '/oral', '/leaderboard', '/guides', '/glossary', '/blog', '/airspace', '/directory', '/written', '/flashcards', '/acs', '/brief', '/tools', '/metar', '/taf', '/notam', '/crosswind', '/density-altitude', '/e6b', '/compare', '/widgets', '/confidence', '/community', '/top-pilots', '/airports', '/ground-school', '/cheatsheet', '/learn']
+  const core = ['', '/train', '/practice', '/listen', '/oral', '/leaderboard', '/guides', '/glossary', '/blog', '/airspace', '/directory', '/written', '/flashcards', '/acs', '/brief', '/tools', '/metar', '/taf', '/go-no-go', '/notam', '/crosswind', '/density-altitude', '/e6b', '/compare', '/widgets', '/confidence', '/community', '/top-pilots', '/airports', '/ground-school', '/cheatsheet', '/learn']
     .map((p) => ({ url: `${BASE}${p}`, changeFrequency: 'weekly' as const, priority: p === '' ? 1 : 0.7 }))
   const legal = ['/privacy', '/terms', '/contact']
     .map((p) => ({ url: `${BASE}${p}`, changeFrequency: 'yearly' as const, priority: 0.3 }))
