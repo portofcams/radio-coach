@@ -41,7 +41,7 @@ export default function GroundSchoolPage() {
   async function downloadOffline() {
     setDl('working')
     try {
-      const urls = ['/ground-school', ...orderedLessons.map(({ lesson }) => `/ground-school/${lesson.id}`)]
+      const urls = ['/ground-school', ...orderedLessons.map(({ lesson }) => `/ground-school/lesson?id=${lesson.id}`)]
       // Accept: text/html so the service worker's navigation branch caches them
       await Promise.all(urls.map((u) => fetch(u, { headers: { Accept: 'text/html' } }).catch(() => {})))
       setDl('done')
@@ -176,7 +176,7 @@ export default function GroundSchoolPage() {
                   return (
                     <div key={lesson.id} className={`flex flex-col items-center ${offset}`}>
                       {unlocked ? (
-                        <Link href={`/ground-school/${lesson.id}`} aria-label={lesson.title}>
+                        <Link href={`/ground-school/lesson?id=${lesson.id}`} aria-label={lesson.title}>
                           {node}
                         </Link>
                       ) : (
@@ -201,7 +201,7 @@ export default function GroundSchoolPage() {
                   : false
                 return unitDone ? (
                   <Link
-                    href={`/train/${unit.checkpointScenarioId}`}
+                    href={`/train/scenario?id=${unit.checkpointScenarioId}`}
                     className="mt-8 flex items-center gap-3 border-2 border-gray-900 bg-gray-900 text-white rounded-xl px-4 py-3.5 hover:bg-black transition-colors"
                   >
                     <span className="font-mono text-[10px] font-bold tracking-widest border border-gray-600 rounded px-1.5 py-0.5">LIVE</span>

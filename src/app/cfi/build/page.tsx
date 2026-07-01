@@ -95,7 +95,7 @@ export default function BuildScenarioPage() {
                 <div className="text-xs text-gray-400 truncate">{s.elements.join(' · ')}</div>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <a href={`/train/${s.id}`} className="text-sm text-blue-600 hover:underline">Test</a>
+                <a href={`/train/scenario?id=${s.id}`} className="text-sm text-blue-600 hover:underline">Test</a>
                 <button onClick={() => del(s.id)} className="text-gray-300 hover:text-red-500 text-sm" title="Delete">✕</button>
               </div>
             </div>

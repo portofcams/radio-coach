@@ -2,6 +2,12 @@
 
 import { useEffect } from 'react'
 import { scheduleDailyReminder, registerPush } from '@/lib/native'
+import { installNativeFetchPatch } from '@/lib/native-fetch'
+
+// Runs at module scope (not inside an effect) so every /api/ fetch — including
+// ones fired from other components' own effects — is already redirected to
+// the real API host by the time anything mounts.
+installNativeFetchPatch()
 
 /** App-open setup: native practice reminder + push + offline service worker + error capture. */
 export default function NativeInit() {

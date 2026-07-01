@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { lookupAirport } from '@/lib/airports'
+import { lookupAirport, curatedAirports } from '@/lib/airports'
 import { runwayPhonetic } from '@/lib/homefield'
 import { airportCalls, type CallBlock } from '@/lib/airportcalls'
 import { breadcrumbLd } from '@/lib/seo'
+
+// Same bounded set the sitemap indexes — keeps this export-compatible
+// (output: 'export' requires every dynamic page to be enumerable at build time).
+export function generateStaticParams() {
+  return curatedAirports(250).map((a) => ({ ident: a.ident }))
+}
 
 const FREQ_LABELS: Record<string, string> = {
   twr: 'Tower', gnd: 'Ground', cld: 'Clearance Delivery', atis: 'ATIS', ctaf: 'CTAF', unicom: 'UNICOM', appdep: 'Approach / Departure',

@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="font-semibold text-gray-900 mb-1">Deleting your data</h2>
-            <p>Want your account and data removed? Email us (see <Link href="/contact" className="text-blue-600 hover:underline">Contact</Link>) and we&rsquo;ll delete it.</p>
+            <p>Want your account and data removed? Sign in, open <Link href="/profile" className="text-blue-600 hover:underline">your profile</Link>, and use Delete Account in the Danger Zone — it removes your account immediately. You can also email us (see <Link href="/contact" className="text-blue-600 hover:underline">Contact</Link>) if you&rsquo;d rather we do it for you.</p>
           </section>
 
           <section>

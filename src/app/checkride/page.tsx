@@ -78,7 +78,7 @@ export default function CheckridePage() {
               </div>
             )
             return pro ? (
-              <Link key={s.id} href={`/session/${s.id}`} className="block">{card}</Link>
+              <Link key={s.id} href={`/session?id=${s.id}`} className="block">{card}</Link>
             ) : native ? (
               <div key={s.id} className="block w-full text-left">{card}</div>
             ) : (

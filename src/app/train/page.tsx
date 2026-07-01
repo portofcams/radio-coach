@@ -95,7 +95,7 @@ export default function TrainPage() {
                     .filter(s => !diffFilter || s.difficulty === diffFilter)
                   if (!pool.length) return
                   const pick = pool[Math.floor(Math.random() * pool.length)]
-                  router.push(`/train/${pick.id}`)
+                  router.push(`/train/scenario?id=${pick.id}`)
                 }}
                 className="text-sm font-mono font-medium px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:border-gray-500 hover:bg-gray-50 transition-colors"
               >
@@ -203,7 +203,7 @@ export default function TrainPage() {
               const c = pool[h % pool.length]
               const done = completed[c.id]
               return (
-                <Link href={`/train/${c.id}`} className="block rounded-xl p-4 border border-amber-300 bg-amber-50 hover:border-amber-400 transition-colors">
+                <Link href={`/train/scenario?id=${c.id}`} className="block rounded-xl p-4 border border-amber-300 bg-amber-50 hover:border-amber-400 transition-colors">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="font-mono text-[10px] font-bold tracking-widest text-amber-600 mb-0.5">CALL OF THE DAY</div>
@@ -228,7 +228,7 @@ export default function TrainPage() {
                         : { text: `due in ${d}d`, cls: 'text-amber-600' }
                     }
                     return (
-                      <Link key={a.scenario_id} href={`/train/${a.scenario_id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                      <Link key={a.scenario_id} href={`/train/scenario?id=${a.scenario_id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <div className="font-medium group-hover:text-gray-900 truncate">{sc?.title ?? a.scenario_id.replace(/-/g, ' ')}</div>
@@ -257,7 +257,7 @@ export default function TrainPage() {
                   {homeList.map((s) => {
                     const c = completed[s.id]
                     return (
-                      <Link key={s.id} href={`/train/${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                      <Link key={s.id} href={`/train/scenario?id=${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
@@ -298,7 +298,7 @@ export default function TrainPage() {
                     {heli.map((s) => {
                       const c = completed[s.id]
                       return (
-                        <Link key={s.id} href={`/train/${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                        <Link key={s.id} href={`/train/scenario?id=${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
                               <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
@@ -336,7 +336,7 @@ export default function TrainPage() {
                       return (
                         <Link
                           key={s.id}
-                          href={`/train/${s.id}`}
+                          href={`/train/scenario?id=${s.id}`}
                           className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-gray-400 transition-colors group"
                         >
                           <div className="flex items-center gap-3 min-w-0">
@@ -393,7 +393,7 @@ export default function TrainPage() {
             {FLIGHT_SESSIONS.map((session) => (
               <Link
                 key={session.id}
-                href={`/session/${session.id}`}
+                href={`/session?id=${session.id}`}
                 className="block p-5 border border-gray-200 rounded-xl hover:border-gray-400 transition-colors group"
               >
                 <div className="flex items-start justify-between mb-2">

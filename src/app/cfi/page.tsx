@@ -193,7 +193,7 @@ export default function CfiDashboard() {
                     </div>
                   )}
                   {s.joined
-                    ? <a href={`/cfi/students/${s.id}`} className="text-sm bg-gray-900 text-white rounded-lg px-3 py-2 hover:bg-gray-800">View</a>
+                    ? <a href={`/cfi/students?id=${s.id}`} className="text-sm bg-gray-900 text-white rounded-lg px-3 py-2 hover:bg-gray-800">View</a>
                     : <button onClick={() => { navigator.clipboard?.writeText(s.joinUrl ?? ''); setCopied(s.id); setTimeout(() => setCopied(null), 2000) }}
                         className="text-sm border border-gray-300 rounded-lg px-3 py-2 hover:border-gray-500">{copied === s.id ? 'Copied!' : 'Copy invite'}</button>}
                   <button onClick={() => remove(s.id)} className="text-gray-300 hover:text-red-500 text-sm" title="Remove">✕</button>

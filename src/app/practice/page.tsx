@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation'
 export default function PracticePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const go = () => router.push(`/train/gen-${Math.floor(Math.random() * 1_000_000_000)}`)
+  const go = () => router.push(`/train/scenario?id=gen-${Math.floor(Math.random() * 1_000_000_000)}`)
   const smart = async () => {
     setLoading(true)
     try {
       const r = await fetch('/api/adaptive/next')
       const d = await r.json()
-      if (d.scenarioId) router.push(`/train/${d.scenarioId}`)
+      if (d.scenarioId) router.push(`/train/scenario?id=${d.scenarioId}`)
     } finally { setLoading(false) }
   }
   return (

@@ -1,7 +1,7 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { Suspense, useState, useRef, useCallback, useEffect } from 'react'
 import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
@@ -10,7 +10,15 @@ import { attachRadioFx, getRadioFx, ttsSpeed, type RadioFxController } from '@/l
 import { personalizeText } from '@/lib/personalize'
 
 export default function FlightSessionPage() {
-  const { id } = useParams<{ id: string }>()
+  return (
+    <Suspense fallback={null}>
+      <FlightSessionPageInner />
+    </Suspense>
+  )
+}
+
+function FlightSessionPageInner() {
+  const id = useSearchParams().get('id') ?? ''
   const router = useRouter()
   const session = getFlightSession(id)
 

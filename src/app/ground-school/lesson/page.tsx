@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import {
   getLesson,
   nextLessonId,
@@ -26,7 +26,15 @@ function fmtCountdown(ms: number): string {
 }
 
 export default function LessonPage() {
-  const { lessonId } = useParams<{ lessonId: string }>()
+  return (
+    <Suspense fallback={null}>
+      <LessonPageInner />
+    </Suspense>
+  )
+}
+
+function LessonPageInner() {
+  const lessonId = useSearchParams().get('id') ?? ''
   const found = getLesson(lessonId)
 
   const exercises = useMemo(() => found?.lesson.exercises ?? [], [found])
@@ -163,7 +171,7 @@ export default function LessonPage() {
           </div>
           <div className="flex flex-col gap-2">
             {nextId ? (
-              <Link href={`/ground-school/${nextId}`} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors">
+              <Link href={`/ground-school/lesson?id=${nextId}`} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors">
                 Next lesson →
               </Link>
             ) : null}

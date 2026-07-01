@@ -118,7 +118,7 @@ export default function SchoolPage() {
               List publicly
             </label>
           </div>
-          <p className="text-xs text-gray-400 mb-3">Show your school on the <a href="/directory" className="text-blue-600 hover:underline">Clearspar directory</a> — a free SEO listing for prospective students.</p>
+          <p className="text-xs text-gray-400 mb-3">Show your school on the <a href="https://clearsparradio.binnacleai.com/directory" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Clearspar directory</a> — a free SEO listing for prospective students.</p>
           <div className="grid grid-cols-2 gap-2 mb-2">
             <input value={listing.city} onChange={(e) => setListing((l) => ({ ...l, city: e.target.value.slice(0, 60) }))} placeholder="City" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
             <input value={listing.region} onChange={(e) => setListing((l) => ({ ...l, region: e.target.value.slice(0, 60) }))} placeholder="State / region" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
@@ -128,7 +128,7 @@ export default function SchoolPage() {
           <div className="flex items-center gap-3">
             <button onClick={saveListing} disabled={busy} className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">{busy ? 'Saving…' : 'Save listing'}</button>
             {savedListing && <span className="text-xs text-green-600">Saved</span>}
-            {listing.public_listing && listing.slug && <a href={`/directory/${listing.slug}`} className="text-xs text-blue-600 hover:underline">View listing →</a>}
+            {listing.public_listing && listing.slug && <a href={`https://clearsparradio.binnacleai.com/directory/${listing.slug}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">View listing →</a>}
           </div>
         </div>
 

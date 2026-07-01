@@ -17,7 +17,7 @@ export default function BootcampPage() {
   }, [])
 
   const all = blocks.flatMap((b) => b.scenarios.map((s) => s.id))
-  const start = () => { if (all[0]) router.push(`/train/${all[0]}`) }
+  const start = () => { if (all[0]) router.push(`/train/scenario?id=${all[0]}`) }
 
   if (state === 'loading') return <div className="max-w-md mx-auto px-6 py-16 text-gray-400">Building your plan…</div>
 
@@ -48,7 +48,7 @@ export default function BootcampPage() {
               <p className="text-sm text-gray-500 mb-2">{b.tip}</p>
               <div className="space-y-1.5">
                 {b.scenarios.map((s) => (
-                  <Link key={s.id} href={`/train/${s.id}`} className="block border border-gray-200 rounded-lg px-3 py-2 text-sm hover:border-gray-400 transition-colors">
+                  <Link key={s.id} href={`/train/scenario?id=${s.id}`} className="block border border-gray-200 rounded-lg px-3 py-2 text-sm hover:border-gray-400 transition-colors">
                     {s.title}
                   </Link>
                 ))}

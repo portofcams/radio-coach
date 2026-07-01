@@ -1,10 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function JoinCfi() {
-  const { token } = useParams<{ token: string }>()
+  return (
+    <Suspense fallback={null}>
+      <JoinCfiInner />
+    </Suspense>
+  )
+}
+
+function JoinCfiInner() {
+  const token = useSearchParams().get('token') ?? ''
   const [state, setState] = useState<'working' | 'done' | 'login' | 'error'>('working')
   const [cfiEmail, setCfiEmail] = useState<string | null>(null)
   const [msg, setMsg] = useState('')
@@ -32,7 +40,7 @@ export default function JoinCfi() {
         <>
           <h1 className="text-xl font-semibold mb-2">Connect with your instructor</h1>
           <p className="text-gray-500 mb-6">Sign in or create a free account to link up — then your CFI can assign scenarios and see your progress.</p>
-          <a href={`/login?redirect=/cfi/join/${token}`} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800">Sign in / sign up</a>
+          <a href={`/login?redirect=${encodeURIComponent(`/cfi/join?token=${token}`)}`} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800">Sign in / sign up</a>
         </>
       )}
       {state === 'done' && (

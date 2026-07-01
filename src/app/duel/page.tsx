@@ -1,13 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface Duel { scenario_id: string; creator_name: string; creator_score: number; attempts: number; beaten: number; scenarioTitle: string }
 
 export default function DuelPage() {
-  const { id } = useParams<{ id: string }>()
+  return (
+    <Suspense fallback={null}>
+      <DuelPageInner />
+    </Suspense>
+  )
+}
+
+function DuelPageInner() {
+  const id = useSearchParams().get('id') ?? ''
   const router = useRouter()
   const [duel, setDuel] = useState<Duel | null>(null)
   const [state, setState] = useState<'loading' | 'ok' | 'missing'>('loading')
@@ -35,7 +43,7 @@ export default function DuelPage() {
         <div className="text-5xl font-bold text-gray-900">{duel!.creator_score}%</div>
         <div className="text-sm text-gray-400 mt-1">the score to beat</div>
       </div>
-      <button onClick={() => router.push(`/train/${duel!.scenario_id}?duel=${id}`)} className="w-full bg-gray-900 text-white rounded-xl px-6 py-3.5 text-sm font-semibold hover:bg-gray-800">
+      <button onClick={() => router.push(`/train/scenario?id=${duel!.scenario_id}&duel=${id}`)} className="w-full bg-gray-900 text-white rounded-xl px-6 py-3.5 text-sm font-semibold hover:bg-gray-800">
         Take the challenge →
       </button>
       {duel!.attempts > 0 && <p className="text-xs text-gray-400 mt-4">{duel!.beaten} of {duel!.attempts} challengers have beaten it.</p>}

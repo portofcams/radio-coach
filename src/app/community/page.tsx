@@ -87,7 +87,7 @@ export default function CommunityPage() {
               </div>
               <div className="flex items-center gap-3 shrink-0">
                 <button onClick={() => upvote(s.id)} className={`text-sm flex items-center gap-1 ${voted.has(s.id) ? 'text-blue-600' : 'text-gray-500 hover:text-gray-900'}`}>▲ {s.upvotes}</button>
-                <Link href={`/train/${s.id}`} className="text-sm text-blue-600 hover:underline">Fly it</Link>
+                <Link href={`/train/scenario?id=${s.id}`} className="text-sm text-blue-600 hover:underline">Fly it</Link>
               </div>
             </div>
           ))}

@@ -7,18 +7,21 @@ export interface Entitlement {
   plan: string | null
   status: string | null
   periodEnd: string | null
+  /** Which billing rail granted this — drives whether "Manage" opens the Stripe
+   * portal or points the user at Settings → Apple ID → Subscriptions. */
+  source: 'stripe' | 'apple' | 'comp' | 'school' | null
 }
 
-/** Pro = an active/trialing subscription whose period hasn't ended. Source of truth = DB (set by the Stripe webhook). */
+/** Pro = an active/trialing subscription whose period hasn't ended. Source of truth = DB (set by the Stripe or RevenueCat webhook). */
 export async function getEntitlement(userId: number): Promise<Entitlement> {
   const db = getPool()
-  if (!db) return { pro: false, plan: null, status: null, periodEnd: null }
+  if (!db) return { pro: false, plan: null, status: null, periodEnd: null, source: null }
   const r = await db.query(
-    'SELECT subscription_status, plan, current_period_end, comp_pro_until FROM rc_users WHERE id = $1',
+    'SELECT subscription_status, plan, current_period_end, comp_pro_until, apple_transaction_id FROM rc_users WHERE id = $1',
     [userId],
   )
   const row = r.rows[0]
-  if (!row) return { pro: false, plan: null, status: null, periodEnd: null }
+  if (!row) return { pro: false, plan: null, status: null, periodEnd: null, source: null }
   const active = ['active', 'trialing', 'past_due'].includes(row.subscription_status)
   const notExpired = !row.current_period_end || new Date(row.current_period_end) > new Date()
   const own: Entitlement = {
@@ -26,12 +29,13 @@ export async function getEntitlement(userId: number): Promise<Entitlement> {
     plan: row.plan ?? null,
     status: row.subscription_status ?? null,
     periodEnd: row.current_period_end ? new Date(row.current_period_end).toISOString() : null,
+    source: row.apple_transaction_id ? 'apple' : 'stripe',
   }
   if (own.pro) return own
 
   // Referral comp month (give-a-month / get-a-month) — grants Solo-level Pro.
   if (row.comp_pro_until && new Date(row.comp_pro_until) > new Date()) {
-    return { pro: true, plan: 'solo', status: 'comp', periodEnd: new Date(row.comp_pro_until).toISOString() }
+    return { pro: true, plan: 'solo', status: 'comp', periodEnd: new Date(row.comp_pro_until).toISOString(), source: 'comp' }
   }
 
   // Not pro on their own sub — they may be an instructor in a flight school
@@ -48,7 +52,7 @@ export async function getEntitlement(userId: number): Promise<Entitlement> {
        LIMIT 1`,
       [userId],
     )
-    if (s.rows[0]) return { pro: true, plan: 'cfi', status: 'active', periodEnd: null }
+    if (s.rows[0]) return { pro: true, plan: 'cfi', status: 'active', periodEnd: null, source: 'school' }
   } catch {
     /* school tables may not exist yet — fall back to own entitlement */
   }

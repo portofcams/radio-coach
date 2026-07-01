@@ -2,21 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import { isNative } from '@/lib/native'
+import NativePurchaseButtons from './NativePurchaseButtons'
 
 interface Props {
   onClose: () => void
   freeUsed: number
   freeLimit: number
   isLoggedIn?: boolean
+  userId?: number
   reason?: 'daily' | 'pro'
 }
 
-export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false, reason = 'daily' }: Props) {
+export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn = false, userId, reason = 'daily' }: Props) {
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
   const [interval, setInterval] = useState<'month' | 'year'>('month')
-  // On iOS, App Store rules (3.1.1) forbid non-IAP purchase UI. Until the IAP
-  // build ships, native shows a no-purchase fallback; later this branch drives
-  // the StoreKit/RevenueCat flow.
+  // On iOS, App Store rules (3.1.1) require the paid subscription to be sold
+  // via StoreKit — this branch drives the RevenueCat purchase flow instead of
+  // the Stripe checkout used on web.
   const [native, setNative] = useState(false)
   useEffect(() => { setNative(isNative()) }, [])
 
@@ -69,17 +71,27 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
         </div>
 
         {native ? (
-          <div className="space-y-3 text-center">
-            <p className="text-sm text-gray-500">
-              {reason === 'pro'
-                ? 'Advanced scenarios are part of the unlimited plan.'
-                : 'You’ve used today’s free scenarios.'}{' '}
-              Keep drilling Ground School free anytime — more free scenarios unlock tomorrow.
-            </p>
-            <button onClick={onClose} className="w-full bg-gray-900 text-white rounded-xl px-5 py-3.5 font-semibold hover:bg-gray-800 transition-colors">
-              Keep practicing
-            </button>
-          </div>
+          isLoggedIn ? (
+            <div className="space-y-3">
+              <p className="text-center text-sm text-gray-500">
+                {reason === 'pro' ? 'Advanced scenarios are part of Solo Pilot.' : "You've used today's free scenarios."}
+              </p>
+              <NativePurchaseButtons userId={userId} onPurchased={onClose} />
+              <button onClick={onClose} className="w-full text-center text-sm text-gray-400 hover:text-gray-600">
+                Keep practicing Ground School free
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <a
+                href="/login"
+                className="block w-full bg-gray-900 text-white rounded-xl px-5 py-4 text-center font-semibold hover:bg-gray-800 transition-colors"
+              >
+                Sign up free to keep going
+              </a>
+              <p className="text-center text-sm text-gray-500">A free account saves your progress and unlocks Solo Pilot upgrades.</p>
+            </div>
+          )
         ) : !isLoggedIn ? (
           <div className="space-y-3">
             <a
@@ -144,7 +156,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
         )}
 
         <p className="text-center text-xs text-gray-400 mt-5">
-          {native ? 'Ground School is free, always' : isLoggedIn ? 'Cancel anytime · Secure checkout via Stripe' : 'No card needed to sign up'}
+          {native ? (isLoggedIn ? 'Cancel anytime in Settings · Secure checkout via the App Store' : 'Ground School is free, always') : isLoggedIn ? 'Cancel anytime · Secure checkout via Stripe' : 'No card needed to sign up'}
         </p>
       </div>
     </div>

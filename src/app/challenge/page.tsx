@@ -41,7 +41,7 @@ export default function ChallengePage() {
         </div>
 
         <Link
-          href={`/train/${scenario.id}`}
+          href={`/train/scenario?id=${scenario.id}`}
           className="block w-full bg-gray-900 text-white text-center py-3 rounded-xl font-medium hover:bg-gray-800 transition-colors text-sm"
         >
           Start today&apos;s challenge →

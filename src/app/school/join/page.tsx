@@ -1,10 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function JoinSchool() {
-  const { token } = useParams<{ token: string }>()
+  return (
+    <Suspense fallback={null}>
+      <JoinSchoolInner />
+    </Suspense>
+  )
+}
+
+function JoinSchoolInner() {
+  const token = useSearchParams().get('token') ?? ''
   const [state, setState] = useState<'working' | 'done' | 'login' | 'error'>('working')
   const [school, setSchool] = useState<string | null>(null)
   const [msg, setMsg] = useState('')
@@ -27,7 +35,7 @@ export default function JoinSchool() {
         <>
           <h1 className="text-xl font-semibold mb-2">Join your flight school</h1>
           <p className="text-gray-500 mb-6">Sign in or create a free account to join — you&apos;ll get full CFI Pro tools under the school&apos;s subscription.</p>
-          <a href={`/login?redirect=/school/join/${token}`} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800">Sign in / sign up</a>
+          <a href={`/login?redirect=${encodeURIComponent(`/school/join?token=${token}`)}`} className="inline-block bg-gray-900 text-white rounded-lg px-5 py-3 text-sm font-semibold hover:bg-gray-800">Sign in / sign up</a>
         </>
       )}
       {state === 'done' && (

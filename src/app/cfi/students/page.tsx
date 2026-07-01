@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { scenarios } from '@/lib/scenarios'
 import { ENDORSEMENT_KINDS } from '@/lib/endorsements'
 import { syllabi } from '@/lib/syllabi'
@@ -22,7 +22,15 @@ const PHASES = ['ground', 'departure', 'pattern', 'enroute', 'ifr', 'emergency']
 const PHASE_LABELS: Record<string, string> = { ground: 'Ground', departure: 'Departure', pattern: 'Pattern', enroute: 'En route', ifr: 'IFR', emergency: 'Emergencies & advanced' }
 
 export default function StudentReport() {
-  const { id } = useParams<{ id: string }>()
+  return (
+    <Suspense fallback={null}>
+      <StudentReportInner />
+    </Suspense>
+  )
+}
+
+function StudentReportInner() {
+  const id = useSearchParams().get('id') ?? ''
   const router = useRouter()
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)

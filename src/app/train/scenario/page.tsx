@@ -1,7 +1,7 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { Suspense, useState, useRef, useCallback, useEffect } from 'react'
 import { scenarios, getScenario } from '@/lib/scenarios'
 import { getSession, incrementFreeUsed, FREE_DAILY_LIMIT } from '@/lib/session'
 import { toPhonetic } from '@/lib/phonetic'
@@ -26,7 +26,15 @@ type RadioState = 'idle' | 'atc_loading' | 'atc_playing' | 'ready' | 'listening'
 interface UserProfile { id: number; email: string; callsign: string | null; home?: HomeProfile | null }
 
 export default function ScenarioPage() {
-  const { id } = useParams<{ id: string }>()
+  return (
+    <Suspense fallback={null}>
+      <ScenarioPageInner />
+    </Suspense>
+  )
+}
+
+function ScenarioPageInner() {
+  const id = useSearchParams().get('id') ?? ''
   const router = useRouter()
   // Static library scenario, a procedural one (gen-<seed>, deterministic), or a
   // per-user "home field" / custom scenario resolved after fetch.
@@ -178,7 +186,7 @@ export default function ScenarioPage() {
         body: JSON.stringify({ scenarioId: scenario.id, name: user?.callsign || 'A pilot', score: result.score }),
       })
       const d = await res.json()
-      if (d.id) setChallengeUrl(`${window.location.origin}/duel/${d.id}`)
+      if (d.id) setChallengeUrl(`${window.location.origin}/duel?id=${d.id}`)
     } catch { /* ignore */ }
   }
 
@@ -482,12 +490,12 @@ export default function ScenarioPage() {
     setRadioState('idle')
     if (id.startsWith('gen-')) {
       // endless practice — keep generating fresh scenarios
-      router.push(`/train/gen-${Math.floor(Math.random() * 1_000_000_000)}`)
+      router.push(`/train/scenario?id=gen-${Math.floor(Math.random() * 1_000_000_000)}`)
       return
     }
     const idx = scenarios.findIndex(s => s.id === id)
     const next = scenarios[(idx + 1) % scenarios.length]
-    router.push(`/train/${next.id}`)
+    router.push(`/train/scenario?id=${next.id}`)
   }, [id, router])
 
   const reset = useCallback(() => {
@@ -540,7 +548,7 @@ export default function ScenarioPage() {
   return (
     <main className="min-h-screen">
       <audio ref={audioRef} />
-      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} isLoggedIn={!!user} reason={paywallReason} />}
+      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} freeUsed={session.freeUsed} freeLimit={session.freeLimit} isLoggedIn={!!user} userId={user?.id} reason={paywallReason} />}
 
       <div className="max-w-2xl mx-auto px-6 py-10">
         {/* Header */}

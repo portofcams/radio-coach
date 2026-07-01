@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toPhonetic } from '@/lib/phonetic'
 import { isNative } from '@/lib/native'
+import NativePurchaseButtons from '@/components/NativePurchaseButtons'
 
 interface Stats {
   total: number
@@ -40,7 +41,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [callsign, setCallsign] = useState('')
   const [saving, setSaving] = useState(false)
-  const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null } | null>(null)
+  const [ent, setEnt] = useState<{ pro: boolean; plan: string | null; periodEnd: string | null; source?: string | null } | null>(null)
   const [billing, setBilling] = useState(false)
   const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
   const [native, setNative] = useState(false)
@@ -59,6 +60,8 @@ export default function ProfilePage() {
   const [savingBranding, setSavingBranding] = useState(false)
   const [referral, setReferral] = useState<{ link: string; referrals: number } | null>(null)
   const [refCopied, setRefCopied] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -138,6 +141,19 @@ export default function ProfilePage() {
     router.push('/')
   }
 
+  async function deleteAccount() {
+    if (!confirmDelete) { setConfirmDelete(true); return }
+    setDeleting(true)
+    try {
+      const res = await fetch('/api/account', { method: 'DELETE' })
+      if (res.ok) { router.push('/') } else { alert('Could not delete account — please try again or contact support.'); setDeleting(false) }
+    } catch { alert('Could not delete account — please try again or contact support.'); setDeleting(false) }
+  }
+
+  function refreshEntitlement() {
+    fetch('/api/auth/me').then((r) => r.json()).then((me) => setEnt(me.entitlement ?? null)).catch(() => {})
+  }
+
   async function billingAction(endpoint: string, body?: object) {
     setBilling(true)
     try {
@@ -188,11 +204,19 @@ export default function ProfilePage() {
               )}
             </div>
             {ent?.pro ? (
-              <button onClick={() => billingAction('/api/portal')} disabled={billing}
-                className="shrink-0 text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors disabled:opacity-60">
-                Manage
-              </button>
-            ) : native ? null : (
+              ent.source === 'apple' ? (
+                <a href="itms-apps://apps.apple.com/account/subscriptions" className="shrink-0 text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors">
+                  Manage in Settings
+                </a>
+              ) : (
+                <button onClick={() => billingAction('/api/portal')} disabled={billing}
+                  className="shrink-0 text-sm border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 transition-colors disabled:opacity-60">
+                  Manage
+                </button>
+              )
+            ) : native ? (
+              <div className="shrink-0 w-48"><NativePurchaseButtons userId={user.id} onPurchased={refreshEntitlement} compact /></div>
+            ) : (
               <div className="shrink-0 text-right">
                 <button onClick={() => billingAction('/api/checkout', { plan: 'solo' })} disabled={billing}
                   className="text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors disabled:opacity-60">
@@ -356,7 +380,7 @@ export default function ProfilePage() {
                       <div className="h-full bg-red-400 rounded-full" style={{ width: `${Math.round(w.rate * 100)}%` }} />
                     </div>
                   </div>
-                  <a href={`/session/drill-${w.key}`} className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors">Drill</a>
+                  <a href={`/session?id=drill-${w.key}`} className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors">Drill</a>
                 </div>
               ))}
             </div>
@@ -526,7 +550,7 @@ export default function ProfilePage() {
               <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Recent history</div>
               <div className="space-y-2">
                 {stats.recent.map((g, i) => (
-                  <a key={i} href={`/train/${g.scenario_id}`} className="flex items-center justify-between py-1 hover:text-gray-900 group">
+                  <a key={i} href={`/train/scenario?id=${g.scenario_id}`} className="flex items-center justify-between py-1 hover:text-gray-900 group">
                     <span className="text-sm text-gray-600 group-hover:text-gray-900 capitalize">
                       {g.scenario_id.replace(/-/g, ' ')}
                     </span>
@@ -546,6 +570,27 @@ export default function ProfilePage() {
             <a href="/train" className="text-blue-600 text-sm hover:underline mt-1 block">Start training →</a>
           </div>
         )}
+
+        {/* Danger zone */}
+        <div className="mt-10 border border-red-200 rounded-xl p-5">
+          <div className="text-xs font-semibold uppercase tracking-widest text-red-400 mb-2">Danger zone</div>
+          <p className="text-sm text-gray-500 mb-3">
+            Permanently deletes your account, grades, logbook, and any CFI/school links. This cannot be undone.
+            {ent?.pro && ' Your active subscription will be canceled first.'}
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={deleteAccount}
+              disabled={deleting}
+              className={`text-sm rounded-lg px-4 py-2 font-medium transition-colors disabled:opacity-60 ${confirmDelete ? 'bg-red-600 text-white hover:bg-red-700' : 'border border-red-300 text-red-600 hover:bg-red-50'}`}
+            >
+              {deleting ? 'Deleting…' : confirmDelete ? 'Confirm — permanently delete my account' : 'Delete account'}
+            </button>
+            {confirmDelete && !deleting && (
+              <button onClick={() => setConfirmDelete(false)} className="text-sm text-gray-400 hover:text-gray-600">Cancel</button>
+            )}
+          </div>
+        </div>
       </div>
     </main>
   )

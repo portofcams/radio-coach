@@ -144,7 +144,7 @@ export default async function ModulePage({ params }: { params: Promise<{ slug: s
                 return (
                   <Link
                     key={id}
-                    href={`/train/${id}`}
+                    href={`/train/scenario?id=${id}`}
                     className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 group"
                   >
                     <span className="text-sm text-gray-700 group-hover:text-gray-900">{s.title}</span>
