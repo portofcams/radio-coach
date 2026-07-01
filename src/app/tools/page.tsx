@@ -14,6 +14,7 @@ const TOOLS = [
   { href: '/notam', name: 'NOTAM decoder', desc: 'Expand the contractions into readable English.' },
   { href: '/crosswind', name: 'Crosswind calculator', desc: 'Runway + wind → headwind & crosswind.' },
   { href: '/density-altitude', name: 'Density altitude', desc: 'Elevation, altimeter & temp → performance.' },
+  { href: '/takeoff-landing', name: 'Takeoff & landing distance', desc: 'Your POH numbers, corrected for density altitude + wind.' },
   { href: '/e6b', name: 'E6B calculator', desc: 'Time/speed/distance, fuel, and wind correction.' },
   { href: '/brief', name: 'Flight radio brief', desc: 'Route → the expected call sequence with real freqs.' },
 ]
