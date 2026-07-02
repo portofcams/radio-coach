@@ -59,4 +59,18 @@ trap - EXIT
 echo "Syncing Capacitor (copies out/ into ios/App)..."
 npx cap sync ios
 
+# IAPPlugin.swift is a local plugin compiled into the app binary (not an npm
+# package), so cap sync doesn't know about it — Capacitor only loads plugin
+# classes named in packageClassList, so append it after every sync.
+echo "Registering local IAPPlugin in packageClassList..."
+node -e '
+const fs = require("fs");
+const p = "ios/App/App/capacitor.config.json";
+const cfg = JSON.parse(fs.readFileSync(p, "utf8"));
+cfg.packageClassList = cfg.packageClassList || [];
+if (!cfg.packageClassList.includes("IAPPlugin")) cfg.packageClassList.push("IAPPlugin");
+fs.writeFileSync(p, JSON.stringify(cfg, null, 2));
+console.log("packageClassList:", cfg.packageClassList.join(", "));
+'
+
 echo "Done — open ios/App/App.xcworkspace and archive as usual."

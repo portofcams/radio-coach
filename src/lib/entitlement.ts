@@ -12,7 +12,7 @@ export interface Entitlement {
   source: 'stripe' | 'apple' | 'comp' | 'school' | null
 }
 
-/** Pro = an active/trialing subscription whose period hasn't ended. Source of truth = DB (set by the Stripe or RevenueCat webhook). */
+/** Pro = an active/trialing subscription whose period hasn't ended. Source of truth = DB (set by the Stripe or App Store webhook). */
 export async function getEntitlement(userId: number): Promise<Entitlement> {
   const db = getPool()
   if (!db) return { pro: false, plan: null, status: null, periodEnd: null, source: null }

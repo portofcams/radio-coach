@@ -17,7 +17,7 @@ export default function PaywallModal({ onClose, freeUsed, freeLimit, isLoggedIn 
   const [loading, setLoading] = useState<'solo' | 'cfi' | null>(null)
   const [interval, setInterval] = useState<'month' | 'year'>('month')
   // On iOS, App Store rules (3.1.1) require the paid subscription to be sold
-  // via StoreKit — this branch drives the RevenueCat purchase flow instead of
+  // via StoreKit — this branch drives the native StoreKit 2 purchase flow instead of
   // the Stripe checkout used on web.
   const [native, setNative] = useState(false)
   useEffect(() => { setNative(isNative()) }, [])

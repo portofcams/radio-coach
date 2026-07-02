@@ -9,7 +9,7 @@ interface Props {
   compact?: boolean
 }
 
-// The only in-app purchase surface — StoreKit via RevenueCat. This is what
+// The only in-app purchase surface — native StoreKit 2. This is what
 // makes the iOS Pro upgrade guideline-3.1.1 compliant (Stripe stays web-only).
 export default function NativePurchaseButtons({ userId, onPurchased, compact }: Props) {
   const [packages, setPackages] = useState<IapPackage[]>([])

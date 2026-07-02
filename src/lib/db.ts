@@ -67,7 +67,7 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS current_period_end TIMESTAMPTZ
   `)
 
-  // iOS IAP entitlement, driven by the RevenueCat webhook — same status/plan/
+  // iOS IAP entitlement, driven by the App Store Server Notifications webhook — same status/plan/
   // period columns as Stripe, distinguished by which id column is set.
   await db.query(`
     ALTER TABLE rc_users
