@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { GradeResult, Scenario } from './types'
 import { ruleGradeReadback } from './rule-grader'
+import { checkBudget, logUsage } from './anthropic-budget'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -72,12 +73,15 @@ STUDENT READBACK: "${studentReadback}"
 Grade this readback.`
 
   try {
+    await checkBudget('radio-coach/grader')
+    const model = 'claude-sonnet-4-5'
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
+      model,
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     })
+    await logUsage(model, response.usage.input_tokens, response.usage.output_tokens, 'radio-coach/grader').catch(() => {})
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
     const result = JSON.parse(text) as GradeResult
