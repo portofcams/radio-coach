@@ -54,6 +54,7 @@ function ScenarioPageInner() {
   const [voiceAvailable, setVoiceAvailable] = useState(false)
   const [voiceMode, setVoiceMode] = useState(true)
   const [listenMode, setListenMode] = useState(false)
+  const [usingFallbackVoice, setUsingFallbackVoice] = useState(false)
 
   // Extras
   const [showPaywall, setShowPaywall] = useState(false)
@@ -400,14 +401,35 @@ function ScenarioPageInner() {
     setInterimText('')
     setHintShown(false)
     if (timerRef.current) { clearInterval(timerRef.current); setTimer(null) }
+    // ElevenLabs is down or out of quota → speak with the browser's built-in
+    // voice instead of silently doing nothing. No radio FX (plain utterance),
+    // but the readback loop (timer + auto-mic) still runs normally.
+    const speakFallback = (text: string): boolean => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return false
+      setUsingFallbackVoice(true)
+      window.speechSynthesis.cancel()
+      const u = new SpeechSynthesisUtterance(text)
+      u.rate = 1.0
+      u.onend = () => {
+        setRadioState('ready')
+        startTimer()
+        if (voiceMode) setTimeout(() => startListening(), 700)
+      }
+      u.onerror = () => setRadioState('ready')
+      setRadioState('atc_playing')
+      window.speechSynthesis.speak(u)
+      return true
+    }
     try {
       const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
+      const text = personalizeText(tx, user?.callsign ?? null)
+      setUsingFallbackVoice(false)
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: personalizeText(tx, user?.callsign ?? null), speed: ttsSpeed(fx.speed), voice: voiceForKey(scenario.id) }),
+        body: JSON.stringify({ text, speed: ttsSpeed(fx.speed), voice: voiceForKey(scenario.id) }),
       })
-      if (!res.ok) { setRadioState('ready'); return }
+      if (!res.ok) { if (!speakFallback(text)) setRadioState('ready'); return }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const audio = audioRef.current
@@ -427,7 +449,8 @@ function ScenarioPageInner() {
       fxRef.current?.cue()
       await audio.play().catch(() => setRadioState('ready'))
     } catch {
-      setRadioState('ready')
+      const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
+      if (!speakFallback(personalizeText(tx, user?.callsign ?? null))) setRadioState('ready')
     }
   }, [scenario, voiceMode, fx, user, startTimer, startListening, stopRecognition])
 
@@ -662,6 +685,11 @@ function ScenarioPageInner() {
               {timer !== null && <span className={`font-mono text-sm font-bold tabular-nums ${timerColor}`}>{timer}s</span>}
               {!isAtcActive && timer === null && (
                 <span className="text-xs text-gray-700 font-mono">SPACE to replay</span>
+              )}
+              {usingFallbackVoice && (
+                <span className="text-xs text-amber-600 font-mono" title="Primary ATC voice is unavailable right now — using your device's built-in voice instead.">
+                  backup voice
+                </span>
               )}
             </div>
             <div className="flex items-center gap-3">
