@@ -5,6 +5,22 @@
 /* Base body colors (kept out of the className so dark can own the page bg). */
 body { background: #ffffff; color: #111827; }
 
+/* iOS Safari/WKWebView applies its own native text-field chrome (extra
+   internal padding baked into the control) on top of whatever padding a
+   className sets, unless appearance is reset — that's what pushed text to
+   the top of inputs instead of centering it. Scoped to text-like fields only;
+   select/checkbox/radio keep native appearance (arrow, tick marks).
+   appearance:none alone fixed the box model (verified: symmetric 10px/10px
+   padding) but WebKit still placed the glyph high within the 20px line-height
+   box — line-height:normal collapses the line box to the font's own metrics
+   instead of leaving room for engine-specific baseline placement to wander. */
+input[type='text'], input[type='email'], input[type='password'],
+input[type='number'], input[type='tel'], input[type='search'], textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  line-height: normal;
+}
+
 /* ── Dark mode ─────────────────────────────────────────────────────────────
    The app uses raw Tailwind grays (no theme tokens), so dark mode is a tuned
    global remap of the utility classes actually used. bg-gray-900 is the primary

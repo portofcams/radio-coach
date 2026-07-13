@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 
 const COOKIE = 'rc_auth'
 const EXPIRY = 60 * 60 * 24 * 30 // 30 days in seconds
@@ -34,16 +34,18 @@ export function verifyToken(token: string): JWTPayload | null {
   }
 }
 
-export async function setAuthCookie(payload: JWTPayload): Promise<void> {
+export async function setAuthCookie(payload: JWTPayload): Promise<string> {
   const token = signToken(payload)
   const store = await cookies()
+  const production = process.env.NODE_ENV === 'production'
   store.set(COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: production,
     sameSite: 'lax',
     maxAge: EXPIRY,
     path: '/',
   })
+  return token
 }
 
 export async function clearAuthCookie(): Promise<void> {
@@ -53,9 +55,16 @@ export async function clearAuthCookie(): Promise<void> {
 
 export async function getAuthUser(): Promise<JWTPayload | null> {
   const store = await cookies()
-  const token = store.get(COOKIE)?.value
-  if (!token) return null
-  return verifyToken(token)
+  const cookieToken = store.get(COOKIE)?.value
+  if (cookieToken) {
+    const payload = verifyToken(cookieToken)
+    if (payload) return payload
+  }
+  // Native Swift client sends the token from signup/login's response body
+  // instead of relying on a cookie jar.
+  const auth = (await headers()).get('authorization')
+  if (auth?.startsWith('Bearer ')) return verifyToken(auth.slice(7))
+  return null
 }
 
 export { toPhonetic } from './phonetic'

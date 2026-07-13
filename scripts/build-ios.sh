@@ -21,16 +21,20 @@ set -e
 # to build personalized OG image previews for social links) — never linked
 # to from in-app navigation, only shared externally; resolves fine on the
 # live website for whoever opens the link.
+#
+# src/middleware.ts (CORS headers for the API host, see that file) is a
+# server-only concern — Next.js errors at build time if middleware.ts exists
+# alongside output: 'export'.
 
 cd "$(dirname "$0")/.."
 
-EXCLUDE_DIRS=(src/app/directory src/app/top-pilots src/app/api src/app/s)
+EXCLUDE_PATHS=(src/app/directory src/app/top-pilots src/app/api src/app/s src/middleware.ts)
 STASH=".ios-build-excluded"
 
 rm -rf "$STASH"
 mkdir -p "$STASH"
 echo "Excluding DB-backed pages and API routes from the app bundle..."
-for d in "${EXCLUDE_DIRS[@]}"; do
+for d in "${EXCLUDE_PATHS[@]}"; do
   if [ -e "$d" ]; then
     mkdir -p "$STASH/$(dirname "$d")"
     mv "$d" "$STASH/$d"
@@ -39,7 +43,7 @@ done
 
 restore() {
   echo "Restoring excluded pages..."
-  for d in "${EXCLUDE_DIRS[@]}"; do
+  for d in "${EXCLUDE_PATHS[@]}"; do
     if [ -e "$STASH/$d" ]; then
       mkdir -p "$(dirname "$d")"
       mv "$STASH/$d" "$d"

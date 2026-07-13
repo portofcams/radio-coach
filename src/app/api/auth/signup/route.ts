@@ -45,6 +45,6 @@ export async function POST(req: NextRequest) {
     try { await applyReferralOnSignup(db, user.id, ref) } catch { /* referral best-effort */ }
   }
 
-  await setAuthCookie({ userId: user.id, email: user.email })
-  return NextResponse.json({ user: { id: user.id, email: user.email } })
+  const token = await setAuthCookie({ userId: user.id, email: user.email })
+  return NextResponse.json({ user: { id: user.id, email: user.email }, token })
 }

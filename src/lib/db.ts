@@ -74,6 +74,21 @@ export async function initDB(): Promise<void> {
       ADD COLUMN IF NOT EXISTS apple_transaction_id TEXT
   `)
 
+  // Sign in with Apple — the stable Apple user id (sub claim) links the account
+  // even if the user later un-hides their email. Nullable: email/password users
+  // don't have one.
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS apple_sub TEXT UNIQUE
+  `)
+
+  // Sign in with Apple refresh token — stored so we can revoke it on account
+  // deletion per App Store Guideline 5.1.1(v). Nullable: only SIWA users have one.
+  await db.query(`
+    ALTER TABLE rc_users
+      ADD COLUMN IF NOT EXISTS apple_refresh_token TEXT
+  `)
+
   // Home-field personalization. home_ident → real FAA field (preferred);
   // home_name/tower/runway → manual lean fallback for unlisted fields.
   await db.query(`

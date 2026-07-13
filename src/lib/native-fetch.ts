@@ -18,7 +18,11 @@ export function installNativeFetchPatch(): void {
   const original = window.fetch.bind(window)
   window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url
-    if (url.startsWith('/api/')) return original(base + url, init)
+    if (url.startsWith('/api/')) {
+      // capacitor://localhost -> base is cross-origin, so the auth cookie
+      // needs an explicit opt-in to be sent/stored (default is 'same-origin').
+      return original(base + url, { ...init, credentials: 'include' })
+    }
     return original(input, init)
   }
 }
