@@ -74,7 +74,7 @@ Grade this readback.`
 
   try {
     await checkBudget('radio-coach/grader')
-    const model = 'claude-sonnet-4-5'
+    const model = 'claude-haiku-4-5'
     const response = await client.messages.create({
       model,
       max_tokens: 1024,
