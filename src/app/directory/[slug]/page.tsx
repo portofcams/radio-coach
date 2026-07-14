@@ -43,7 +43,7 @@ export default async function SchoolProfile({ params }: { params: Promise<{ slug
         </div>
         <div className="mt-8 border-t border-gray-100 pt-6">
           <p className="text-sm text-gray-500 mb-3">{s.name} trains radio communications with Clearspar — graded ATC scenarios built to the FAA standard.</p>
-          <Link href="/train" className="inline-block bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-800">Try Clearspar free →</Link>
+          <Link href={`/train?utm_source=directory&utm_medium=${slug}`} className="inline-block bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-800">Try Clearspar free →</Link>
         </div>
       </div>
     </main>

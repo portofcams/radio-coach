@@ -385,6 +385,12 @@ export async function initDB(): Promise<void> {
   `)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_events_ts ON rc_events(ts DESC)`)
   await db.query(`CREATE INDEX IF NOT EXISTS rc_events_anon ON rc_events(anon_id)`)
+
+  // Attribution tag (utm_source:utm_medium, e.g. "embed:crosswind" or
+  // "directory:georges-aviation") -- lands on the landing pageview so widget
+  // embeds and directory listings are attributable, not just lumped into "/".
+  await db.query(`ALTER TABLE rc_events ADD COLUMN IF NOT EXISTS ref TEXT`)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_events_ref ON rc_events(ref) WHERE ref IS NOT NULL`)
 }
 
 // Run init once on first import in server context

@@ -7,6 +7,7 @@ interface Stats {
   platforms: { platform: string; visitors: number; views: number }[]
   topPaths: { path: string; views: number }[]
   daily: { d: string; visitors: number; views: number }[]
+  referrals: { ref: string; hits: number }[]
 }
 
 export default function AdminPage() {
@@ -97,6 +98,16 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+
+            <h2 className="text-sm font-mono uppercase tracking-widest text-gray-400 mt-8 mb-3">Widget + directory referrals · 30d</h2>
+            {data.referrals.length === 0 ? (
+              <p className="text-gray-400 text-sm">No referral traffic yet — tags land when someone clicks through an embedded widget's "Powered by Clearspar" link or a directory listing's CTA.</p>
+            ) : data.referrals.map((r) => (
+              <div key={r.ref} className="flex justify-between text-sm py-1 border-b border-gray-100 max-w-md">
+                <span className="font-mono text-xs text-gray-700">{r.ref}</span>
+                <span className="text-gray-500">{r.hits.toLocaleString()}</span>
+              </div>
+            ))}
           </>
         )}
       </div>

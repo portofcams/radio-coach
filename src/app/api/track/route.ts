@@ -9,18 +9,19 @@ export async function POST(req: NextRequest) {
   const db = getPool()
   if (!db) return NextResponse.json({ ok: false })
   try {
-    const { event, path, platform, anonId, referrer } = await req.json()
+    const { event, path, platform, anonId, referrer, ref } = await req.json()
     if (!event || typeof event !== 'string') return NextResponse.json({ ok: false })
     const plat = platform === 'ios' || platform === 'android' ? platform : 'web'
     await db
       .query(
-        `INSERT INTO rc_events (anon_id, event, path, platform, referrer) VALUES ($1,$2,$3,$4,$5)`,
+        `INSERT INTO rc_events (anon_id, event, path, platform, referrer, ref) VALUES ($1,$2,$3,$4,$5,$6)`,
         [
           (anonId || '').slice(0, 40) || null,
           event.slice(0, 40),
           (path || '').slice(0, 200) || null,
           plat,
           (referrer || '').slice(0, 200) || null,
+          (ref || '').slice(0, 80) || null,
         ],
       )
       .catch(() => {})
