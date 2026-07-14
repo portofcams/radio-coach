@@ -4,6 +4,7 @@ import { units } from '@/lib/groundschool'
 import NavAuth from '@/components/NavAuth'
 import LandingMiniDrill from '@/components/LandingMiniDrill'
 import NativeHide from '@/components/NativeHide'
+import DripSignup from '@/components/DripSignup'
 import { FlameIcon, StarIcon, HeartIcon, LockIcon } from '@/components/icons'
 import type { Metadata } from 'next'
 
@@ -693,6 +694,19 @@ export default function Home() {
               Try a live scenario
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Not ready to key the mic yet? The 7-day email course (DripSignup) already
+          existed with a dedicated /confidence page and full backend, but had no
+          link anywhere a first-time homepage visitor would ever see it. */}
+      <section className="pb-24 border-t border-gray-100 pt-16">
+        <div className="max-w-md mx-auto px-6 text-center">
+          <div className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest mb-2">Not ready for the mic yet?</div>
+          <h2 className="text-xl font-semibold mb-2">7 days to radio confidence — free</h2>
+          <p className="text-sm text-gray-500 mb-5">One short email lesson a day. No app required to start.</p>
+          <DripSignup />
+          <Link href="/confidence" className="block mt-3 text-xs text-gray-400 hover:text-gray-600">See what's in the course →</Link>
         </div>
       </section>
 
