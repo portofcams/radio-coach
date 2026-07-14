@@ -22,10 +22,13 @@ const MONTHLY_BUDGET_USD = Number(
 let pool: Pool | null = null;
 function getPool(): Pool {
   if (!pool) {
+    if (!process.env.SHARED_LEDGER_DB_PASS) {
+      throw new Error("SHARED_LEDGER_DB_PASS is not set — refusing to connect without a real credential");
+    }
     pool = new Pool({
       host: process.env.SHARED_LEDGER_DB_HOST ?? "shared-pg",
       user: process.env.SHARED_LEDGER_DB_USER ?? "ai_service",
-      password: process.env.SHARED_LEDGER_DB_PASS ?? "Cameraman1$",
+      password: process.env.SHARED_LEDGER_DB_PASS,
       database: process.env.SHARED_LEDGER_DB_NAME ?? "ai_service",
       max: 2,
     });
