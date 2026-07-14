@@ -49,6 +49,18 @@ export default function TrainPage() {
   const [homeList, setHomeList] = useState<Scenario[]>([])
   const [homeChecked, setHomeChecked] = useState(false)
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
+  const [showFirstRunTip, setShowFirstRunTip] = useState(false)
+
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('wilco_train_seen')) setShowFirstRunTip(true)
+    } catch { /* localStorage unavailable (private mode) -- skip the tip, not worth failing over */ }
+  }, [])
+
+  const dismissFirstRunTip = () => {
+    setShowFirstRunTip(false)
+    try { localStorage.setItem('wilco_train_seen', '1') } catch { /* ignore */ }
+  }
 
   useEffect(() => {
     // Load completion data from server (if logged in) or localStorage
@@ -125,6 +137,24 @@ export default function TrainPage() {
             ))}
           </nav>
         </div>
+
+        {showFirstRunTip && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <span className="text-lg leading-none mt-0.5">👋</span>
+            <div className="flex-1 text-sm text-amber-900">
+              <span className="font-medium">New here?</span> Filter by phase or level below, or just hit the{' '}
+              <span className="font-mono text-xs bg-amber-100 px-1 py-0.5 rounded">CALL OF THE DAY</span> card
+              to jump straight into a scenario — no need to browse everything first.
+            </div>
+            <button
+              onClick={dismissFirstRunTip}
+              className="text-amber-500 hover:text-amber-700 text-sm shrink-0"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-1 mb-4 bg-gray-100 rounded-lg p-1">
