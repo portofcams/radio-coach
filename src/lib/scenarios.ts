@@ -1902,3 +1902,16 @@ export function getScenario(id: string): Scenario | undefined {
 export function getScenariosByPhase(phase: Scenario['phase']): Scenario[] {
   return scenarios.filter((s) => s.phase === phase)
 }
+
+/** Deterministic per-day pick from the free (non-pro, non-helicopter) pool --
+ * same scenario for everyone on a given calendar day, no account needed.
+ * Used for the /train "Call of the Day" banner and as the direct landing
+ * scenario for cold homepage traffic (avoids dropping first-time visitors
+ * onto the full /train hub before they've heard a single ATC call). */
+export function getCallOfTheDay(): Scenario {
+  const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter')
+  const day = new Date().toISOString().slice(0, 10)
+  let h = 0
+  for (let i = 0; i < day.length; i++) h = (h * 31 + day.charCodeAt(i)) >>> 0
+  return pool[h % pool.length]
+}

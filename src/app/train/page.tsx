@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { scenarios, getScenario } from '@/lib/scenarios'
+import { scenarios, getScenario, getCallOfTheDay } from '@/lib/scenarios'
 import { FLIGHT_SESSIONS } from '@/lib/flight-sessions'
 import { useEffect, useState } from 'react'
 import type { Facility, Scenario } from '@/lib/types'
@@ -196,11 +196,7 @@ export default function TrainPage() {
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
             {!facilityFilter && !diffFilter && !heliOnly && (() => {
-              const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter')
-              const day = new Date().toISOString().slice(0, 10)
-              let h = 0
-              for (let i = 0; i < day.length; i++) h = (h * 31 + day.charCodeAt(i)) >>> 0
-              const c = pool[h % pool.length]
+              const c = getCallOfTheDay()
               const done = completed[c.id]
               return (
                 <Link href={`/train/scenario?id=${c.id}`} className="block rounded-xl p-4 border border-amber-300 bg-amber-50 hover:border-amber-400 transition-colors">

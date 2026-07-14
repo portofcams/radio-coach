@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { scenarios } from '@/lib/scenarios'
+import { scenarios, getCallOfTheDay } from '@/lib/scenarios'
 import { units } from '@/lib/groundschool'
 import NavAuth from '@/components/NavAuth'
 import LandingMiniDrill from '@/components/LandingMiniDrill'
@@ -14,6 +14,10 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+  // Cold visitors land straight in a scenario instead of the full /train hub
+  // (9 nav tabs, 8 phase filters, 3 level filters) -- that's the wrong first
+  // thing to show someone who hasn't heard a single ATC call yet.
+  const heroScenario = getCallOfTheDay()
   const total = scenarios.length
   const byPhase = {
     ground: scenarios.filter((s) => s.phase === 'ground').length,
@@ -253,7 +257,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
-                href="/train"
+                href={`/train/scenario?id=${heroScenario.id}`}
                 className="bg-[#f5a623] text-[#1a1205] px-8 py-3.5 rounded-lg font-semibold text-base hover:bg-[#ffb73d] transition-colors"
               >
                 Try a scenario free
@@ -539,6 +543,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Differentiators — built, live, but never surfaced anywhere in the marketing copy */}
+      <section className="py-20 border-t border-gray-100 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-6">
+          <h2 className="text-2xl font-semibold mb-10 text-center">Not just canned scenarios</h2>
+          <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold mb-2">Practice at your own airport</h3>
+              <p className="text-sm text-gray-600">
+                Enter your home field&rsquo;s ICAO ident and every ground, tower, and departure call uses its
+                real frequencies and runways — not a generic training airport.
+              </p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold mb-2">Duel a friend</h3>
+              <p className="text-sm text-gray-600">
+                Challenge another pilot to the same readback, live or async, and see who scores higher —
+                same scenario, head to head.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-20 border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6">
@@ -660,7 +687,7 @@ export default function Home() {
               Start Ground School — free
             </Link>
             <Link
-              href="/train"
+              href={`/train/scenario?id=${heroScenario.id}`}
               className="inline-block bg-gray-900 text-white px-9 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors"
             >
               Try a live scenario
