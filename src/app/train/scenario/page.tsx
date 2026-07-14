@@ -55,6 +55,7 @@ function ScenarioPageInner() {
   const [voiceMode, setVoiceMode] = useState(true)
   const [listenMode, setListenMode] = useState(false)
   const [usingFallbackVoice, setUsingFallbackVoice] = useState(false)
+  const [usingFallbackStt, setUsingFallbackStt] = useState(false)
 
   // Extras
   const [showPaywall, setShowPaywall] = useState(false)
@@ -287,9 +288,55 @@ function ScenarioPageInner() {
   }, [])
 
   // Voice recognition
+  // Browser-native live recognition — used both as the last-resort path (no
+  // mic/MediaRecorder support) and as a fallback when Scribe transcription
+  // fails (quota/outage). Can't replay an already-recorded blob through it —
+  // it only listens live — so a Scribe failure means asking for a fresh
+  // utterance, same tradeoff as the TTS fallback needing a fresh utterance
+  // to speak. Returns whether it actually started.
+  const startWebSpeechFallback = useCallback((): boolean => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any
+    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition
+    if (!SR) { setVoiceMode(false); setRadioState('ready'); return false }
+
+    setUsingFallbackStt(true)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recognition = new SR() as any
+    recognition.lang = 'en-US'
+    recognition.interimResults = true
+    recognition.continuous = false
+    recognitionRef.current = recognition
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const transcript = Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(' ')
+      setInterimText(transcript)
+      if (e.results[e.results.length - 1].isFinal) {
+        setReadback(transcript)
+        setInterimText('')
+        setRadioState('transcribed')
+        recognitionRef.current = null
+      }
+    }
+    recognition.onerror = () => {
+      setInterimText('')
+      setRadioState('ready')
+      recognitionRef.current = null
+    }
+    recognition.onend = () => {
+      setRadioState(prev => prev === 'listening' ? 'ready' : prev)
+      recognitionRef.current = null
+    }
+    recognition.start()
+    return true
+  }, [])
+
   const startListening = useCallback(async () => {
     stopRecognition()
     setInterimText('')
+    setUsingFallbackStt(false)
     setRadioState('listening')
 
     if (isNativeRef.current) {
@@ -321,6 +368,7 @@ function ScenarioPageInner() {
         mr.onstop = async () => {
           stream.getTracks().forEach((t) => t.stop())
           setInterimText('Transcribing…')
+          let usedFallback = false
           try {
             const blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' })
             captureRecording(blob)
@@ -329,11 +377,19 @@ function ScenarioPageInner() {
             const res = await fetch('/api/stt', { method: 'POST', body: fd })
             const data = await res.json()
             if (res.ok && data.text) { setReadback(data.text); setInterimText(''); setRadioState('transcribed') }
-            else { setInterimText(''); setRadioState('ready') }
+            else {
+              // Scribe failed (quota/outage) — ask for the readback again via
+              // the browser's own recognition instead of silently discarding it.
+              setInterimText('')
+              usedFallback = startWebSpeechFallback()
+              if (!usedFallback) setRadioState('ready')
+            }
           } catch {
-            setInterimText(''); setRadioState('ready')
+            setInterimText('')
+            usedFallback = startWebSpeechFallback()
+            if (!usedFallback) setRadioState('ready')
           }
-          recognitionRef.current = null
+          if (!usedFallback) recognitionRef.current = null
         }
         recognitionRef.current = { stop: () => { try { mr.stop() } catch {} } }
         mr.start()
@@ -343,42 +399,9 @@ function ScenarioPageInner() {
       }
     }
 
-    // ── Web Speech API fallback ──────────────────────────────────────────
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any
-    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition
-    if (!SR) { setVoiceMode(false); setRadioState('ready'); return }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const recognition = new SR() as any
-    recognition.lang = 'en-US'
-    recognition.interimResults = true
-    recognition.continuous = false
-    recognitionRef.current = recognition
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = (e: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const transcript = Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(' ')
-      setInterimText(transcript)
-      if (e.results[e.results.length - 1].isFinal) {
-        setReadback(transcript)
-        setInterimText('')
-        setRadioState('transcribed')
-        recognitionRef.current = null
-      }
-    }
-    recognition.onerror = () => {
-      setInterimText('')
-      setRadioState('ready')
-      recognitionRef.current = null
-    }
-    recognition.onend = () => {
-      setRadioState(prev => prev === 'listening' ? 'ready' : prev)
-      recognitionRef.current = null
-    }
-    recognition.start()
-  }, [stopRecognition])
+    // ── Web Speech API fallback (also the last-resort path above) ────────
+    startWebSpeechFallback()
+  }, [stopRecognition, startWebSpeechFallback])
 
   // Load saved comms-FX preference
   useEffect(() => { const v = getRadioFx(); fxValueRef.current = v; setFx(v) }, [])
@@ -773,6 +796,7 @@ function ScenarioPageInner() {
               radioState={radioState}
               interimText={interimText}
               readback={readback}
+              usingFallbackStt={usingFallbackStt}
               onMicClick={() => {
                 // Stopping (native record→Scribe, web Scribe, or Web Speech) lets the
                 // recorder's stop handler drive transcription + the next state.
@@ -916,12 +940,13 @@ function ScenarioPageInner() {
 // ── Voice Input Component ──────────────────────────────────────────────────────
 
 function VoiceInput({
-  radioState, interimText, readback,
+  radioState, interimText, readback, usingFallbackStt,
   onMicClick, onSubmit, onRerecord, onSwitchToText,
 }: {
   radioState: RadioState
   interimText: string
   readback: string
+  usingFallbackStt: boolean
   onMicClick: () => void
   onSubmit: () => void
   onRerecord: () => void
@@ -969,6 +994,12 @@ function VoiceInput({
             {isListening ? '■' : isGrading ? '…' : 'REC'}
           </button>
         </div>
+
+        {usingFallbackStt && (isListening || isGrading) && (
+          <p className="text-xs text-amber-600 font-mono text-center -mt-2 mb-2" title="High-accuracy transcription is unavailable right now — using your browser's built-in speech recognition instead.">
+            backup transcription
+          </p>
+        )}
 
         {/* Live / final transcript */}
         {displayText && (
