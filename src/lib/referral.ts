@@ -1,11 +1,20 @@
 import type { Pool } from 'pg'
 import { randomBytes } from 'node:crypto'
+import { isCfi } from './cfi'
 
 // Give-a-month / get-a-month referral. Rewards use a clean `comp_pro_until`
 // field (decoupled from Stripe, so the webhook never clobbers it):
 //   - referee gets 30 comp days the moment they sign up via a link
 //   - referrer gets 30 comp days when that referee converts to a paid plan
+//   - CFI ambassadors get 90 (their referrals are students, not one-offs —
+//     see CFI_COMP_DAYS below)
 export const COMP_DAYS = 30
+
+// CFI ambassador bonus: a CFI referring their own students is a recurring
+// pipeline, not a one-off signup, so the reward is 3x the generic rate
+// instead of a separate revenue-share ledger (no new payout mechanism to
+// build or reconcile — same comp_pro_until field everyone already uses).
+export const CFI_COMP_DAYS = 90
 
 /** Lazily assign a unique referral code to a user, returning it. */
 export async function ensureReferralCode(db: Pool, userId: number): Promise<string> {
@@ -44,16 +53,18 @@ export async function applyReferralOnSignup(db: Pool, newUserId: number, code: s
   return true
 }
 
-/** A referred user converted to paid → reward the referrer one comp month, once. */
+/** A referred user converted to paid → reward the referrer one comp month
+ * (three months if the referrer is a CFI ambassador), once. */
 export async function grantReferrerOnConversion(db: Pool, refereeUserId: number): Promise<void> {
   const r = await db.query('SELECT referred_by, referral_rewarded FROM rc_users WHERE id = $1', [refereeUserId])
   const row = r.rows[0]
   if (!row?.referred_by || row.referral_rewarded) return
+  const days = (await isCfi(row.referred_by)) ? CFI_COMP_DAYS : COMP_DAYS
   await db.query(
     `UPDATE rc_users
        SET comp_pro_until = GREATEST(COALESCE(comp_pro_until, now()), now()) + ($2 || ' days')::interval
      WHERE id = $1`,
-    [row.referred_by, COMP_DAYS],
+    [row.referred_by, days],
   )
   await db.query('UPDATE rc_users SET referral_rewarded = true WHERE id = $1', [refereeUserId])
 }

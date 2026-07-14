@@ -105,6 +105,7 @@ export default function CfiDashboard() {
           <div className="flex items-center gap-4">
             {roster && roster.length > 0 && <a href="/api/cfi/export" className="text-sm text-blue-600 hover:underline">Export CSV</a>}
             <a href="/cfi/build" className="text-sm text-blue-600 hover:underline">Custom scenarios →</a>
+            <a href="/refer" className="text-sm text-blue-600 hover:underline">Ambassador →</a>
           </div>
         </div>
 

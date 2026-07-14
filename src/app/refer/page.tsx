@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-interface RefData { link: string; code: string; referred: number; converted: number; compProUntil: string | null }
+interface RefData { link: string; code: string; referred: number; converted: number; compProUntil: string | null; isCfi: boolean; cfiCompDays: number }
 
 export default function ReferPage() {
   const router = useRouter()
@@ -29,13 +29,24 @@ export default function ReferPage() {
   )
 
   const monthsLeft = data?.compProUntil ? Math.max(0, Math.ceil((new Date(data.compProUntil).getTime() - Date.now()) / 86_400_000)) : 0
+  const isCfi = !!data?.isCfi
+  const cfiMonths = Math.round((data?.cfiCompDays ?? 90) / 30)
 
   return (
     <main className="min-h-screen">
       <div className="max-w-md mx-auto px-6 py-12">
-        <Link href="/profile" className="text-gray-400 hover:text-gray-600 text-sm">← profile</Link>
-        <h1 className="text-2xl font-semibold mt-3 mb-1">Give a month, get a month</h1>
-        <p className="text-gray-500 mb-6">Share your link. Anyone who signs up gets a <strong>free month of Pro</strong>. When they upgrade to a paid plan, <strong>you</strong> get a free month too.</p>
+        <Link href={isCfi ? '/cfi' : '/profile'} className="text-gray-400 hover:text-gray-600 text-sm">← {isCfi ? 'CFI dashboard' : 'profile'}</Link>
+        {isCfi ? (
+          <>
+            <h1 className="text-2xl font-semibold mt-3 mb-1">CFI Ambassador</h1>
+            <p className="text-gray-500 mb-6">Share your link with students. Anyone who signs up gets a <strong>free month of Pro</strong>. When they upgrade to a paid plan, <strong>you</strong> get {cfiMonths} free months of CFI Pro — 3x the standard referral, since your referrals are recurring students, not one-off signups.</p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-semibold mt-3 mb-1">Give a month, get a month</h1>
+            <p className="text-gray-500 mb-6">Share your link. Anyone who signs up gets a <strong>free month of Pro</strong>. When they upgrade to a paid plan, <strong>you</strong> get a free month too.</p>
+          </>
+        )}
 
         <div className="border border-gray-200 rounded-xl p-4 mb-4">
           <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Your referral link</div>
