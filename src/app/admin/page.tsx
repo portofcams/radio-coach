@@ -8,6 +8,11 @@ interface Stats {
   topPaths: { path: string; views: number }[]
   daily: { d: string; visitors: number; views: number }[]
   referrals: { ref: string; hits: number }[]
+  blogCadence: {
+    lastPostDate: string | null; daysSincePost: number | null; due: boolean
+    postsLast30Days: number; postsPerWeekTarget: number
+    nextTopics: { slug: string; title: string; description: string; outline: string[] }[]
+  }
 }
 
 export default function AdminPage() {
@@ -108,6 +113,33 @@ export default function AdminPage() {
                 <span className="text-gray-500">{r.hits.toLocaleString()}</span>
               </div>
             ))}
+
+            <h2 className="text-sm font-mono uppercase tracking-widest text-gray-400 mt-8 mb-3">Blog cadence · target {data.blogCadence.postsPerWeekTarget}/wk</h2>
+            <div className="flex items-center gap-3 mb-4 text-sm">
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${data.blogCadence.due ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>
+                {data.blogCadence.due ? 'Due' : 'Not due yet'}
+              </span>
+              <span className="text-gray-500">
+                {data.blogCadence.lastPostDate ? `Last post ${data.blogCadence.lastPostDate} (${data.blogCadence.daysSincePost}d ago)` : 'No posts yet'}
+                {' · '}{data.blogCadence.postsLast30Days} in the last 30 days
+              </span>
+            </div>
+            {data.blogCadence.nextTopics.length === 0 ? (
+              <p className="text-gray-400 text-sm">No queued topics — add more to UPCOMING_TOPICS in src/lib/blog-cadence.ts.</p>
+            ) : (
+              <div className="space-y-3">
+                {data.blogCadence.nextTopics.map((t, i) => (
+                  <div key={t.slug} className="border border-gray-200 rounded-lg p-3">
+                    <div className="text-xs text-gray-400 mb-1">{i === 0 ? 'Next up' : `Queued #${i + 1}`}</div>
+                    <div className="text-sm font-semibold text-gray-900">{t.title}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{t.description}</div>
+                    <ul className="mt-2 space-y-0.5">
+                      {t.outline.map((o) => <li key={o} className="text-xs text-gray-500">· {o}</li>)}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>

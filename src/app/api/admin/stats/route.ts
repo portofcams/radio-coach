@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPool } from '@/lib/db'
+import { getCadenceStatus } from '@/lib/blog-cadence'
 
 // Owner usage dashboard data. Gated by ?key=ADMIN_KEY (env). Every query is
 // graceful so a missing table/column degrades to 0 rather than 500ing.
@@ -30,5 +31,5 @@ export async function GET(req: NextRequest) {
     rows("SELECT ref, count(*)::int hits FROM rc_events WHERE ref IS NOT NULL AND ts > now() - interval '30 days' GROUP BY ref ORDER BY hits DESC LIMIT 20"),
   ])
 
-  return NextResponse.json({ users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals })
+  return NextResponse.json({ users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals, blogCadence: getCadenceStatus() })
 }
