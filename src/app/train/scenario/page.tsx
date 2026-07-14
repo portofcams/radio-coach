@@ -56,6 +56,10 @@ function ScenarioPageInner() {
   const [listenMode, setListenMode] = useState(false)
   const [usingFallbackVoice, setUsingFallbackVoice] = useState(false)
   const [usingFallbackStt, setUsingFallbackStt] = useState(false)
+  // Consecutive passes this sitting -- in-memory only (resets on reload), distinct
+  // from the DB-backed daily practice streak on /leaderboard. Immediate, in-session
+  // feedback rather than a cross-day habit signal.
+  const [momentum, setMomentum] = useState(0)
 
   // Extras
   const [showPaywall, setShowPaywall] = useState(false)
@@ -523,6 +527,7 @@ function ScenarioPageInner() {
       setResult(data)
       setRadioState('done')
       gradeHaptic(data.passFail === 'PASS')
+      setMomentum((m) => (data.passFail === 'PASS' ? m + 1 : 0))
       if (!pro && !user) { incrementFreeUsed(); setSession(getSession()) }
     } catch {
       setRadioState('transcribed')
@@ -829,6 +834,11 @@ function ScenarioPageInner() {
                   <div className={`text-sm font-medium ${scoreColor}`}>
                     {result.passFail}
                     {hintShown && <span className="ml-2 text-xs text-gray-500">(hint used)</span>}
+                    {momentum >= 2 && (
+                      <span className="ml-2 text-xs font-semibold text-orange-600 bg-orange-50 border border-orange-200 rounded-full px-2 py-0.5">
+                        {momentum} in a row
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="text-right text-sm text-gray-600 max-w-xs leading-relaxed">{result.feedback}</div>
