@@ -75,6 +75,7 @@ export default function ReferPage() {
         </div>
 
         <p className="text-xs text-gray-400">Comp time stacks on top of any paid plan and is applied automatically — no codes to enter.</p>
+        <Link href="/leaderboard?scope=referrals" className="block mt-4 text-xs text-blue-600 hover:underline">See the referral leaderboard →</Link>
       </div>
     </main>
   )

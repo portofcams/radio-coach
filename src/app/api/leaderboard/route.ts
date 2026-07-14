@@ -3,9 +3,9 @@ import { getAuthUser } from '@/lib/auth'
 import { getPool } from '@/lib/db'
 import { lookupAirport } from '@/lib/airports'
 
-type Row = { rank: number; callsign: string; passes: number; avg: number; week: number; streak?: number; you: boolean }
+type Row = { rank: number; callsign: string; passes: number; avg: number; week: number; streak?: number; referred?: number; you: boolean }
 
-const shape = (rows: { id: number; callsign: string | null; passes: string; avg: string; week: string; streak?: string }[], meId: number | null): Row[] =>
+const shape = (rows: { id: number; callsign: string | null; passes: string; avg: string; week: string; streak?: string; referred?: string }[], meId: number | null): Row[] =>
   rows.map((r, i) => ({
     rank: i + 1,
     callsign: r.callsign || 'Student pilot',
@@ -13,6 +13,7 @@ const shape = (rows: { id: number; callsign: string | null; passes: string; avg:
     avg: parseInt(r.avg) || 0,
     week: parseInt(r.week) || 0,
     ...(r.streak !== undefined ? { streak: parseInt(r.streak) || 0 } : {}),
+    ...(r.referred !== undefined ? { referred: parseInt(r.referred) || 0 } : {}),
     you: meId ? r.id === meId : false,
   }))
 
@@ -39,6 +40,22 @@ export async function GET(req: NextRequest) {
        FROM s JOIN rc_users u ON u.id = s.user_id
        WHERE s.last_day >= CURRENT_DATE - 1
        ORDER BY s.len DESC, passes DESC LIMIT 50`,
+    )
+    const rows = shape(r.rows, meId)
+    return NextResponse.json({ scope, rows, you: rows.find((x) => x.you) ?? null })
+  }
+
+  // Referral leaderboard: ranked by converted referrals (real value delivered),
+  // reach (total signups) as the tiebreaker/secondary column.
+  if (scope === 'referrals') {
+    const r = await db.query(
+      `SELECT u.id, u.callsign,
+              COUNT(*) FILTER (WHERE ref.referral_rewarded) AS passes,
+              COUNT(*) AS referred,
+              0 AS avg, 0 AS week
+       FROM rc_users u JOIN rc_users ref ON ref.referred_by = u.id
+       GROUP BY u.id, u.callsign
+       ORDER BY passes DESC, referred DESC LIMIT 50`,
     )
     const rows = shape(r.rows, meId)
     return NextResponse.json({ scope, rows, you: rows.find((x) => x.you) ?? null })

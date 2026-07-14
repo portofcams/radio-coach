@@ -5,6 +5,7 @@ export const runtime = 'nodejs'
 // Dynamic share/OG image (1200×630). No params → branded default for every link.
 // ?score=82&passed=47&rate=88&label=Checkride+Ready&cs=N42TG → personalized
 // readiness card so a shared result previews the score (the viral loop).
+// ?rank=3&stat=12&unit=day+streak&scope=Streak&cs=N42TG → leaderboard rank card.
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const score = searchParams.get('score')
@@ -13,7 +14,12 @@ export async function GET(req: Request) {
   const rate = searchParams.get('rate')
   const cs = (searchParams.get('cs') || '').slice(0, 12)
   const heading = (searchParams.get('title') || '').slice(0, 100)
+  const rank = searchParams.get('rank')
+  const stat = (searchParams.get('stat') || '').slice(0, 20)
+  const unit = (searchParams.get('unit') || '').slice(0, 30)
+  const rankScope = (searchParams.get('scope') || 'Leaderboard').slice(0, 20)
   const personalized = !!score
+  const isRank = !personalized && !!rank
 
   return new ImageResponse(
     (
@@ -40,6 +46,15 @@ export async function GET(req: Request) {
               {label ? <div style={{ display: 'flex', fontSize: 46, color: '#ffffff', marginLeft: 30, marginBottom: 28 }}>{label}</div> : <div style={{ display: 'flex' }} />}
             </div>
             <div style={{ display: 'flex', fontSize: 30, color: '#aab3bf', marginTop: 10 }}>{(passed || '0') + ' scenarios passed' + (rate ? ' · ' + rate + '% pass rate' : '')}</div>
+          </div>
+        ) : isRank ? (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', fontSize: 26, letterSpacing: 4, color: '#36d6e6' }}>{(cs ? cs + ' · ' : '') + rankScope.toUpperCase() + ' LEADERBOARD'}</div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', marginTop: 8 }}>
+              <div style={{ display: 'flex', fontSize: 180, fontWeight: 800, color: '#f5a623', lineHeight: 1 }}>{'#' + rank}</div>
+              {stat ? <div style={{ display: 'flex', fontSize: 46, color: '#ffffff', marginLeft: 30, marginBottom: 28 }}>{stat + (unit ? ' ' + unit : '')}</div> : <div style={{ display: 'flex' }} />}
+            </div>
+            <div style={{ display: 'flex', fontSize: 30, color: '#aab3bf', marginTop: 10 }}>Ranked on Clearspar Radio Trainer</div>
           </div>
         ) : heading ? (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
