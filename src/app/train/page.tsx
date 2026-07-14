@@ -140,7 +140,6 @@ export default function TrainPage() {
 
         {showFirstRunTip && (
           <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-            <span className="text-lg leading-none mt-0.5">👋</span>
             <div className="flex-1 text-sm text-amber-900">
               <span className="font-medium">New here?</span> Filter by phase or level below, or just hit the{' '}
               <span className="font-mono text-xs bg-amber-100 px-1 py-0.5 rounded">CALL OF THE DAY</span> card
