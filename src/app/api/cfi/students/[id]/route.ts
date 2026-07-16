@@ -29,19 +29,19 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   const [gradesRes, aggRes, recentRes, assignRes, profile, commentsRes, endorseRes] = await Promise.all([
-    db.query('SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 300', [sid]),
+    db.query("SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id = $1 AND role = 'pilot' ORDER BY created_at DESC LIMIT 300", [sid]),
     db.query(
       `SELECT
-         (SELECT COUNT(*) FROM rc_grades WHERE user_id=$1) AS attempts,
-         (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id=$1) AS passed,
-         (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades WHERE user_id=$1 AND passed) AS distinct_passed,
-         (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades WHERE user_id=$1 ORDER BY created_at DESC LIMIT 30) t) AS recent_avg`,
+         (SELECT COUNT(*) FROM rc_grades WHERE user_id=$1 AND role='pilot') AS attempts,
+         (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id=$1 AND role='pilot') AS passed,
+         (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades WHERE user_id=$1 AND passed AND role='pilot') AS distinct_passed,
+         (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades WHERE user_id=$1 AND role='pilot' ORDER BY created_at DESC LIMIT 30) t) AS recent_avg`,
       [sid],
     ),
-    db.query('SELECT id, scenario_id, score, passed, readback, correct_readback, created_at FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 12', [sid]),
+    db.query("SELECT id, scenario_id, score, passed, readback, correct_readback, created_at FROM rc_grades WHERE user_id = $1 AND role = 'pilot' ORDER BY created_at DESC LIMIT 12", [sid]),
     db.query(
       `SELECT a.scenario_id, a.created_at, a.due_at,
-              EXISTS(SELECT 1 FROM rc_grades g WHERE g.user_id = $2 AND g.scenario_id = a.scenario_id AND g.passed) AS done
+              EXISTS(SELECT 1 FROM rc_grades g WHERE g.user_id = $2 AND g.scenario_id = a.scenario_id AND g.passed AND g.role = 'pilot') AS done
        FROM rc_assignments a WHERE a.cfi_user_id = $1 AND a.student_user_id = $2 ORDER BY a.created_at DESC`,
       [user.userId, sid],
     ),

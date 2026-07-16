@@ -8,6 +8,8 @@ export type Phase =
 
 export type Difficulty = 1 | 2 | 3
 
+export type Role = 'pilot' | 'atc'
+
 export type Facility =
   | 'GROUND'
   | 'TOWER'
@@ -92,6 +94,25 @@ export interface Scenario {
     atcTransmission: string
     requiredElements: string[]
     correctReadback: string
+  }
+  /** optional role-reversal content: play the CONTROLLER, not the pilot. Pro-only.
+   *  requiredElements/correctInstruction are freshly authored, NOT derived from
+   *  the pilot-side fields above -- a controller's correct transmission often
+   *  carries more (traffic advisories, sequencing, wind) than a pilot's readback
+   *  ever echoes back, so there is no valid mechanical transform from one to the
+   *  other. /api/grade/route.ts swaps these into a synthetic scenario object
+   *  (same trick already used for `curveball`) before calling the unmodified
+   *  gradeReadback() -- the deterministic grader has no direction-specific code. */
+  atcMode?: {
+    /** the OTHER pilot's initiating call -- played via TTS same as atcTransmission,
+     *  but must bypass personalizeText() (a fixed, distinct, scenario-authored
+     *  call sign -- the student is the controller in this mode, not that aircraft). */
+    pilotCall: string
+    /** optional situational framing shown instead of `setup` */
+    setup?: string
+    requiredElements: string[]
+    correctInstruction: string
+    commonMistakes?: string[]
   }
   /** Marks the INITIAL exchange as a stepped-on/blocked transmission — a second
    * station keys up over ATC. The FX layer (radio-fx.ts) applies a deterministic

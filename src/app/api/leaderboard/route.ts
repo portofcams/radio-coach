@@ -28,14 +28,14 @@ export async function GET(req: NextRequest) {
   if (scope === 'streak') {
     const r = await db.query(
       `WITH days AS (
-         SELECT user_id, (created_at AT TIME ZONE 'UTC')::date AS d FROM rc_grades GROUP BY 1, 2
+         SELECT user_id, (created_at AT TIME ZONE 'UTC')::date AS d FROM rc_grades WHERE role = 'pilot' GROUP BY 1, 2
        ), islands AS (
          SELECT user_id, d, d - (row_number() OVER (PARTITION BY user_id ORDER BY d))::int AS grp FROM days
        ), s AS (
          SELECT user_id, MAX(d) AS last_day, COUNT(*) AS len FROM islands GROUP BY user_id, grp
        )
        SELECT u.id, u.callsign, s.len AS streak,
-              (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades g WHERE g.user_id=u.id) AS passes,
+              (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades g WHERE g.user_id=u.id AND g.role = 'pilot') AS passes,
               0 AS avg, 0 AS week
        FROM s JOIN rc_users u ON u.id = s.user_id
        WHERE s.last_day >= CURRENT_DATE - 1
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
        SELECT u.id, u.callsign,
               COUNT(*) FILTER (WHERE g.passed) AS passes, ROUND(AVG(g.score)) AS avg,
               COUNT(*) FILTER (WHERE g.passed AND g.created_at > now()-interval '7 days') AS week
-       FROM studs s JOIN rc_users u ON u.id=s.uid JOIN rc_grades g ON g.user_id=u.id
+       FROM studs s JOIN rc_users u ON u.id=s.uid JOIN rc_grades g ON g.user_id=u.id AND g.role='pilot'
        GROUP BY u.id, u.callsign ORDER BY passes DESC, avg DESC LIMIT 50`,
       [schoolId],
     )
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
     `SELECT u.id, u.callsign, u.home_ident,
             COUNT(*) FILTER (WHERE g.passed) AS passes, ROUND(AVG(g.score)) AS avg,
             COUNT(*) FILTER (WHERE g.passed AND g.created_at > now()-interval '7 days') AS week
-     FROM rc_users u JOIN rc_grades g ON g.user_id = u.id
+     FROM rc_users u JOIN rc_grades g ON g.user_id = u.id AND g.role = 'pilot'
      GROUP BY u.id, u.callsign, u.home_ident
      HAVING COUNT(*) FILTER (WHERE g.passed) > 0
      ORDER BY ${orderWeek ? 'week' : 'passes'} DESC, avg DESC

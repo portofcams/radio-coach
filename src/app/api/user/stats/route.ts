@@ -15,7 +15,7 @@ export async function GET() {
        COUNT(*) AS total,
        COUNT(*) FILTER (WHERE passed) AS passed,
        ROUND(AVG(score)) AS avg_score
-     FROM rc_grades WHERE user_id = $1`,
+     FROM rc_grades WHERE user_id = $1 AND role = 'pilot'`,
     [user.userId]
   )
 
@@ -34,7 +34,7 @@ export async function GET() {
        COUNT(*) FILTER (WHERE passed) AS passed,
        ROUND(AVG(score)) AS avg_score
      FROM rc_grades
-     WHERE user_id = $1
+     WHERE user_id = $1 AND role = 'pilot'
      GROUP BY 1
      ORDER BY 1`,
     [user.userId]
@@ -44,18 +44,20 @@ export async function GET() {
   const mistakes = await db.query(
     `SELECT elem, COUNT(*) AS cnt
      FROM rc_grades, jsonb_array_elements_text(missed_elements) AS elem
-     WHERE user_id = $1
+     WHERE user_id = $1 AND role = 'pilot'
      GROUP BY elem
      ORDER BY cnt DESC
      LIMIT 10`,
     [user.userId]
   )
 
-  // Recent grades (last 20)
+  // Recent grades (last 20) -- also feeds train/page.tsx's per-scenario "best
+  // score" completion badges, so an ATC-mode attempt must not leak in here
+  // and shadow a pilot-mode score on the same scenario_id's browse tile.
   const recent = await db.query(
     `SELECT scenario_id, score, passed, hint_used, created_at
      FROM rc_grades
-     WHERE user_id = $1
+     WHERE user_id = $1 AND role = 'pilot'
      ORDER BY created_at DESC
      LIMIT 20`,
     [user.userId]
@@ -68,7 +70,7 @@ export async function GET() {
             ROUND(AVG(score)) AS avg,
             COUNT(*) FILTER (WHERE passed) AS passed
      FROM rc_grades
-     WHERE user_id = $1 AND created_at > now() - interval '30 days'
+     WHERE user_id = $1 AND created_at > now() - interval '30 days' AND role = 'pilot'
      GROUP BY 1 ORDER BY 1`,
     [user.userId]
   )

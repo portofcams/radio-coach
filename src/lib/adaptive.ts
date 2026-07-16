@@ -14,7 +14,7 @@ export async function chooseAdaptive(
   const pool = scenarios.filter((s) => s.category !== 'helicopter' && (ent.pro || s.tier !== 'pro'))
 
   const g = await db.query(
-    'SELECT scenario_id, passed, score FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 20',
+    "SELECT scenario_id, passed, score FROM rc_grades WHERE user_id = $1 AND role = 'pilot' ORDER BY created_at DESC LIMIT 20",
     [userId],
   )
   const rows = g.rows as Array<{ scenario_id: string; passed: boolean; score: number }>

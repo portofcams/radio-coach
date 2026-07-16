@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     let weak = ''
     if (s.joined) {
       const g = await db.query(
-        'SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id = (SELECT student_user_id FROM rc_cfi_students WHERE id = $1) ORDER BY created_at DESC LIMIT 200',
+        "SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id = (SELECT student_user_id FROM rc_cfi_students WHERE id = $1) AND role = 'pilot' ORDER BY created_at DESC LIMIT 200",
         [s.id],
       )
       weak = computeWeakspots(g.rows)[0]?.label ?? ''

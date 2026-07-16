@@ -391,6 +391,40 @@ export default function TrainPage() {
                 </div>
               )
             })()}
+            {(() => {
+              const atc = scenarios
+                .filter((s) => s.atcMode)
+                .filter((s) => !facilityFilter || s.facility === facilityFilter)
+                .filter((s) => !diffFilter || s.difficulty === diffFilter)
+                .filter((s) => !packFilter || s.pack === packFilter)
+              if (!atc.length) return null
+              return (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">ATC / controller practice</h2>
+                    <span className="text-xs text-gray-400">Play the controller, not the pilot</span>
+                  </div>
+                  <div className="space-y-2">
+                    {atc.map((s) => (
+                      <Link key={`atc-${s.id}`} href={`/train/scenario?id=${s.id}&role=atc`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
+                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                              <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-blue-600 text-white leading-4 tracking-wide">ATC</span>
+                              <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-gray-900 text-white leading-4 tracking-wide">PRO</span>
+                              {s.airport && <span className="font-mono text-xs text-blue-600">{s.airport}</span>}
+                              {s.facility && <span className="font-mono text-xs text-gray-400">{s.facility}</span>}
+                              {s.frequency && <span className="font-mono text-xs text-gray-400">{s.frequency}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
             {!heliOnly && phases.map((phase) => {
               const phaseScenarios = scenarios
                 .filter((s) => s.phase === phase)

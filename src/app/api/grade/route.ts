@@ -14,7 +14,8 @@ import { liveWeatherScenario } from '@/lib/live-weather'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { scenarioId, readback, hintUsed, part, paceMs } = await req.json()
+  const { scenarioId, readback, hintUsed, part, paceMs, role: rawRole } = await req.json()
+  const role: 'pilot' | 'atc' = rawRole === 'atc' ? 'atc' : 'pilot'
 
   if (!scenarioId || !readback?.trim()) {
     return NextResponse.json({ error: 'Missing scenarioId or readback' }, { status: 400 })
@@ -65,10 +66,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
   }
 
+  // ATC role-reversal: only meaningful (and only ever authored) for scenarios
+  // carrying atcMode content — defends against a stale/shared link hitting a
+  // scenario with none.
+  if (role === 'atc' && !scenario.atcMode) {
+    return NextResponse.json({ error: 'no_atc_mode' }, { status: 400 })
+  }
+
   const ent = user && db ? await getEntitlement(user.userId) : null
 
-  // Advanced library (emergencies, CRAFT, Class B) is Solo Pilot only.
-  if (scenario.tier === 'pro' && !ent?.pro) {
+  // Advanced library (emergencies, CRAFT, Class B) is Solo Pilot only. ATC
+  // role-reversal is Pro-only too, same gate.
+  if ((scenario.tier === 'pro' || role === 'atc') && !ent?.pro) {
     return NextResponse.json({ error: 'pro_scenario' }, { status: 402 })
   }
 
@@ -108,6 +117,23 @@ export async function POST(req: NextRequest) {
       // as an ordinary full readback, not another say-again safety check.
       steppedOn: undefined,
     }
+  } else if (role === 'atc' && scenario.atcMode) {
+    // Same trick, second axis: swap in the freshly-authored controller-side
+    // content and hand the untouched grader an ordinary-shaped scenario. The
+    // deterministic grader has no idea (or need to know) which direction it's
+    // grading — every detector operates on requiredElements/correctReadback
+    // content patterns, not on who's speaking.
+    scenario = {
+      ...scenario,
+      atcTransmission: scenario.atcMode.pilotCall,
+      requiredElements: scenario.atcMode.requiredElements,
+      correctReadback: scenario.atcMode.correctInstruction,
+      setup: scenario.atcMode.setup ?? scenario.setup,
+      commonMistakes: scenario.atcMode.commonMistakes ?? [],
+      atcMode: undefined,
+      curveball: undefined,
+      steppedOn: undefined,
+    }
   }
 
   const paceMsClean = typeof paceMs === 'number' && Number.isFinite(paceMs) ? Math.round(paceMs) : null
@@ -117,8 +143,8 @@ export async function POST(req: NextRequest) {
   if (user && db) {
     db.query(
       `INSERT INTO rc_grades
-         (user_id, scenario_id, score, passed, readback, correct_readback, missed_elements, phrase_issues, hint_used, pace_ms)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+         (user_id, scenario_id, score, passed, readback, correct_readback, missed_elements, phrase_issues, hint_used, pace_ms, role)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
       [
         user.userId,
         scenarioId,
@@ -130,6 +156,7 @@ export async function POST(req: NextRequest) {
         JSON.stringify(result.phraseologyIssues),
         hintUsed ?? false,
         paceMsClean,
+        role,
       ]
     ).catch(console.error)
   }

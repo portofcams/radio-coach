@@ -27,6 +27,19 @@ export const scenarios: Scenario[] = [
       'Saying "hold short of two six" without the runway word',
       'Forgetting call sign',
     ],
+    atcMode: {
+      pilotCall: 'Hilo Ground, Cessna Four Two Six Tango Papa, on the GA ramp, ready to taxi.',
+      setup:
+        "You're working Ground at Hilo Tower (PHTO). A Cessna on the ramp has just called ready to taxi. Runway three is active — get them there via Alpha, and don't forget the hold short.",
+      requiredElements: ['call sign', 'taxi to runway three', 'via Alpha', 'hold short runway two six'],
+      correctInstruction:
+        'Cessna Four Two Six Tango Papa, Hilo Ground, taxi to runway three via taxiway Alpha, hold short of runway two six.',
+      commonMistakes: [
+        'Omitting the hold short instruction — the single most safety-critical part of any taxi clearance',
+        'Leaving out the taxi route (via Alpha) and only giving the destination runway',
+        'Not addressing the aircraft by call sign first',
+      ],
+    },
   },
   {
     id: 'runway-crossing',
@@ -54,6 +67,19 @@ export const scenarios: Scenario[] = [
       'Skipping the taxiway intersection',
       'Missing the tower frequency',
     ],
+    atcMode: {
+      pilotCall: 'Hilo Ground, Cessna Eight Zero Two Delta Mike, holding short of runway three at Alpha, ready to cross.',
+      setup:
+        "You're working Ground at Hilo Tower (PHTO). A Cessna is holding short of runway three at Alpha, ready to cross. Clear them across, at the same intersection, and get them to tower once they're clear.",
+      requiredElements: ['call sign', 'cross runway three', 'at Alpha', 'one one eight point one'],
+      correctInstruction:
+        'Cessna Eight Zero Two Delta Mike, cross runway three at Alpha, contact tower one one eight point one when clear.',
+      commonMistakes: [
+        'Saying "cross 3" instead of "cross runway three" — the word "runway" keeps it from being mistaken for a heading or altitude',
+        'Forgetting to hand them off to tower\'s frequency once they\'re clear',
+        'Not naming the taxiway intersection (at Alpha)',
+      ],
+    },
   },
   {
     id: 'amended-taxi',
@@ -303,6 +329,19 @@ export const scenarios: Scenario[] = [
       'Missing the reporting point',
       'Not including runway number',
     ],
+    atcMode: {
+      pilotCall: 'Paine Tower, Cessna Five Five One Whiskey Kilo, eight miles south, inbound for landing.',
+      setup:
+        "You're working Tower at Paine Field (KPAE). A Cessna has just called inbound for landing. Runway two two is active — get them into the pattern and give them a reporting point.",
+      requiredElements: ['call sign', 'left downwind', 'runway two two', 'report midfield'],
+      correctInstruction:
+        'Cessna Five Five One Whiskey Kilo, enter left downwind runway two two, report midfield.',
+      commonMistakes: [
+        'Forgetting to assign a reporting point — leaves them without a mandatory check-in before they\'re established in the pattern',
+        "Saying something vague like 'join the pattern' instead of a specific entry (left downwind)",
+        'Omitting the runway number',
+      ],
+    },
   },
   {
     id: 'sequence-traffic-in-sight',
@@ -576,6 +615,26 @@ export const scenarios: Scenario[] = [
       'Reading back in the wrong order — follow CRAFT sequence',
       'Forgetting "as filed" for the route',
     ],
+    atcMode: {
+      pilotCall: 'Kona Clearance, Cessna Nine Seven Zero Charlie Bravo, IFR to Kona Airport, ready to copy.',
+      setup:
+        "You're working Clearance Delivery. A Cessna has called IFR, ready to copy. Issue the full clearance using CRAFT — Clearance limit, Route, Altitude, Frequency, Transponder — the same structure a pilot would read back to you.",
+      requiredElements: [
+        'call sign',
+        'cleared to Kona Airport as filed',
+        'eight thousand',
+        'expect one zero thousand in one zero minutes',
+        'one two four point zero',
+        'squawk two seven three one',
+      ],
+      correctInstruction:
+        'Cessna Nine Seven Zero Charlie Bravo is cleared to Kona Airport as filed, climb and maintain eight thousand, expect one zero thousand in one zero minutes after departure. Departure frequency one two four point zero, squawk two seven three one.',
+      commonMistakes: [
+        "Skipping the 'expect' altitude — the pilot needs it before they're ever handed to center",
+        'Reading the elements out of CRAFT order, which makes it harder for the pilot to copy correctly',
+        "Forgetting 'as filed' when the route matches their flight plan",
+      ],
+    },
   },
   {
     id: 'ifr-approach-clearance',

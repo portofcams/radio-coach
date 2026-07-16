@@ -36,13 +36,13 @@ export async function GET(req: NextRequest) {
      )
      SELECT
        to_char(b.week_end, 'YYYY-MM-DD') AS week_end,
-       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at <= b.week_end) AS attempts,
-       (SELECT COUNT(*) FILTER (WHERE g.passed) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at <= b.week_end) AS passed_count,
-       (SELECT COUNT(DISTINCT g.scenario_id) FROM rc_grades g WHERE g.user_id = $1 AND g.passed AND g.created_at <= b.week_end) AS distinct_passed,
+       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at <= b.week_end AND g.role = 'pilot') AS attempts,
+       (SELECT COUNT(*) FILTER (WHERE g.passed) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at <= b.week_end AND g.role = 'pilot') AS passed_count,
+       (SELECT COUNT(DISTINCT g.scenario_id) FROM rc_grades g WHERE g.user_id = $1 AND g.passed AND g.created_at <= b.week_end AND g.role = 'pilot') AS distinct_passed,
        (SELECT ROUND(AVG(t.score)) FROM (
-          SELECT score FROM rc_grades WHERE user_id = $1 AND created_at <= b.week_end ORDER BY created_at DESC LIMIT 30
+          SELECT score FROM rc_grades WHERE user_id = $1 AND created_at <= b.week_end AND role = 'pilot' ORDER BY created_at DESC LIMIT 30
         ) t) AS recent_avg,
-       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at > b.week_start AND g.created_at <= b.week_end) AS week_attempts
+       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = $1 AND g.created_at > b.week_start AND g.created_at <= b.week_end AND g.role = 'pilot') AS week_attempts
      FROM bounds b
      ORDER BY b.week_start`,
     [user.userId, weeks],

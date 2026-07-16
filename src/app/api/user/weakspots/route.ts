@@ -11,7 +11,7 @@ export async function GET() {
 
   const r = await db.query(
     `SELECT scenario_id, missed_elements FROM rc_grades
-     WHERE user_id = $1 ORDER BY created_at DESC LIMIT 300`,
+     WHERE user_id = $1 AND role = 'pilot' ORDER BY created_at DESC LIMIT 300`,
     [user.userId],
   )
   const grades = r.rows.map((row) => ({

@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
      WHERE u.email LIKE '%@%'
        AND u.email NOT LIKE '%@example.com'
        AND COALESCE(u.email_opt_out, false) = false
-       AND EXISTS (SELECT 1 FROM rc_grades g WHERE g.user_id = u.id)
+       AND EXISTS (SELECT 1 FROM rc_grades g WHERE g.user_id = u.id AND g.role = 'pilot')
      ORDER BY u.id
      LIMIT ${MAX_RECIPIENTS}`,
   )

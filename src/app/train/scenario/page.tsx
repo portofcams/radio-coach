@@ -26,6 +26,27 @@ const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3
 // Radio state machine
 type RadioState = 'idle' | 'atc_loading' | 'atc_playing' | 'ready' | 'listening' | 'transcribed' | 'grading' | 'done'
 
+// ATC role-reversal: swap in the freshly-authored controller-side content for
+// display, same trick api/grade/route.ts uses server-side for grading. When
+// `atc` is false (or the scenario has no atcMode content), this is a no-op —
+// returns the same object, so every existing pilot-mode render path is
+// unaffected. Clears curveball/steppedOn too: atcMode has no curveball
+// sub-shape in v1, and steppedOn describes ATC's transmission being garbled,
+// a concept that doesn't apply to the pilot's initiating call.
+function forRole(scenario: Scenario, atc: boolean): Scenario {
+  if (!atc || !scenario.atcMode) return scenario
+  return {
+    ...scenario,
+    atcTransmission: scenario.atcMode.pilotCall,
+    requiredElements: scenario.atcMode.requiredElements,
+    correctReadback: scenario.atcMode.correctInstruction,
+    setup: scenario.atcMode.setup ?? scenario.setup,
+    commonMistakes: scenario.atcMode.commonMistakes ?? [],
+    curveball: undefined,
+    steppedOn: undefined,
+  }
+}
+
 interface UserProfile { id: number; email: string; callsign: string | null; home?: HomeProfile | null }
 
 export default function ScenarioPage() {
@@ -86,6 +107,13 @@ function ScenarioPageInner() {
   const [timerEnabled, setTimerEnabled] = useState(false)
   const [timer, setTimer] = useState<number | null>(null)
   const [metar, setMetar] = useState<string | null>(null)
+  // ATC role-reversal (?role=atc). Dual ref+state like exchange/exchangeRef
+  // above: the ref gives playTransmission/submitReadback/nextScenario a
+  // synchronously-correct value from the very first auto-play call (effects
+  // run in declaration order on mount, and this effect is declared before
+  // the auto-play one below); the state drives render-time branching.
+  const [roleAtc, setRoleAtc] = useState(false)
+  const roleAtcRef = useRef(false)
 
   const [displayScore, setDisplayScore] = useState(0)
   useEffect(() => {
@@ -190,6 +218,15 @@ function ScenarioPageInner() {
         if (d?.scenario_id) setDuelTarget({ name: d.creator_name, score: d.creator_score })
       }).catch(() => {})
     }
+  }, [id])
+
+  // ATC role-reversal: a ?role=atc link plays the controller, not the pilot.
+  // Read from the URL (not useSearchParams) to avoid a second Suspense
+  // boundary — same pattern as ?duel= above.
+  useEffect(() => {
+    const isAtc = new URLSearchParams(window.location.search).get('role') === 'atc'
+    roleAtcRef.current = isAtc
+    setRoleAtc(isAtc)
   }, [id])
 
   // Record the duel attempt once a graded result lands.
@@ -461,10 +498,11 @@ function ScenarioPageInner() {
     setInterimText('')
     setHintShown(false)
     if (timerRef.current) { clearInterval(timerRef.current); setTimer(null) }
+    const active = forRole(scenario, roleAtcRef.current)
     // A steppedOn scenario's garble only applies to its initial (blocked)
     // exchange — the curveball leg (if any) is ATC's clean repeat, so it's
     // fine to fall back to browser TTS there like any other scenario.
-    const isSteppedOnLeg = exchangeRef.current === 'initial' && !!scenario.steppedOn
+    const isSteppedOnLeg = exchangeRef.current === 'initial' && !!active.steppedOn
     // ElevenLabs is down or out of quota → speak with the browser's built-in
     // voice instead of silently doing nothing. No radio FX (plain utterance),
     // but the readback loop (timer + auto-mic) still runs normally.
@@ -485,8 +523,11 @@ function ScenarioPageInner() {
       return true
     }
     try {
-      const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
-      const text = personalizeText(tx, user?.callsign ?? null)
+      const tx = exchangeRef.current === 'curveball' && active.curveball ? active.curveball.atcTransmission : active.atcTransmission
+      // The "other pilot's" initiating call in ATC mode carries its own fixed,
+      // scenario-authored call sign — personalizeText would wrongly stamp the
+      // logged-in student's own tail number onto an aircraft they aren't flying.
+      const text = roleAtcRef.current ? tx : personalizeText(tx, user?.callsign ?? null)
       setUsingFallbackVoice(false)
       const res = await fetch('/api/tts', {
         method: 'POST',
@@ -513,8 +554,9 @@ function ScenarioPageInner() {
       fxRef.current?.cue(isSteppedOnLeg)
       await audio.play().catch(() => setRadioState('ready'))
     } catch {
-      const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
-      if (isSteppedOnLeg || !speakFallback(personalizeText(tx, user?.callsign ?? null))) setRadioState('ready')
+      const tx = exchangeRef.current === 'curveball' && active.curveball ? active.curveball.atcTransmission : active.atcTransmission
+      const text = roleAtcRef.current ? tx : personalizeText(tx, user?.callsign ?? null)
+      if (isSteppedOnLeg || !speakFallback(text)) setRadioState('ready')
     }
   }, [scenario, voiceMode, fx, user, startTimer, startListening, stopRecognition])
 
@@ -560,7 +602,7 @@ function ScenarioPageInner() {
       const res = await fetch('/api/grade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown, part: exchangeRef.current === 'curveball' ? 'curveball' : undefined, paceMs }),
+        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown, part: exchangeRef.current === 'curveball' ? 'curveball' : undefined, paceMs, role: roleAtcRef.current ? 'atc' : 'pilot' }),
       })
       // server-enforced gate (daily cap, or a Pro-only advanced scenario) → paywall
       if (res.status === 402) {
@@ -586,6 +628,18 @@ function ScenarioPageInner() {
     exchangeRef.current = 'initial'; setExchange('initial')
     autoPlayedRef.current = false
     setRadioState('idle')
+    if (roleAtcRef.current) {
+      // Stay within the atcMode-tagged pool — a plain "next in the full
+      // library" cycle would frequently land on a scenario with no
+      // controller content. Must also carry ?role=atc forward, or the very
+      // next navigation silently drops back to pilot mode.
+      const atcPool = scenarios.filter((s) => s.atcMode)
+      if (atcPool.length === 0) { router.push('/train'); return }
+      const curIdx = atcPool.findIndex((s) => s.id === id)
+      const next = atcPool[(curIdx + 1) % atcPool.length]
+      router.push(`/train/scenario?id=${next.id}&role=atc`)
+      return
+    }
     if (id.startsWith('gen-')) {
       // endless practice — keep generating fresh scenarios
       router.push(`/train/scenario?id=gen-${Math.floor(Math.random() * 1_000_000_000)}`)
@@ -653,10 +707,20 @@ function ScenarioPageInner() {
     )
   }
 
+  if (roleAtc && !scenario.atcMode) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
+        <p className="mb-3">This scenario doesn&apos;t have a controller-side (ATC) version yet.</p>
+        <a href="/train" className="underline">Back to list</a>
+      </div>
+    )
+  }
+
+  const displayScenario = forRole(scenario, roleAtc)
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
   const safetyTieIn = result ? safetyTieInFor(result) : null
-  const eslTerms = eslMode && scenario ? eslGlossFor(`${scenario.atcTransmission} ${scenario.correctReadback}`) : []
+  const eslTerms = eslMode ? eslGlossFor(`${displayScenario.atcTransmission} ${displayScenario.correctReadback}`) : []
   const freeRemaining = (pro || user) ? null : session.remaining
   const callsign = user?.callsign ?? null
   const callsignDisplay = user?.callsign ? toPhonetic(user.callsign) : null
@@ -678,6 +742,11 @@ function ScenarioPageInner() {
             <span className={`text-xs px-2 py-0.5 rounded font-medium ${scenario.difficulty === 1 ? 'bg-green-100 text-green-800' : scenario.difficulty === 2 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
               {DIFF_LABELS[scenario.difficulty]}
             </span>
+            {roleAtc && (
+              <span className="text-xs px-2 py-0.5 rounded font-medium bg-blue-100 text-blue-800" title="Playing the controller, not the pilot">
+                ATC
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -707,24 +776,26 @@ function ScenarioPageInner() {
             {metar && <span className="text-xs text-gray-500 font-mono truncate">{metar}</span>}
           </div>
         )}
-        {callsignDisplay && (
+        {/* Your own tail number is irrelevant in ATC mode -- you're not flying
+            anything, the "other pilot" has their own fixed, authored call sign. */}
+        {callsignDisplay && !roleAtc && (
           <div className="mb-3 text-xs text-gray-500">
             Your aircraft: <span className="font-mono text-gray-700">{user!.callsign}</span>
             <span className="text-gray-400"> — {callsignDisplay}</span>
           </div>
         )}
 
-        {exchange === 'curveball' && scenario.curveball ? (
+        {exchange === 'curveball' && displayScenario.curveball ? (
           <div className="mb-6">
-            <span className={`inline-block font-mono text-[10px] font-bold px-1.5 py-0.5 rounded text-white tracking-widest mb-2 ${scenario.steppedOn ? 'bg-cyan-600' : 'bg-amber-500'}`}>
-              {scenario.steppedOn ? 'REPEAT' : 'AMENDMENT'}
+            <span className={`inline-block font-mono text-[10px] font-bold px-1.5 py-0.5 rounded text-white tracking-widest mb-2 ${displayScenario.steppedOn ? 'bg-cyan-600' : 'bg-amber-500'}`}>
+              {displayScenario.steppedOn ? 'REPEAT' : 'AMENDMENT'}
             </span>
             <p className="text-gray-600 leading-relaxed">
-              {scenario.curveball.setup ?? (scenario.steppedOn ? 'ATC repeats the instruction — read it back.' : 'ATC has an amended instruction — read it back.')}
+              {displayScenario.curveball.setup ?? (displayScenario.steppedOn ? 'ATC repeats the instruction — read it back.' : 'ATC has an amended instruction — read it back.')}
             </p>
           </div>
         ) : (
-          <p className="text-gray-600 mb-6 leading-relaxed">{scenario.setup}</p>
+          <p className="text-gray-600 mb-6 leading-relaxed">{displayScenario.setup}</p>
         )}
 
         {/* Radio Stack Panel */}
@@ -773,7 +844,7 @@ function ScenarioPageInner() {
               <div className="flex items-start gap-2 flex-1 min-w-0">
                 <div className={`mt-1 w-1.5 h-1.5 rounded-full shrink-0 ${isAtcActive ? 'bg-green-400 animate-pulse' : 'bg-gray-700'}`} />
                 <p className={`text-green-400 font-mono text-sm leading-relaxed ${listenMode ? 'blur-md select-none' : ''}`}>
-                  &ldquo;{personalizeText(scenario.atcTransmission, callsign)}&rdquo;
+                  &ldquo;{roleAtc ? displayScenario.atcTransmission : personalizeText(displayScenario.atcTransmission, callsign)}&rdquo;
                 </p>
               </div>
             </div>
@@ -875,7 +946,7 @@ function ScenarioPageInner() {
         {hintShown && radioState !== 'done' && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
             <div className="text-xs font-semibold uppercase tracking-widest text-yellow-700 mb-2">Required elements (−10 pts)</div>
-            {(exchange === 'curveball' && scenario.curveball ? scenario.curveball.requiredElements : scenario.requiredElements).map(el => (
+            {(exchange === 'curveball' && displayScenario.curveball ? displayScenario.curveball.requiredElements : displayScenario.requiredElements).map(el => (
               <div key={el} className="text-sm text-yellow-800 flex items-center gap-2">
                 <span className="text-yellow-400">→</span> {el}
               </div>
@@ -975,8 +1046,8 @@ function ScenarioPageInner() {
                 )}
               </div>
               <div>
-                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Standard readback</div>
-                <p className="text-sm font-mono text-green-800 bg-green-50 rounded px-3 py-2">&ldquo;{personalizeText(result.correctReadback, callsign)}&rdquo;</p>
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">{roleAtc ? 'Standard ATC phraseology' : 'Standard readback'}</div>
+                <p className="text-sm font-mono text-green-800 bg-green-50 rounded px-3 py-2">&ldquo;{roleAtc ? result.correctReadback : personalizeText(result.correctReadback, callsign)}&rdquo;</p>
               </div>
             </div>
 
@@ -1027,7 +1098,10 @@ function ScenarioPageInner() {
               </div>
             ) : null}
 
-            {duelTarget && (
+            {/* Duel/challenge compares a score against another attempt on this
+                scenario_id -- meaningless across roles (an ATC-mode score isn't
+                comparable to a pilot-mode one), so both are hidden in ATC mode. */}
+            {!roleAtc && duelTarget && (
               <div className={`rounded-xl p-4 border text-center ${result.score > duelTarget.score ? 'border-green-300 bg-green-50' : result.score === duelTarget.score ? 'border-amber-300 bg-amber-50' : 'border-red-300 bg-red-50'}`}>
                 <div className="font-mono text-[10px] font-bold tracking-widest text-amber-600 mb-1">RADIO DUEL</div>
                 <div className="text-sm text-gray-700">You {result.score}% vs {duelTarget.name} {duelTarget.score}%</div>
@@ -1037,7 +1111,7 @@ function ScenarioPageInner() {
               </div>
             )}
 
-            {!duelTarget && getScenario(id) && (
+            {!roleAtc && !duelTarget && getScenario(id) && (
               challengeUrl ? (
                 <div className="border border-gray-200 rounded-xl p-3 flex items-center gap-2">
                   <input readOnly value={challengeUrl} className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs font-mono bg-gray-50" />
@@ -1050,10 +1124,10 @@ function ScenarioPageInner() {
               )
             )}
 
-            {scenario?.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (
+            {displayScenario.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (
               <div className="flex gap-3 pt-2">
-                <button onClick={startCurveball} className={`flex-1 text-white px-4 py-2.5 rounded-lg text-sm font-bold ${scenario.steppedOn ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-amber-500 hover:bg-amber-600'}`}>
-                  {scenario.steppedOn ? 'Ready to hear it again →' : 'Amendment incoming →'}
+                <button onClick={startCurveball} className={`flex-1 text-white px-4 py-2.5 rounded-lg text-sm font-bold ${displayScenario.steppedOn ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-amber-500 hover:bg-amber-600'}`}>
+                  {displayScenario.steppedOn ? 'Ready to hear it again →' : 'Amendment incoming →'}
                 </button>
                 <button onClick={nextScenario} className="px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:border-gray-400">
                   Skip

@@ -41,6 +41,10 @@ export async function initDB(): Promise<void> {
   `)
 
   await db.query(`ALTER TABLE rc_grades ADD COLUMN IF NOT EXISTS pace_ms INTEGER`)
+  // 'pilot' (default) or 'atc' -- role-reversal grades must never count toward
+  // pilot-side readiness/streak/leaderboard/adaptive-difficulty; see the
+  // `role = 'pilot'` filters added at every rc_grades read site (#88).
+  await db.query(`ALTER TABLE rc_grades ADD COLUMN IF NOT EXISTS role VARCHAR(10) NOT NULL DEFAULT 'pilot'`)
 
   await db.query(`
     CREATE INDEX IF NOT EXISTS rc_grades_user_id ON rc_grades(user_id);

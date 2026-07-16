@@ -15,7 +15,7 @@ export async function GET() {
   let weak: ReturnType<typeof computeWeakspots> = []
   if (user && db) {
     const g = await db.query(
-      'SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id=$1 ORDER BY created_at DESC LIMIT 300',
+      "SELECT scenario_id, missed_elements FROM rc_grades WHERE user_id=$1 AND role='pilot' ORDER BY created_at DESC LIMIT 300",
       [user.userId],
     )
     weak = computeWeakspots(g.rows)

@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
 
   const rows = await db.query(
     `SELECT u.id, u.callsign,
-       (SELECT MAX(created_at) FROM rc_grades g WHERE g.user_id = u.id) AS last_at,
-       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = u.id AND g.created_at::date = (now() AT TIME ZONE 'UTC')::date) AS today
+       (SELECT MAX(created_at) FROM rc_grades g WHERE g.user_id = u.id AND g.role = 'pilot') AS last_at,
+       (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = u.id AND g.created_at::date = (now() AT TIME ZONE 'UTC')::date AND g.role = 'pilot') AS today
      FROM rc_users u
      WHERE EXISTS (SELECT 1 FROM rc_push_tokens p WHERE p.user_id = u.id AND p.platform = 'ios')`,
   )

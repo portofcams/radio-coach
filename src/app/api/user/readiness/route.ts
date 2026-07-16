@@ -12,11 +12,11 @@ export async function GET() {
 
   const r = await db.query(
     `SELECT
-       (SELECT COUNT(*) FROM rc_grades WHERE user_id = $1) AS attempts,
-       (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id = $1) AS passed_count,
-       (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades WHERE user_id = $1 AND passed) AS distinct_passed,
+       (SELECT COUNT(*) FROM rc_grades WHERE user_id = $1 AND role = 'pilot') AS attempts,
+       (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades WHERE user_id = $1 AND role = 'pilot') AS passed_count,
+       (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades WHERE user_id = $1 AND passed AND role = 'pilot') AS distinct_passed,
        (SELECT ROUND(AVG(score)) FROM (
-          SELECT score FROM rc_grades WHERE user_id = $1 ORDER BY created_at DESC LIMIT 30
+          SELECT score FROM rc_grades WHERE user_id = $1 AND role = 'pilot' ORDER BY created_at DESC LIMIT 30
        ) t) AS recent_avg`,
     [user.userId],
   )

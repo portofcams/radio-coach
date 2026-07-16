@@ -29,12 +29,12 @@ export async function getRoster(db: Pool, cfiId: number, origin: string): Promis
   const r = await db.query(
     `SELECT s.id, s.status, s.token, s.student_user_id, s.student_email,
             u.email AS user_email, u.callsign,
-            (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id) AS attempts,
-            (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades g WHERE g.user_id = s.student_user_id) AS passed,
-            (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades g WHERE g.user_id = s.student_user_id AND passed) AS distinct_passed,
-            (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades g WHERE g.user_id = s.student_user_id ORDER BY created_at DESC LIMIT 30) t) AS recent_avg,
-            (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.created_at > now()-interval '7 days') AS week,
-            (SELECT EXTRACT(EPOCH FROM now() - MAX(created_at))/86400 FROM rc_grades g WHERE g.user_id = s.student_user_id) AS last_days
+            (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.role = 'pilot') AS attempts,
+            (SELECT COUNT(*) FILTER (WHERE passed) FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.role = 'pilot') AS passed,
+            (SELECT COUNT(DISTINCT scenario_id) FROM rc_grades g WHERE g.user_id = s.student_user_id AND passed AND g.role = 'pilot') AS distinct_passed,
+            (SELECT ROUND(AVG(score)) FROM (SELECT score FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.role = 'pilot' ORDER BY created_at DESC LIMIT 30) t) AS recent_avg,
+            (SELECT COUNT(*) FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.created_at > now()-interval '7 days' AND g.role = 'pilot') AS week,
+            (SELECT EXTRACT(EPOCH FROM now() - MAX(created_at))/86400 FROM rc_grades g WHERE g.user_id = s.student_user_id AND g.role = 'pilot') AS last_days
      FROM rc_cfi_students s LEFT JOIN rc_users u ON u.id = s.student_user_id
      WHERE s.cfi_user_id = $1 ORDER BY s.created_at`,
     [cfiId],
