@@ -5,6 +5,7 @@ import { Suspense, useState, useRef, useCallback, useEffect } from 'react'
 import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import type { GradeResult } from '@/lib/types'
+import { safetyTieInFor } from '@/lib/safety-tiein'
 import { CheckIcon } from '@/components/icons'
 import { attachRadioFx, getRadioFx, ttsSpeed, type RadioFxController } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
@@ -283,6 +284,13 @@ function FlightSessionPageInner() {
                 <div className="text-right text-sm text-gray-600 max-w-xs leading-relaxed">{result.feedback}</div>
               </div>
             </div>
+
+            {safetyTieInFor(result) && (
+              <p className="text-xs text-gray-500 leading-relaxed px-1">
+                <span className="font-semibold text-gray-600">Why this matters — </span>
+                {safetyTieInFor(result)}
+              </p>
+            )}
 
             <div className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div>

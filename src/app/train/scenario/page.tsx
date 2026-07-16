@@ -13,6 +13,7 @@ import { attachRadioFx, getRadioFx, setRadioFx, ttsSpeed, type RadioFxController
 import { personalizeText } from '@/lib/personalize'
 import { voiceForKey } from '@/lib/voices'
 import { explainElement } from '@/lib/explain'
+import { safetyTieInFor } from '@/lib/safety-tiein'
 import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from '@/lib/native'
 import { saveRecording, loadRecording } from '@/lib/recordings'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
@@ -590,6 +591,7 @@ function ScenarioPageInner() {
 
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
+  const safetyTieIn = result ? safetyTieInFor(result) : null
   const freeRemaining = (pro || user) ? null : session.remaining
   const callsign = user?.callsign ?? null
   const callsignDisplay = user?.callsign ? toPhonetic(user.callsign) : null
@@ -847,6 +849,13 @@ function ScenarioPageInner() {
                 ▶ replay ATC
               </button>
             </div>
+
+            {safetyTieIn && (
+              <p className="text-xs text-gray-500 leading-relaxed px-1">
+                <span className="font-semibold text-gray-600">Why this matters — </span>
+                {safetyTieIn}
+              </p>
+            )}
 
             <div className="border border-gray-200 rounded-xl p-5 space-y-3">
               <div>
