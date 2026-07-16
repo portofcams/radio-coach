@@ -86,6 +86,9 @@ export async function POST(req: NextRequest) {
       requiredElements: scenario.curveball.requiredElements,
       correctReadback: scenario.curveball.correctReadback,
       curveball: undefined,
+      // A steppedOn scenario's curveball leg is ATC's clean repeat — grade it
+      // as an ordinary full readback, not another say-again safety check.
+      steppedOn: undefined,
     }
   }
 

@@ -192,22 +192,35 @@ export function ruleGradeReadback(
   const requiresHoldShort = scenario.correctReadback.toLowerCase().includes('hold short')
   const holdShortViolation = requiresHoldShort && !readback.toLowerCase().includes('hold short')
 
+  // Stepped-on/blocked transmissions: the only acceptable response is asking
+  // ATC to repeat, never guessing at what was heard — same severity tier as
+  // hold-short. A student who fabricates a plausible full readback would
+  // otherwise only lose points for the elements they didn't hear, landing at
+  // PARTIAL instead of FAIL — this override is what makes "ask, don't guess"
+  // an actual gate rather than a suggestion.
+  const SAY_AGAIN_RE = /say again|unable copy|how do you (hear|read)|you'?re broken/i
+  const requiresSayAgain = !!scenario.steppedOn
+  const sayAgainViolation = requiresSayAgain && !SAY_AGAIN_RE.test(readback)
+
   let score = 100
   const perMiss = required.length ? Math.round(60 / required.length) : 10
   score -= missed.length * Math.max(10, Math.min(20, perMiss))
   score -= phraseologyIssues.length * 8
   if (hintUsed) score -= 10
   if (holdShortViolation) score = Math.min(score, 40)
+  if (sayAgainViolation) score = Math.min(score, 40)
   score = Math.max(0, Math.min(100, score))
 
   let passFail: GradeResult['passFail']
-  if (holdShortViolation || score < 70) passFail = 'FAIL'
+  if (holdShortViolation || sayAgainViolation || score < 70) passFail = 'FAIL'
   else if (score < 90) passFail = 'PARTIAL'
   else passFail = 'PASS'
 
   let feedback: string
   if (holdShortViolation) {
-    feedback = 'You missed the hold-short instruction — safety-critical, and an automatic fail. Read it back verbatim.'
+    feedback = 'You missed the hold-short instruction — safety-critical, and an automatic fail.'
+  } else if (sayAgainViolation) {
+    feedback = "You didn't clearly copy that — when a transmission is stepped on, the correct move is to ask ATC to say again, not guess. Acting on an unconfirmed guess is how wrong-runway and wrong-altitude errors happen."
   } else if (missed.length === 0 && phraseologyIssues.length === 0) {
     feedback = 'Clean readback — every required element and standard phraseology. Nicely done.'
   } else if (missed.length > 0) {

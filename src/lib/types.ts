@@ -87,6 +87,15 @@ export interface Scenario {
     requiredElements: string[]
     correctReadback: string
   }
+  /** Marks the INITIAL exchange as a stepped-on/blocked transmission — a second
+   * station keys up over ATC. The FX layer (radio-fx.ts) applies a deterministic
+   * mute + party-line overlay regardless of the user's comms-FX preference, and
+   * the grader (rule-grader.ts) requires the readback to ask for a repeat rather
+   * than a normal readback, as a safety-critical override (same severity tier as
+   * hold-short). Pairs naturally with `curveball`: ATC's clean repeat becomes the
+   * curveball leg — /api/grade/route.ts strips this flag when resolving that leg
+   * so the repeat is graded normally, as an ordinary full readback. */
+  steppedOn?: true
   /** optional taxi-diagram schematic, shown on the training screen */
   diagram?: AirportDiagram
   /** optional real-geometry field diagram (drawn from real runway coordinates) */

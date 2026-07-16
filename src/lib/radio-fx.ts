@@ -106,8 +106,12 @@ function driveCurve(amount: number): Float32Array<ArrayBuffer> {
 
 export interface RadioFxController {
   setMode(mode: RadioMode): void
-  /** call right before audio.play() — key-up squelch click + start the static bed */
-  cue(): void
+  /** call right before audio.play() — key-up squelch click + start the static bed.
+   * Pass steppedOn=true for a scenario's `steppedOn` transmission: a hard,
+   * sustained mute + party-line overlay that fires regardless of the user's
+   * comms-FX mode (unlike the cosmetic busy-mode dip, this must never silently
+   * no-op just because the pilot has FX set to clean). */
+  cue(steppedOn?: boolean): void
   /** call on audio 'ended' — key-down squelch tail + fade the static out */
   release(): void
 }
@@ -204,15 +208,49 @@ export function attachRadioFx(el: HTMLAudioElement, initialMode: RadioMode = get
       // reflect new bed level if we're mid-transmission
       noiseGain.gain.setTargetAtTime(noiseGain.gain.value > 0 ? STATIC_LEVEL[m] : 0, c!.currentTime, 0.05)
     },
-    cue() {
+    cue(steppedOn) {
       if (c!.state === 'suspended') c!.resume().catch(() => {})
       const t = c!.currentTime
       noiseGain.gain.cancelScheduledValues(t)
       noiseGain.gain.setValueAtTime(STATIC_LEVEL[mode], t)
       squelchBurst(t, 0.06)
-      // Busy mode: a "stepped-on" transmission — someone keys over the controller
-      // mid-call, so part of it is lost under a squelch break. Trains you to ask
-      // for a "say again". Scheduled at a random point during the call.
+      if (steppedOn) {
+        // A scenario-authored stepped-on/blocked transmission: a hard, sustained
+        // mute + party-line overlay that must fire regardless of comms-FX mode
+        // (including 'clean') — this is content the scenario requires the pilot
+        // to notice, not a cosmetic realism touch, so it can't silently no-op.
+        // Fixed onset (not random, unlike the busy-mode dip below) so it
+        // reliably lands after the callsign and before the substantive
+        // instruction across every scenario's transmission.
+        const t0 = t + 1.2
+        voiceGain.gain.cancelScheduledValues(t0)
+        voiceGain.gain.setValueAtTime(voiceGain.gain.value, t0)
+        voiceGain.gain.linearRampToValueAtTime(0.03, t0 + 0.09) // hard, sustained mute — no ramp back up
+        const peak = Math.max(SQUELCH_LEVEL[mode], 0.16)
+        const bed = Math.max(STATIC_LEVEL[mode], 0.14)
+        noiseGain.gain.cancelScheduledValues(t0)
+        noiseGain.gain.setValueAtTime(Math.max(bed, 0.0001), t0)
+        noiseGain.gain.linearRampToValueAtTime(peak, t0 + 0.008)
+        noiseGain.gain.setValueAtTime(bed, t0 + 0.5) // keep the bed audible through the rest of the clip
+        const idx = Math.floor(Math.random() * CHATTER_COUNT) // WHICH clip is cosmetic variety; WHETHER/WHEN it fires is deterministic
+        loadChatter(c!, idx).then((buf) => {
+          if (!buf) return
+          try { chatterSrc?.stop() } catch { /* */ }
+          chatterSrc = c!.createBufferSource()
+          chatterSrc.buffer = buf
+          chatterSrc.loop = true // sustain for whatever remains of the clip — duration is unknown
+          chatterSrc.connect(chatterBp)
+          chatterGain.gain.cancelScheduledValues(t0)
+          chatterGain.gain.setValueAtTime(0.34, t0) // louder than busy's 0.17 — this must mask, not just flavor
+          try { chatterSrc.start(t0 + 0.1) } catch { /* */ }
+        })
+        return
+      }
+      // Busy mode: a cosmetic "stepped-on" flavor moment — someone keys over the
+      // controller mid-call, so part of it is lost under a squelch break.
+      // Scheduled at a random point during the call. Unlike the steppedOn
+      // branch above, this is realism flavor, not a graded requirement, so it
+      // stays gated behind the user's own comms-FX preference.
       if (mode === 'busy') {
         const t0 = t + 1.4 + Math.random() * 1.8
         voiceGain.gain.cancelScheduledValues(t0)

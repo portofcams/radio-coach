@@ -69,7 +69,7 @@ function FlightSessionPageInner() {
         else fxRef.current.setMode(fx.mode)
         audioRef.current.src = url
         audioRef.current.onended = () => fxRef.current?.release()
-        fxRef.current?.cue()
+        fxRef.current?.cue(!!scenario.steppedOn)
         await audioRef.current.play().catch(() => {})
       }
     } finally {

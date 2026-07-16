@@ -24,7 +24,7 @@ interface Room {
 
 const rooms = new Map<string, Room>()
 // Short, library scenarios make for fair, quick races.
-const POOL = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter' && !s.curveball && s.requiredElements.length <= 4)
+const POOL = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter' && !s.curveball && !s.steppedOn && s.requiredElements.length <= 4)
 
 function gc() {
   const now = Date.now()

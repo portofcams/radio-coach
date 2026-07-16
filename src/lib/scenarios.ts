@@ -1967,6 +1967,86 @@ export const scenarios: Scenario[] = [
     },
   },
 
+  // ── Stepped-on / blocked transmissions ─────────────────────────────────────
+  {
+    id: 'blocked-ground-taxi',
+    title: 'Stepped-on: taxi instructions',
+    phase: 'ground',
+    difficulty: 1,
+    airport: 'KAPA',
+    facility: 'GROUND',
+    frequency: '121.900',
+    steppedOn: true,
+    setup: 'Ready to taxi. Another aircraft keys up on ground right as you get your instructions — part of it is stepped on.',
+    atcTransmission: 'Cessna One Two Three Four Five, Centennial Ground, taxi to runway three five via Alpha, hold short of runway one seven.',
+    requiredElements: ['call sign', 'say again/say again all after/how do you hear/unable copy'],
+    correctReadback: 'Say again, Cessna One Two Three Four Five.',
+    commonMistakes: ['Guessing the taxi route instead of asking for a repeat', 'Reading back only the part you caught as if it were the whole clearance'],
+  },
+  {
+    id: 'blocked-tower-landing',
+    title: 'Stepped-on: landing clearance',
+    phase: 'pattern',
+    difficulty: 2,
+    airport: 'KAPA',
+    facility: 'TOWER',
+    frequency: '118.900',
+    steppedOn: true,
+    setup: 'Short final — the frequency is busy and another aircraft keys up right as the tower calls you.',
+    atcTransmission: 'Cessna One Two Three Four Five, runway one seven left, cleared to land, wind two two zero at eight.',
+    requiredElements: ['call sign', 'say again/say again all after/how do you hear/unable copy'],
+    correctReadback: 'Say again, Cessna One Two Three Four Five.',
+    commonMistakes: ['Guessing the runway instead of asking for a repeat', 'Reading back only the part you actually heard as if it were the whole clearance', 'Going quiet instead of keying up at all'],
+    curveball: {
+      setup: 'Tower repeats it clean — read back the full clearance this time.',
+      atcTransmission: 'Cessna One Two Three Four Five, I say again, runway one seven left, cleared to land, wind two two zero at eight.',
+      requiredElements: ['runway one seven left', 'cleared to land', 'call sign'],
+      correctReadback: 'Runway one seven left, cleared to land, Cessna One Two Three Four Five.',
+    },
+  },
+  {
+    id: 'blocked-departure-heading',
+    title: 'Stepped-on: departure heading and altitude',
+    phase: 'departure',
+    difficulty: 2,
+    airport: 'KBJC',
+    facility: 'DEPARTURE',
+    frequency: '125.350',
+    steppedOn: true,
+    setup: 'Just airborne, checking in with Departure. Another aircraft steps on part of your instructions.',
+    atcTransmission: 'Cessna One Two Three Four Five, Departure, radar contact, turn right heading zero niner zero, climb and maintain five thousand.',
+    requiredElements: ['call sign', 'say again/say again all after/how do you hear/unable copy'],
+    correctReadback: 'Say again, Cessna One Two Three Four Five.',
+    commonMistakes: ['Guessing the heading or altitude instead of asking for a repeat', 'Continuing on your own heading and hoping it was close enough'],
+    curveball: {
+      setup: 'Departure repeats it clean — read back the full instruction this time.',
+      atcTransmission: 'Cessna One Two Three Four Five, I say again, turn right heading zero niner zero, climb and maintain five thousand.',
+      requiredElements: ['right heading zero niner zero', 'five thousand', 'call sign'],
+      correctReadback: 'Right heading zero niner zero, climb and maintain five thousand, Cessna One Two Three Four Five.',
+    },
+  },
+  {
+    id: 'blocked-center-descent',
+    title: 'Stepped-on: descent and approach handoff',
+    phase: 'ifr',
+    difficulty: 3,
+    airport: 'KASE',
+    facility: 'CENTER',
+    frequency: '134.150',
+    steppedOn: true,
+    setup: 'IFR enroute, nearing your destination. Center hands you a descent and a frequency change — but another aircraft steps on part of it.',
+    atcTransmission: 'Cessna One Two Three Four Five, descend and maintain one one thousand, contact Denver Center on one two zero point one five.',
+    requiredElements: ['call sign', 'say again/say again all after/how do you hear/unable copy'],
+    correctReadback: 'Say again, Cessna One Two Three Four Five.',
+    commonMistakes: ['Guessing the altitude or frequency instead of asking for a repeat', 'Switching frequencies before confirming what was actually said'],
+    curveball: {
+      setup: 'Center repeats it clean — read back the full instruction this time.',
+      atcTransmission: 'Cessna One Two Three Four Five, I say again, descend and maintain one one thousand, contact Denver Center on one two zero point one five.',
+      requiredElements: ['one one thousand', 'one two zero point one five', 'call sign'],
+      correctReadback: 'One one thousand, one two zero point one five, Cessna One Two Three Four Five.',
+    },
+  },
+
   // ── IFR pack — clearances, holds, approaches, en-route amendments ─────────
   {
     id: 'ifr-popup-clearance',
@@ -2096,7 +2176,7 @@ export function getScenariosByPhase(phase: Scenario['phase']): Scenario[] {
  * scenario for cold homepage traffic (avoids dropping first-time visitors
  * onto the full /train hub before they've heard a single ATC call). */
 export function getCallOfTheDay(): Scenario {
-  const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter')
+  const pool = scenarios.filter((s) => s.tier !== 'pro' && s.category !== 'helicopter' && !s.steppedOn)
   const day = new Date().toISOString().slice(0, 10)
   let h = 0
   for (let i = 0; i < day.length; i++) h = (h * 31 + day.charCodeAt(i)) >>> 0

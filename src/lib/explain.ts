@@ -6,6 +6,7 @@ const RULES: Array<{ re: RegExp; why: string }> = [
   { re: /call\s?sign/i, why: 'Ending with your call sign confirms ATC is talking to the right aircraft and that you are the one who copied the instruction.' },
   { re: /aircraft\s*type/i, why: 'Your aircraft type tells ATC your performance and wake category, which is how they sequence and separate you from other traffic.' },
   { re: /hold short/i, why: 'Hold-short is safety-critical. Reading it back verbatim — including the runway — is how you and the controller confirm you will not enter the runway. Runway incursions start here.' },
+  { re: /say again|unable copy|how do you (hear|read)/i, why: 'When part of the transmission is stepped-on or unreadable, the correct move is to ask ATC to say it again — never read back a guess. A wrong readback the controller doesn\'t catch is far more dangerous than asking twice.' },
   { re: /line up and wait/i, why: 'You are entering the runway but not cleared to depart. Reading it back confirms you understand to hold in position and wait for the takeoff clearance.' },
   { re: /(mayday|pan-?pan|engine failure|rough running|souls|fuel|request priority|emergency)/i, why: 'In an emergency, reading back the key facts (problem, souls, fuel, intentions) gives ATC what they need to clear traffic and roll the equipment for you.' },
   { re: /cleared for (immediate )?takeoff/i, why: 'The takeoff clearance and runway must be read back so a wrong-runway departure is caught on the ground.' },

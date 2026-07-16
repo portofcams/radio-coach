@@ -30,12 +30,14 @@ GRADING RULES (apply every time):
 6. Runway designators must include L/R/C when assigned (e.g. "two two left", not "two two")
 7. Frequency format: say each digit ("one two four point zero", NOT "one twenty-four")
 8. Squawk: say each digit ("four five two one", NOT "forty-five twenty-one")
+9. STEPPED-ON/BLOCKED TRANSMISSIONS: if CORRECT READBACK is a request to repeat (e.g. contains "say again"), the only acceptable student response is asking ATC to repeat/clarify — regardless of other elements. A student who instead reads back specific instructions they could not have reliably heard must FAIL (score ≤ 40), even if the guessed details happen to be correct, because acting on an unconfirmed guess is what causes real-world errors.
 
 SCORING:
 - 90-100: All required elements, standard phraseology. PASS.
 - 70-89: Minor omissions or minor phraseology issues. PARTIAL.
 - Below 70: Missing safety-critical elements or multiple errors. FAIL.
 - A missing hold short or runway crossing clearance is always FAIL.
+- A guessed (not requested-repeat) response to a stepped-on transmission is always FAIL.
 
 Return ONLY valid JSON with this exact structure (no markdown, no explanation):
 {

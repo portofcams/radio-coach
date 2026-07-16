@@ -12,6 +12,7 @@ export interface Category {
 
 export const CATEGORIES: Category[] = [
   { key: 'hold-short', label: 'Hold-short instructions', match: /hold short/i, tip: 'A missed hold-short is the #1 cause of a runway incursion — read it back verbatim, every time.' },
+  { key: 'say-again', label: 'Asking for a repeat', match: /say again/i, tip: 'If you only caught part of a transmission, say "say again" — never guess the rest.' },
   { key: 'frequency', label: 'Frequencies', match: /\bpoint\b|frequency|contact (tower|ground|departure|center|approach)/i, tip: 'Say each digit, then "point": "one one eight point three".' },
   { key: 'squawk', label: 'Squawk codes', match: /squawk/i, tip: 'Read transponder codes digit by digit — "four five two one", never "forty-five twenty-one".' },
   { key: 'altitude', label: 'Altitudes', match: /thousand|hundred/i, tip: 'State altitudes in full — "five thousand five hundred", not "fifty-five hundred".' },

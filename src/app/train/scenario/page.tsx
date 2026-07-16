@@ -429,6 +429,10 @@ function ScenarioPageInner() {
     setInterimText('')
     setHintShown(false)
     if (timerRef.current) { clearInterval(timerRef.current); setTimer(null) }
+    // A steppedOn scenario's garble only applies to its initial (blocked)
+    // exchange — the curveball leg (if any) is ATC's clean repeat, so it's
+    // fine to fall back to browser TTS there like any other scenario.
+    const isSteppedOnLeg = exchangeRef.current === 'initial' && !!scenario.steppedOn
     // ElevenLabs is down or out of quota → speak with the browser's built-in
     // voice instead of silently doing nothing. No radio FX (plain utterance),
     // but the readback loop (timer + auto-mic) still runs normally.
@@ -457,7 +461,7 @@ function ScenarioPageInner() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, speed: ttsSpeed(fx.speed), voice: voiceForKey(scenario.id) }),
       })
-      if (!res.ok) { if (!speakFallback(text)) setRadioState('ready'); return }
+      if (!res.ok) { if (isSteppedOnLeg || !speakFallback(text)) setRadioState('ready'); return }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const audio = audioRef.current
@@ -474,11 +478,11 @@ function ScenarioPageInner() {
         if (voiceMode) setTimeout(() => startListening(), 700)
       }
       setRadioState('atc_playing')
-      fxRef.current?.cue()
+      fxRef.current?.cue(isSteppedOnLeg)
       await audio.play().catch(() => setRadioState('ready'))
     } catch {
       const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
-      if (!speakFallback(personalizeText(tx, user?.callsign ?? null))) setRadioState('ready')
+      if (isSteppedOnLeg || !speakFallback(personalizeText(tx, user?.callsign ?? null))) setRadioState('ready')
     }
   }, [scenario, voiceMode, fx, user, startTimer, startListening, stopRecognition])
 
@@ -650,8 +654,12 @@ function ScenarioPageInner() {
 
         {exchange === 'curveball' && scenario.curveball ? (
           <div className="mb-6">
-            <span className="inline-block font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white tracking-widest mb-2">AMENDMENT</span>
-            <p className="text-gray-600 leading-relaxed">{scenario.curveball.setup ?? 'ATC has an amended instruction — read it back.'}</p>
+            <span className={`inline-block font-mono text-[10px] font-bold px-1.5 py-0.5 rounded text-white tracking-widest mb-2 ${scenario.steppedOn ? 'bg-cyan-600' : 'bg-amber-500'}`}>
+              {scenario.steppedOn ? 'REPEAT' : 'AMENDMENT'}
+            </span>
+            <p className="text-gray-600 leading-relaxed">
+              {scenario.curveball.setup ?? (scenario.steppedOn ? 'ATC repeats the instruction — read it back.' : 'ATC has an amended instruction — read it back.')}
+            </p>
           </div>
         ) : (
           <p className="text-gray-600 mb-6 leading-relaxed">{scenario.setup}</p>
@@ -781,7 +789,7 @@ function ScenarioPageInner() {
         {hintShown && radioState !== 'done' && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
             <div className="text-xs font-semibold uppercase tracking-widest text-yellow-700 mb-2">Required elements (−10 pts)</div>
-            {scenario.requiredElements.map(el => (
+            {(exchange === 'curveball' && scenario.curveball ? scenario.curveball.requiredElements : scenario.requiredElements).map(el => (
               <div key={el} className="text-sm text-yellow-800 flex items-center gap-2">
                 <span className="text-yellow-400">→</span> {el}
               </div>
@@ -932,8 +940,8 @@ function ScenarioPageInner() {
 
             {scenario?.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (
               <div className="flex gap-3 pt-2">
-                <button onClick={startCurveball} className="flex-1 bg-amber-500 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-amber-600">
-                  Amendment incoming →
+                <button onClick={startCurveball} className={`flex-1 text-white px-4 py-2.5 rounded-lg text-sm font-bold ${scenario.steppedOn ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-amber-500 hover:bg-amber-600'}`}>
+                  {scenario.steppedOn ? 'Ready to hear it again →' : 'Amendment incoming →'}
                 </button>
                 <button onClick={nextScenario} className="px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:border-gray-400">
                   Skip
