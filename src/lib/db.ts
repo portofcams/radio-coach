@@ -114,6 +114,18 @@ export async function initDB(): Promise<void> {
     )
   `)
 
+  // Short-TTL cache of the raw METAR text per field, shared by the client-facing
+  // wx-scenario route and the grade route -- both resolve within the same cache
+  // window so a live-weather scenario is graded against the exact wind/runway
+  // the student actually heard, not a METAR reissued in between.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_metar_cache (
+      icao TEXT PRIMARY KEY,
+      raw TEXT NOT NULL,
+      fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+
   // CFI Pro — student roster (a CFI links students who join via an invite token).
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_cfi_students (

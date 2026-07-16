@@ -9,6 +9,8 @@ import { homeScenario } from '@/lib/home-client'
 import { getCustomScenarioFor } from '@/lib/customscenarios'
 import { getCommunityScenario } from '@/lib/community'
 import { generateScenario } from '@/lib/procedural'
+import { getLiveMetar } from '@/lib/metar-live'
+import { liveWeatherScenario } from '@/lib/live-weather'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
@@ -36,6 +38,22 @@ export async function POST(req: NextRequest) {
     const row = r.rows[0]
     const home = resolveHomeProfile(row)
     if (home) scenario = homeScenario(scenarioId, home, row.callsign) ?? undefined
+  }
+  // Live-weather: same trusted-server-side-generation pattern as home-*, plus
+  // a shared short-TTL METAR cache (rc_metar_cache) so this resolution and the
+  // one /api/wx-scenario/[id] already gave the client land on the same wind
+  // and runway within one practice attempt.
+  if (!scenario && scenarioId.startsWith('wx-') && user && db) {
+    const r = await db.query(
+      'SELECT callsign, home_ident, home_name, home_tower, home_runway, home_towered FROM rc_users WHERE id = $1',
+      [user.userId],
+    )
+    const row = r.rows[0]
+    const home = resolveHomeProfile(row)
+    if (home?.mode === 'real') {
+      const metar = await getLiveMetar(db, home.ident)
+      if (metar) scenario = liveWeatherScenario(scenarioId, home.field, row.callsign, metar) ?? undefined
+    }
   }
   if (!scenario && scenarioId.startsWith('custom-') && user && db) {
     scenario = (await getCustomScenarioFor(db, parseInt(scenarioId.replace(/^custom-/, '')), user.userId)) ?? undefined

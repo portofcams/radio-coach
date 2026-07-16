@@ -5,6 +5,7 @@ export interface DecodedMetar {
   station?: string
   timeZulu?: string
   wind?: string
+  windInfo?: WindInfo
   visibility?: string
   weather?: string[]
   clouds?: string[]
@@ -17,6 +18,15 @@ export interface DecodedMetar {
   raw: string
 }
 
+export interface WindInfo {
+  calm: boolean
+  dirDeg: number | null
+  variable: boolean
+  speedKt: number
+  gustKt: number | null
+  unit: 'KT' | 'MPS'
+}
+
 const WX: Record<string, string> = {
   RA: 'rain', SN: 'snow', DZ: 'drizzle', BR: 'mist', FG: 'fog', HZ: 'haze', FU: 'smoke',
   TS: 'thunderstorm', SH: 'showers', GR: 'hail', GS: 'small hail', SG: 'snow grains',
@@ -25,15 +35,52 @@ const WX: Record<string, string> = {
 }
 const COVER: Record<string, string> = { SKC: 'sky clear', CLR: 'clear below 12,000', NSC: 'no significant cloud', FEW: 'few', SCT: 'scattered', BKN: 'broken', OVC: 'overcast', VV: 'vertical visibility' }
 
-export function decodeWind(t: string): string | null {
-  const calm = /^00000(KT|MPS)$/.test(t)
-  if (calm) return 'Wind calm'
+/** Structured wind, for anything that needs the numbers (runway selection, ATC
+ *  phraseology) rather than the plain-English sentence `decodeWind` returns. */
+export function decodeWindStructured(t: string): WindInfo | null {
+  if (/^00000(KT|MPS)$/.test(t)) {
+    return { calm: true, dirDeg: null, variable: false, speedKt: 0, gustKt: null, unit: t.endsWith('MPS') ? 'MPS' : 'KT' }
+  }
   const m = t.match(/^(VRB|\d{3})(\d{2,3})(G(\d{2,3}))?(KT|MPS)$/)
   if (!m) return null
-  const dir = m[1] === 'VRB' ? 'variable' : `from ${m[1]}°`
-  const unit = m[5] === 'MPS' ? ' m/s' : ' kt'
-  const gust = m[4] ? `, gusting ${parseInt(m[4])}${unit}` : ''
-  return `Wind ${dir} at ${parseInt(m[2])}${unit}${gust}`
+  const variable = m[1] === 'VRB'
+  return {
+    calm: false,
+    dirDeg: variable ? null : parseInt(m[1]),
+    variable,
+    speedKt: parseInt(m[2]),
+    gustKt: m[4] ? parseInt(m[4]) : null,
+    unit: m[5] as 'KT' | 'MPS',
+  }
+}
+
+export function decodeWind(t: string): string | null {
+  const w = decodeWindStructured(t)
+  if (!w) return null
+  if (w.calm) return 'Wind calm'
+  // Direction keeps its original 3-digit zero-padded form (e.g. "090°", not
+  // "90°") -- re-pad here since dirDeg is stored as a plain number.
+  const dir = w.variable ? 'variable' : `from ${String(w.dirDeg).padStart(3, '0')}°`
+  const unit = w.unit === 'MPS' ? ' m/s' : ' kt'
+  const gust = w.gustKt != null ? `, gusting ${w.gustKt}${unit}` : ''
+  return `Wind ${dir} at ${w.speedKt}${unit}${gust}`
+}
+
+const SPOKEN_DIGIT: Record<string, string> = {
+  '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
+  '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'niner',
+}
+function spokenDigits(n: number, pad = 0): string {
+  return String(n).padStart(pad, '0').split('').map((d) => SPOKEN_DIGIT[d] ?? d).join(' ')
+}
+
+/** ATC-phraseology wind, e.g. "wind two eight zero at one two, gusting one niner" or "wind calm". */
+export function spokenWind(w: WindInfo): string {
+  if (w.calm) return 'wind calm'
+  const dir = w.variable ? 'variable' : spokenDigits(w.dirDeg ?? 0, 3)
+  const speed = spokenDigits(w.speedKt)
+  const gust = w.gustKt != null ? `, gusting ${spokenDigits(w.gustKt)}` : ''
+  return `wind ${dir} at ${speed}${gust}`
 }
 
 export function decodeVis(t: string): { text: string; sm: number | null } | null {
@@ -95,7 +142,7 @@ export function decodeMetar(rawInput: string): DecodedMetar {
     if (i === 0 && /^[A-Z0-9]{4}$/.test(t)) { out.station = t; out.lines.push(`Station ${t}`); continue }
     if (/^\d{6}Z$/.test(t)) { out.timeZulu = t; out.lines.push(`Observed ${t.slice(0, 2)} at ${t.slice(2, 4)}:${t.slice(4, 6)} Zulu`); continue }
     if (t === 'AUTO' || t === 'COR') continue
-    const w = decodeWind(t); if (w) { out.wind = w; out.lines.push(w); continue }
+    const w = decodeWind(t); if (w) { out.wind = w; out.windInfo = decodeWindStructured(t) ?? undefined; out.lines.push(w); continue }
     // "1 1/2SM" — combine a bare number with the next fraction token
     if (/^\d$/.test(t) && tokens[i + 1] && /^\d\/\dSM$/.test(tokens[i + 1])) {
       const frac = tokens[i + 1].match(/^(\d)\/(\d)SM$/)!

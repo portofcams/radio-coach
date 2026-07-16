@@ -50,20 +50,20 @@ export interface AirportData {
 }
 
 /** NATO word for a single-letter taxiway id (used only with REAL OSM taxiway refs). */
-const NATO: Record<string, string> = {
+export const NATO: Record<string, string> = {
   A: 'Alpha', B: 'Bravo', C: 'Charlie', D: 'Delta', E: 'Echo', F: 'Foxtrot',
   G: 'Golf', H: 'Hotel', J: 'Juliet', K: 'Kilo', L: 'Lima', M: 'Mike',
   N: 'November', P: 'Papa', Q: 'Quebec', R: 'Romeo', S: 'Sierra', T: 'Tango',
   U: 'Uniform', V: 'Victor', W: 'Whiskey', X: 'X-ray', Y: 'Yankee', Z: 'Zulu',
 }
 
-function spokenCallsign(callsign?: string | null): string {
+export function spokenCallsign(callsign?: string | null): string {
   const cs = callsign?.trim().toUpperCase()
   return cs ? toPhonetic(cs) : 'Cessna One Two Three Four Five'
 }
 
 /** Speak a frequency: "118.6" → "one one eight point six". */
-function freqPhonetic(freq?: string): string {
+export function freqPhonetic(freq?: string): string {
   if (!freq) return ''
   const DIGIT: Record<string, string> = {
     '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
@@ -73,7 +73,7 @@ function freqPhonetic(freq?: string): string {
 }
 
 /** Short, friendly tower/field name for radio use (drop "International Airport" etc.). */
-function shortName(name: string): string {
+export function shortName(name: string): string {
   return name
     .replace(/\b(International|Regional|Municipal|Memorial|Field|Airport|Airpark)\b/gi, '')
     .replace(/\s+/g, ' ')
@@ -87,7 +87,7 @@ function primaryRunway(rwys: AirportRunway[]): AirportRunway | null {
   return sorted[0]
 }
 
-function toDiagramRunways(rwys: AirportRunway[]): RealFieldRunway[] {
+export function toDiagramRunways(rwys: AirportRunway[]): RealFieldRunway[] {
   return rwys.map((r) => ({ le: r.le, he: r.he, leLat: r.leLat, leLon: r.leLon, heLat: r.heLat, heLon: r.heLon }))
 }
 

@@ -46,6 +46,8 @@ function ScenarioPageInner() {
   const isHomeId = id.startsWith('home-')
   const isCustomId = id.startsWith('custom-')
   const isCommunityId = id.startsWith('community-')
+  const isWxId = id.startsWith('wx-')
+  const [wxError, setWxError] = useState<'no_home' | 'no_metar' | null>(null)
 
   // Core state machine
   const [radioState, setRadioState] = useState<RadioState>('idle')
@@ -155,12 +157,20 @@ function ScenarioPageInner() {
       if (isCustomId && d.user) {
         fetch(`/api/custom/${id}`).then((r) => r.json()).then((c) => { if (c.scenario) setScenario(c.scenario) }).catch(() => {})
       }
+      // Resolve a live-weather scenario -- server-side, never regenerated
+      // client-side, so grading matches exactly what was heard.
+      if (isWxId && d.user) {
+        fetch(`/api/wx-scenario/${id}`).then((r) => r.json()).then((w) => {
+          if (w.scenario) setScenario(w.scenario)
+          else setWxError(w.error === 'no_real_home_field' ? 'no_home' : 'no_metar')
+        }).catch(() => setWxError('no_metar'))
+      }
     }).catch(() => {})
     // Resolve a community scenario (public — no auth needed)
     if (isCommunityId) {
       fetch(`/api/community/${id.replace(/^community-/, '')}`).then((r) => r.json()).then((c) => { if (c.scenario) setScenario(c.scenario) }).catch(() => {})
     }
-  }, [id, isHomeId, isCustomId, isCommunityId])
+  }, [id, isHomeId, isCustomId, isCommunityId, isWxId])
 
   // Always start a scenario on its initial exchange (the page persists across nav).
   useEffect(() => { exchangeRef.current = 'initial'; setExchange('initial') }, [id])
@@ -579,6 +589,12 @@ function ScenarioPageInner() {
       return
     }
     const idx = scenarios.findIndex(s => s.id === id)
+    if (idx === -1) {
+      // Not in the static library (home-*/custom-*/community-*/wx-*) -- there's
+      // no sensible "next" in that array, so don't silently land on scenarios[0].
+      router.push('/train')
+      return
+    }
     const next = scenarios[(idx + 1) % scenarios.length]
     router.push(`/train/scenario?id=${next.id}`)
   }, [id, router])
@@ -613,6 +629,18 @@ function ScenarioPageInner() {
         <a href="/profile" className="underline">Add your home field in your profile</a>
         <span className="mx-2 text-gray-300">·</span>
         <a href="/train" className="underline">Back to list</a>
+      </div>
+    )
+    if (isWxId) return (
+      <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
+        <p className="mb-3">
+          {wxError === 'no_home'
+            ? <>Live weather needs a real, listed home airport.</>
+            : <>No live weather is being reported for your home field right now (it may not have an ASOS/AWOS station).</>}
+        </p>
+        {wxError === 'no_home' && <a href="/profile" className="underline">Set one in your profile</a>}
+        <span className="mx-2 text-gray-300">·</span>
+        <a href="/train" className="underline">Back to your home-field scenarios</a>
       </div>
     )
     return (

@@ -7,6 +7,7 @@ import { FLIGHT_SESSIONS } from '@/lib/flight-sessions'
 import { useEffect, useState } from 'react'
 import type { Facility, Scenario } from '@/lib/types'
 import { homeScenarios } from '@/lib/home-client'
+import { liveWeatherScenarioStubs } from '@/lib/live-weather'
 
 const PHASE_LABELS: Record<string, string> = {
   ground: 'Ground',
@@ -48,6 +49,7 @@ export default function TrainPage() {
   const [heliOnly, setHeliOnly] = useState(false)
   const [packFilter, setPackFilter] = useState<'hawaii' | 'alaska' | null>(null)
   const [homeList, setHomeList] = useState<Scenario[]>([])
+  const [wxList, setWxList] = useState<ReturnType<typeof liveWeatherScenarioStubs>>([])
   const [homeChecked, setHomeChecked] = useState(false)
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
   const [showFirstRunTip, setShowFirstRunTip] = useState(false)
@@ -77,6 +79,7 @@ export default function TrainPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.user?.home) setHomeList(homeScenarios(d.user.home, d.user.callsign))
+        if (d.user?.home?.mode === 'real') setWxList(liveWeatherScenarioStubs(d.user.home.field))
         setHomeChecked(true)
         if (d.user) fetch('/api/user/assignments').then((r) => r.json()).then((a) => { if (Array.isArray(a.assignments)) setAssignments(a.assignments) }).catch(() => {})
         if (d.user) {
@@ -321,6 +324,27 @@ export default function TrainPage() {
                     )
                   })}
                 </div>
+              </div>
+            )}
+            {wxList.length > 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
+              <div id="live-weather">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
+                  Today&apos;s actual weather
+                </h2>
+                <div className="space-y-2">
+                  {wxList.map((s) => (
+                    <Link key={s.id} href={`/train/scenario?id=${s.id}`} className="block border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 transition-colors group">
+                      <div className="min-w-0">
+                        <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
+                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                          <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-sky-600 text-white leading-4 tracking-wide">LIVE WX</span>
+                          {s.frequency && <span className="font-mono text-xs text-gray-500">{s.frequency}</span>}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-2">Uses today&apos;s actual reported wind — resolved when you open the scenario.</p>
               </div>
             )}
             {homeChecked && homeList.length === 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
