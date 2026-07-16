@@ -133,4 +133,18 @@ export interface GradeResult {
    *  cfiTip() (lib/explain.ts) from elements/phraseologyIssues/scenario.
    *  Populated by BOTH graders (rule and AI), so it's always present. */
   cfiTip: string
+  /**
+   * Delivery/fluency coaching — optional. Populated only by the AI grader
+   * (GRADER_MODE=ai + a funded ANTHROPIC_API_KEY); the $0 rule grader never
+   * sets this, so it is absent by default in every environment today.
+   * Deliberately does NOT feed into score/passFail — phraseology accuracy
+   * and delivery fluency are two separate dimensions, so a nervous-but-
+   * correct readback still PASSes. Treat a malformed/missing shape as
+   * absent, never assume it's well-formed (it comes from an LLM).
+   */
+  deliveryNotes?: {
+    fillerCount: number
+    fillerWords: string[]
+    hesitationNote?: string
+  }
 }

@@ -6,6 +6,12 @@ import { checkBudget, logUsage } from './anthropic-budget'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+// NOTE (feature #82, filler-word coaching): deliveryNotes depends on
+// /api/stt/route.ts NOT passing no_verbatim to ElevenLabs Scribe — default
+// behavior preserves "um"/"uh" in the transcript text. If a future change
+// adds no_verbatim:true to clean up transcripts, this dimension silently
+// goes to zero, no error.
+
 // Default is the deterministic $0 rule grader. Set GRADER_MODE=ai (and a funded
 // ANTHROPIC_API_KEY) to use the LLM grader; it falls back to rules on any error.
 function aiEnabled(): boolean {
@@ -32,6 +38,7 @@ GRADING RULES (apply every time):
 7. Frequency format: say each digit ("one two four point zero", NOT "one twenty-four")
 8. Squawk: say each digit ("four five two one", NOT "forty-five twenty-one")
 9. STEPPED-ON/BLOCKED TRANSMISSIONS: if CORRECT READBACK is a request to repeat (e.g. contains "say again"), the only acceptable student response is asking ATC to repeat/clarify — regardless of other elements. A student who instead reads back specific instructions they could not have reliably heard must FAIL (score ≤ 40), even if the guessed details happen to be correct, because acting on an unconfirmed guess is what causes real-world errors.
+10. DELIVERY/FLUENCY is a SEPARATE, non-scoring dimension. Note filler words ("um", "uh", "er", "like", "you know") and repeated false starts literally present in STUDENT READBACK's text. Do NOT invent pauses, tone, or timing — you only have a text transcript, no audio, so only report what the words themselves show. This never changes score or passFail.
 
 SCORING:
 - 90-100: All required elements, standard phraseology. PASS.
@@ -51,7 +58,12 @@ Return ONLY valid JSON with this exact structure (no markdown, no explanation):
   },
   "phraseologyIssues": [<specific non-standard phrases detected, empty array if none>],
   "correctReadback": <the textbook-correct full readback>,
-  "feedback": <1-2 sentence instructor summary, encouraging but honest>
+  "feedback": <1-2 sentence instructor summary, encouraging but honest>,
+  "deliveryNotes": {
+    "fillerCount": <int - count of filler-word instances found in STUDENT READBACK, 0 if none>,
+    "fillerWords": [<the literal filler words found, in order, e.g. ["uh", "um"]>],
+    "hesitationNote": <omit this key entirely if fillerCount is 0 or 1; else one short, encouraging-but-honest sentence about delivery only - never about the student's accent, ability, or personality>
+  }
 }`
 
 export async function gradeReadback(

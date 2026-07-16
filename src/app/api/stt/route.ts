@@ -15,6 +15,10 @@ export async function POST(req: NextRequest) {
   if (!(audio instanceof Blob)) return NextResponse.json({ error: 'Missing audio' }, { status: 400 })
   if (audio.size > MAX_AUDIO_BYTES) return NextResponse.json({ error: 'audio_too_large' }, { status: 413 })
 
+  // NOTE: no_verbatim is deliberately NOT set. Default Scribe behavior preserves
+  // filler words ("um"/"uh") verbatim in `text` -- lib/grader.ts's deliveryNotes
+  // (feature #82) depends on that. Setting no_verbatim:true here would silently
+  // zero out that feature with no error anywhere.
   const fd = new FormData()
   fd.append('file', audio, 'readback.webm')
   fd.append('model_id', 'scribe_v1')

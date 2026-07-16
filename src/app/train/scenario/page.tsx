@@ -958,6 +958,19 @@ function ScenarioPageInner() {
               </div>
             )}
 
+            {result.deliveryNotes?.fillerCount ? (
+              <div className="border border-blue-200 bg-blue-50 rounded-xl p-5">
+                <div className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-2">Delivery</div>
+                <p className="text-sm text-blue-800">
+                  {result.deliveryNotes.fillerCount} filler word{result.deliveryNotes.fillerCount > 1 ? 's' : ''}
+                  {result.deliveryNotes.fillerWords?.length ? ` (${result.deliveryNotes.fillerWords.join(', ')})` : ''}.
+                </p>
+                {result.deliveryNotes.hesitationNote && (
+                  <p className="text-sm text-blue-800 mt-1">{result.deliveryNotes.hesitationNote}</p>
+                )}
+              </div>
+            ) : null}
+
             {duelTarget && (
               <div className={`rounded-xl p-4 border text-center ${result.score > duelTarget.score ? 'border-green-300 bg-green-50' : result.score === duelTarget.score ? 'border-amber-300 bg-amber-50' : 'border-red-300 bg-red-50'}`}>
                 <div className="font-mono text-[10px] font-bold tracking-widest text-amber-600 mb-1">RADIO DUEL</div>
