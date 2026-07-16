@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense, useState, useRef, useCallback, useEffect } from 'react'
-import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
+import { getSessionOrDrill as getFlightSession, legStages } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
 import { getOralQuestion } from '@/lib/oral'
 import type { GradeResult } from '@/lib/types'
@@ -70,6 +70,14 @@ function FlightSessionPageInner() {
   const [usingFallbackVoice, setUsingFallbackVoice] = useState(false)
 
   const [step, setStep] = useState(0)
+  // Curveball support (ported from train/scenario/page.tsx): a leg carrying
+  // `.curveball` plays its amendment as a second exchange before advancing,
+  // instead of being silently skipped straight to the next leg -- the actual
+  // gap this file had until now. Ref mirrors train/scenario/page.tsx's own
+  // exchangeRef/exchange pair so playTransmission reads the current exchange
+  // synchronously without needing to be in its own dependency array.
+  const exchangeRef = useRef<'initial' | 'curveball'>('initial')
+  const [exchange, setExchange] = useState<'initial' | 'curveball'>('initial')
   const [readback, setReadback] = useState('')
   const [grading, setGrading] = useState(false)
   const [result, setResult] = useState<GradeResult | null>(null)
@@ -106,15 +114,19 @@ function FlightSessionPageInner() {
       if (Array.isArray(saved.oralResults)) setOralResults(saved.oralResults)
       if (typeof saved.step === 'number') setStep(saved.step)
       if (Array.isArray(saved.results)) setResults(saved.results)
+      if (saved.exchange === 'curveball' || saved.exchange === 'initial') {
+        exchangeRef.current = saved.exchange
+        setExchange(saved.exchange)
+      }
     } catch { /* malformed or unavailable storage -- ignore, start fresh */ }
   }, [session])
 
   useEffect(() => {
     if (!session || done) return
     try {
-      sessionStorage.setItem(`wilco_session_${session.id}`, JSON.stringify({ phase, oralStep, oralResults, step, results }))
+      sessionStorage.setItem(`wilco_session_${session.id}`, JSON.stringify({ phase, oralStep, oralResults, step, results, exchange }))
     } catch { /* ignore */ }
-  }, [session, phase, oralStep, oralResults, step, results, done])
+  }, [session, phase, oralStep, oralResults, step, results, exchange, done])
 
   useEffect(() => {
     if (!session || !done) return
@@ -133,6 +145,11 @@ function FlightSessionPageInner() {
   const unitsDone = phase === 'oral' ? oralStep : oralCount + step + (result ? 1 : 0)
   const progress = totalUnits > 0 ? (unitsDone / totalUnits) * 100 : 0
   const oralQuestion = session?.oralQuestionIds?.length ? getOralQuestion(session.oralQuestionIds[oralStep]) : null
+  // DEPARTURE/ENROUTE/ARRIVAL stage label -- only meaningful when session.route
+  // is set; only computed (resolves every leg) when there's a route to label.
+  const legStage = session?.route
+    ? legStages(session.scenarioIds.map((id) => getScenario(id)))[step] ?? null
+    : null
 
   // ElevenLabs down/out of quota -> speak with the browser's built-in voice
   // instead of silently going dead-air. No radio FX (plain utterance), but at
@@ -196,12 +213,14 @@ function FlightSessionPageInner() {
     try {
       setUsingFallbackVoice(false)
       const fx = getRadioFx()
+      const tx = exchangeRef.current === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission
+      const text = personalizeText(tx, callsign)
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: personalizeText(scenario.atcTransmission, callsign), speed: ttsSpeed(fx.speed) }),
+        body: JSON.stringify({ text, speed: ttsSpeed(fx.speed) }),
       })
-      if (!res.ok) { speakFallback(personalizeText(scenario.atcTransmission, callsign)); return }
+      if (!res.ok) { speakFallback(text); return }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       if (audioRef.current) {
@@ -217,8 +236,19 @@ function FlightSessionPageInner() {
     }
   }, [scenario, callsign, speakFallback])
 
+  // Guard against clobbering a resumed 'curveball' exchange: this effect
+  // fires on mount too (same commit as the sessionStorage restore effect
+  // above, which runs first since it's declared first) -- without this
+  // guard, resuming mid-curveball would silently reset back to 'initial'
+  // immediately after restoring it.
+  const stepMountedRef = useRef(false)
   useEffect(() => {
     autoPlayedRef.current = false
+    if (stepMountedRef.current) {
+      exchangeRef.current = 'initial'
+      setExchange('initial')
+    }
+    stepMountedRef.current = true
   }, [step])
 
   useEffect(() => {
@@ -236,7 +266,11 @@ function FlightSessionPageInner() {
       const res = await fetch('/api/grade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenarioId: scenario.id, readback }),
+        body: JSON.stringify({
+          scenarioId: scenario.id,
+          readback,
+          part: exchangeRef.current === 'curveball' ? 'curveball' : undefined,
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setGradeError('Something went wrong grading that one — try again.'); return }
@@ -260,6 +294,22 @@ function FlightSessionPageInner() {
       setResult(null)
     }
   }, [result, scenario, step, totalSteps, results])
+
+  // Curveball: after a passing initial readback on a leg that carries one,
+  // play the amendment as a second exchange before this leg counts as done.
+  // Only ONE entry ever lands in `results` for a curveball leg -- the FINAL
+  // (curveball) exchange's outcome, via the normal advance() path once the
+  // second readback is graded. The initial exchange's result is deliberately
+  // never pushed to `results` on its own; it's a gate to reach the amendment,
+  // not a second graded leg.
+  const startCurveball = useCallback(() => {
+    exchangeRef.current = 'curveball'
+    setExchange('curveball')
+    setResult(null)
+    setReadback('')
+    autoPlayedRef.current = true
+    setTimeout(() => playTransmission(), 50)
+  }, [playTransmission])
 
   if (session === undefined) {
     return <div className="max-w-2xl mx-auto px-6 py-16 text-gray-400">Building your focus session…</div>
@@ -459,7 +509,9 @@ function FlightSessionPageInner() {
             <div className="flex items-center gap-2">
               <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
               <span className="text-gray-300">|</span>
-              <span className="text-sm font-medium text-gray-700">{session.title}</span>
+              <span className="text-sm font-medium text-gray-700 font-mono">
+                {session.route ? `${session.route.departure} → ${session.route.arrival}` : session.title}
+              </span>
             </div>
             <span className="text-sm text-gray-400">{oralCount > 0 ? `Leg ${step + 1} / ${totalSteps}` : `${step + 1} / ${totalSteps}`}</span>
           </div>
@@ -469,6 +521,7 @@ function FlightSessionPageInner() {
         </div>
 
         <div className="text-xs text-gray-400 mb-2 uppercase tracking-widest font-semibold">
+          {legStage && <span className="text-blue-600 mr-1.5">{legStage} ·</span>}
           Step {step + 1} · {scenario.phase}
         </div>
         <h1 className="text-xl font-semibold mb-2">{scenario.title}</h1>
@@ -491,7 +544,7 @@ function FlightSessionPageInner() {
             </div>
           </div>
           <p className="text-green-400 font-mono text-sm leading-relaxed">
-            &ldquo;{personalizeText(scenario.atcTransmission, callsign)}&rdquo;
+            &ldquo;{personalizeText(exchange === 'curveball' && scenario.curveball ? scenario.curveball.atcTransmission : scenario.atcTransmission, callsign)}&rdquo;
           </p>
         </div>
 
@@ -562,9 +615,20 @@ function FlightSessionPageInner() {
               </div>
             </div>
 
-            <button onClick={advance} className="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800">
-              {step + 1 >= totalSteps ? 'See results →' : `Next — ${getScenario(session.scenarioIds[step + 1])?.title ?? 'Continue'} →`}
-            </button>
+            {scenario.curveball && exchange === 'initial' && result.passFail !== 'FAIL' ? (
+              <div className="flex gap-3">
+                <button onClick={startCurveball} className="flex-1 bg-amber-500 text-white py-3 rounded-xl text-sm font-bold hover:bg-amber-600">
+                  Amendment incoming →
+                </button>
+                <button onClick={advance} className="px-4 py-3 rounded-xl text-sm font-medium border border-gray-300 text-gray-700 hover:border-gray-400">
+                  Skip
+                </button>
+              </div>
+            ) : (
+              <button onClick={advance} className="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800">
+                {step + 1 >= totalSteps ? 'See results →' : `Next — ${getScenario(session.scenarioIds[step + 1])?.title ?? 'Continue'} →`}
+              </button>
+            )}
           </div>
         )}
       </div>

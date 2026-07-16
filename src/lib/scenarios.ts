@@ -2413,6 +2413,25 @@ export const scenarios: Scenario[] = [
     correctReadback: "Cleared to land runway two six, Cessna One Two Three Four Five, we'll watch for the wake turbulence.",
     commonMistakes: ['Not acknowledging the wake turbulence caution', 'Missing the runway number in the readback'],
   },
+
+  // ── Multi-leg chain content — inter-island arrival leg ────────────────────
+  // Fills a real content gap found while building feature #77's Hilo-to-
+  // Honolulu chain: no pattern-phase (landing-clearance) scenario existed
+  // for PHNL anywhere in the library, only IFR/enroute/ground ones.
+  {
+    id: 'phnl-tower-landing-interisland',
+    title: 'Honolulu Tower — cleared to land, inter-island arrival',
+    phase: 'pattern',
+    difficulty: 2,
+    airport: 'PHNL',
+    facility: 'TOWER',
+    frequency: '118.100',
+    setup: "On final for Daniel K. Inouye International (PHNL) after the inter-island hop from Hilo, sequenced behind airline traffic.",
+    atcTransmission: 'Cessna One Two Three Four Five, Honolulu Tower, runway zero four right, cleared to land, traffic is a departing heavy on runway zero four left.',
+    requiredElements: ['cleared to land', 'runway zero four right', 'call sign'],
+    correctReadback: 'Cleared to land runway zero four right, Cessna One Two Three Four Five.',
+    commonMistakes: ['Not acknowledging the parallel-runway traffic call', 'Dropping the runway designator amid busy airline chatter'],
+  },
 ]
 
 export function getScenario(id: string): Scenario | undefined {

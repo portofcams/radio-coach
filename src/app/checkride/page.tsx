@@ -74,10 +74,13 @@ export default function CheckridePage() {
                     {s.oralQuestionIds?.length ? (
                       <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">Oral + Radio</span>
                     ) : null}
+                    {s.route ? (
+                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">Cross-country</span>
+                    ) : null}
                   </div>
                   <p className="text-sm text-gray-500 leading-relaxed">{s.description}</p>
                   <div className="text-xs text-gray-400 mt-2 font-mono">
-                    {s.oralQuestionIds?.length ? `${s.oralQuestionIds.length} oral + ` : ''}{s.scenarioIds.length} legs · {s.airport}
+                    {s.oralQuestionIds?.length ? `${s.oralQuestionIds.length} oral + ` : ''}{s.scenarioIds.length} legs · {s.route ? `${s.route.departure} → ${s.route.arrival}` : s.airport}
                   </div>
                 </div>
               </div>
