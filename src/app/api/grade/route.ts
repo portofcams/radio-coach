@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   }
   if (!scenario && scenarioId.startsWith('home-') && user && db) {
     const r = await db.query(
-      'SELECT callsign, home_ident, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
+      'SELECT callsign, home_ident, home_name, home_tower, home_runway, home_towered FROM rc_users WHERE id = $1',
       [user.userId],
     )
     const row = r.rows[0]

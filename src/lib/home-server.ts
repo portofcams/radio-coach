@@ -7,6 +7,7 @@ export interface HomeRow {
   home_name?: string | null
   home_tower?: string | null
   home_runway?: string | null
+  home_towered?: boolean | null
 }
 
 /** Build a HomeProfile from a rc_users row: real FAA field if ident resolves, else manual. */
@@ -18,7 +19,7 @@ export function resolveHomeProfile(row: HomeRow | undefined | null): HomeProfile
     if (field) return { mode: 'real', ident: row.home_ident.toUpperCase(), field: { ...field } }
   }
   if (row.home_name && row.home_tower && row.home_runway) {
-    return { mode: 'manual', name: row.home_name, tower: row.home_tower, runway: row.home_runway }
+    return { mode: 'manual', name: row.home_name, tower: row.home_tower, runway: row.home_runway, towered: row.home_towered ?? undefined }
   }
   return null
 }

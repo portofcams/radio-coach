@@ -12,6 +12,9 @@ export interface HomeField {
   name: string
   tower: string
   runway: string
+  /** false = non-towered (CTAF self-announce scenarios). Undefined/true = towered
+   *  (unchanged default) -- existing manual-mode rows have no value for this yet. */
+  towered?: boolean
 }
 
 const DIGITS: Record<string, string> = {
@@ -45,6 +48,98 @@ export function homeFieldScenarios(h: HomeField, callsign?: string | null): Scen
   const rwRaw = h.runway.trim().toUpperCase()
   const rw = runwayPhonetic(rwRaw)
   const cs = spokenCallsign(callsign)
+
+  if (h.towered === false) {
+    const ctafBase = {
+      phase: 'pattern' as const,
+      airport: '',
+      facility: 'CTAF' as const,
+      frequency: freq,
+      difficulty: 2 as const,
+    }
+    return [
+      {
+        ...ctafBase,
+        id: 'home-ctaf-departure',
+        title: `${name} CTAF — departing`,
+        setup: `Non-towered ${name}. Ready to depart runway ${rwRaw} on CTAF ${freq}. Make your self-announce call.`,
+        atcTransmission: `${name} traffic, Skyhawk Four Five X-ray, ten miles south, inbound full stop, ${name}.`,
+        requiredElements: ['departing', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, departing runway ${rw}, ${name}.`,
+        commonMistakes: ['Forgetting to state the field name', 'Not announcing the runway'],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-inbound',
+        title: `${name} CTAF — inbound`,
+        setup: `Ten miles out from non-towered ${name}, CTAF ${freq}. Make your inbound self-announce.`,
+        atcTransmission: `${name} traffic, Cherokee Six Two Mike, left base runway ${rw}, ${name}.`,
+        requiredElements: ['inbound', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, ten miles south, inbound landing runway ${rw}, ${name}.`,
+        commonMistakes: ['Not stating your distance and direction', 'Omitting the field-name bookend'],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-downwind',
+        title: `${name} CTAF — left downwind`,
+        setup: `Flying the pattern at non-towered ${name}. Announce your downwind on CTAF ${freq}.`,
+        atcTransmission: `${name} traffic, Cessna Eight Seven Bravo, turning base runway ${rw}, ${name}.`,
+        requiredElements: ['left downwind', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, left downwind runway ${rw}, ${name}.`,
+        commonMistakes: ['Omitting the field name at the end', 'Vague position'],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-clear',
+        title: `${name} CTAF — clear of the runway`,
+        setup: `You've just landed and exited runway ${rwRaw} at ${name}. Announce clear on CTAF ${freq}.`,
+        atcTransmission: `${name} traffic, Bonanza Three Two Quebec, entering left downwind runway ${rw}, ${name}.`,
+        requiredElements: ['clear of', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, clear of runway ${rw}, ${name}.`,
+        commonMistakes: ['Not reporting clear so others know the runway is free', 'Omitting call sign'],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-entry',
+        title: `${name} CTAF — entering the pattern`,
+        setup: `Approaching non-towered ${name}, CTAF ${freq}. You're planning to enter on the 45 for left downwind. Announce your entry so traffic already in the pattern knows you're joining.`,
+        atcTransmission: `${name} traffic, Cirrus Nine Four Delta, left downwind runway ${rw}, ${name}.`,
+        requiredElements: ['entering', 'left downwind', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, entering left downwind, runway ${rw}, ${name}.`,
+        commonMistakes: [
+          "Joining the pattern without an entry call — traffic already downwind has no idea you're there",
+          'Dropping the word "entering," so it sounds like you have been in the pattern all along',
+        ],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-sequence',
+        title: `${name} CTAF — sequencing behind traffic`,
+        setup: `Inbound to non-towered ${name}, CTAF ${freq}. Another aircraft just called left base ahead of you for the same runway. Acknowledge it and sequence yourself in behind.`,
+        atcTransmission: `${name} traffic, Cherokee Six Two Mike, left base runway ${rw}, ${name}.`,
+        requiredElements: ['traffic in sight/number two', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, traffic in sight, number two, landing runway ${rw}, ${name}.`,
+        commonMistakes: [
+          'Not acknowledging the traffic ahead of you',
+          'Cutting in front of an aircraft already established on the same runway',
+        ],
+      },
+      {
+        ...ctafBase,
+        id: 'home-ctaf-nordo',
+        title: `${name} CTAF — non-radio traffic in the pattern`,
+        setup: `Inbound to non-towered ${name}, CTAF ${freq}. Another pilot just advised a glider is working the pattern with no radio — you may not hear it, and it won't hear you. Make a full, unambiguous self-announce and keep looking outside.`,
+        atcTransmission: `${name} traffic, be advised, glider in the pattern, no radio, ${name}.`,
+        requiredElements: ['position and altitude', 'inbound', `runway ${rw}`, 'call sign'],
+        correctReadback: `${name} traffic, ${cs}, five miles south, one thousand five hundred, inbound landing runway ${rw}, ${name}.`,
+        commonMistakes: [
+          'Assuming a quiet frequency means the pattern is clear',
+          'Skipping altitude — non-radio traffic still needs vertical separation from you',
+        ],
+      },
+    ]
+  }
+
   const base = {
     phase: 'pattern' as const,
     airport: '',

@@ -9,7 +9,7 @@ import type { Scenario } from './types'
  */
 export type HomeProfile =
   | { mode: 'real'; ident: string; field: AirportData }
-  | { mode: 'manual'; name: string; tower: string; runway: string }
+  | { mode: 'manual'; name: string; tower: string; runway: string; towered?: boolean }
 
 export function homeScenarios(home: HomeProfile, callsign?: string | null): Scenario[] {
   return home.mode === 'real'

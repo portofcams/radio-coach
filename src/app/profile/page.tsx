@@ -50,7 +50,7 @@ export default function ProfilePage() {
   const [lookup, setLookup] = useState<FieldSummary | null>(null)
   const [lookupErr, setLookupErr] = useState('')
   const [looking, setLooking] = useState(false)
-  const [manual, setManual] = useState({ name: '', tower: '', runway: '' })
+  const [manual, setManual] = useState({ name: '', tower: '', runway: '', towered: true })
   const [showManual, setShowManual] = useState(false)
   const [savingHome, setSavingHome] = useState(false)
   const [readiness, setReadiness] = useState<Readiness | null>(null)
@@ -76,7 +76,7 @@ export default function ProfilePage() {
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
         if (me.user.home?.mode === 'real') setIdent(me.user.home.ident)
-        else if (me.user.home?.mode === 'manual') { setManual(me.user.home); setShowManual(true) }
+        else if (me.user.home?.mode === 'manual') { setManual({ ...me.user.home, towered: me.user.home.towered ?? true }); setShowManual(true) }
         setBranding({ orgName: me.user.cfiOrgName ?? '', logoUrl: me.user.cfiLogoUrl ?? '' })
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
@@ -464,11 +464,21 @@ export default function ProfilePage() {
           </button>
           {showManual && (
             <div className="mt-2">
+              <div className="flex items-center gap-1.5 mb-2">
+                <button onClick={() => setManual((h) => ({ ...h, towered: true }))}
+                  className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${manual.towered ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}>
+                  Towered
+                </button>
+                <button onClick={() => setManual((h) => ({ ...h, towered: false }))}
+                  className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${!manual.towered ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}>
+                  Non-towered (CTAF)
+                </button>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input value={manual.name} onChange={(e) => setManual((h) => ({ ...h, name: e.target.value.slice(0, 40) }))}
                   placeholder="Field name" className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
                 <input value={manual.tower} onChange={(e) => setManual((h) => ({ ...h, tower: e.target.value.replace(/[^0-9.]/g, '').slice(0, 12) }))}
-                  placeholder="Tower freq" className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900" />
+                  placeholder={manual.towered ? 'Tower freq' : 'CTAF freq'} className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900" />
                 <input value={manual.runway} onChange={(e) => setManual((h) => ({ ...h, runway: e.target.value.toUpperCase().replace(/[^0-9LRC]/g, '').slice(0, 6) }))}
                   placeholder="Runway (24)" className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900" />
               </div>

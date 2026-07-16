@@ -93,12 +93,16 @@ export async function initDB(): Promise<void> {
 
   // Home-field personalization. home_ident → real FAA field (preferred);
   // home_name/tower/runway → manual lean fallback for unlisted fields.
+  // home_towered: manual-mode only -- false = non-towered (CTAF scenarios).
+  // NULL (all pre-existing rows) is treated as "towered", matching the only
+  // behavior that existed before this column was added -- no backfill needed.
   await db.query(`
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS home_name TEXT,
       ADD COLUMN IF NOT EXISTS home_tower TEXT,
       ADD COLUMN IF NOT EXISTS home_runway TEXT,
-      ADD COLUMN IF NOT EXISTS home_ident TEXT
+      ADD COLUMN IF NOT EXISTS home_ident TEXT,
+      ADD COLUMN IF NOT EXISTS home_towered BOOLEAN
   `)
 
   // Cache of real taxiway geometry per field (fetched once from OpenStreetMap).

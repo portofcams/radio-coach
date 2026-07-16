@@ -293,6 +293,50 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       commonMistakes: ['Not reporting clear so others know the runway is free', 'Omitting call sign'],
       ...(pack ? { pack } : {}),
     },
+    {
+      id: 'home-ctaf-entry', title: `${name} CTAF — entering the pattern`,
+      phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'CTAF', frequency: ctaf,
+      realField: baseDiagram,
+      setup: `Approaching non-towered ${name} (${field.icao})${ctafNote}. You're planning to enter on the 45 for left downwind. Announce your entry so traffic already in the pattern knows you're joining.`,
+      atcTransmission: `${name} traffic, Cirrus Nine Four Delta, left downwind runway ${rw}, ${name}.`,
+      requiredElements: ['entering', 'left downwind', `runway ${rw}`, 'call sign'],
+      correctReadback: `${name} traffic, ${cs}, entering left downwind, runway ${rw}, ${name}.`,
+      commonMistakes: [
+        "Joining the pattern without an entry call — traffic already downwind has no idea you're there",
+        'Announcing a leg without the word "entering," so it sounds like you have been in the pattern all along',
+      ],
+      ...(pack ? { pack } : {}),
+    },
+    {
+      id: 'home-ctaf-sequence', title: `${name} CTAF — sequencing behind traffic`,
+      phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'CTAF', frequency: ctaf,
+      realField: baseDiagram,
+      setup: `Inbound to non-towered ${name}${ctafNote}. Another aircraft just called left base ahead of you for the same runway. Acknowledge it and sequence yourself in behind.`,
+      atcTransmission: `${name} traffic, Cherokee Six Two Mike, left base runway ${rw}, ${name}.`,
+      requiredElements: ['traffic in sight/number two', `runway ${rw}`, 'call sign'],
+      correctReadback: `${name} traffic, ${cs}, traffic in sight, number two, landing runway ${rw}, ${name}.`,
+      commonMistakes: [
+        'Not acknowledging the traffic ahead of you',
+        'Cutting in front of an aircraft already established on the same runway',
+        'Announcing your own position without ever mentioning the traffic you just heard',
+      ],
+      ...(pack ? { pack } : {}),
+    },
+    {
+      id: 'home-ctaf-nordo', title: `${name} CTAF — non-radio traffic in the pattern`,
+      phase: 'pattern', difficulty: 2, airport: field.icao, facility: 'CTAF', frequency: ctaf,
+      realField: baseDiagram,
+      setup: `Inbound to non-towered ${name}${ctafNote}. Another pilot just advised a glider is working the pattern with no radio — you may not hear it, and it won't hear you. Make a full, unambiguous self-announce and keep looking outside; CTAF is a courtesy, not a clearance.`,
+      atcTransmission: `${name} traffic, be advised, glider in the pattern, no radio, ${name}.`,
+      requiredElements: ['position and altitude', 'inbound', `runway ${rw}`, 'call sign'],
+      correctReadback: `${name} traffic, ${cs}, five miles south, one thousand five hundred, inbound landing runway ${rw}, ${name}.`,
+      commonMistakes: [
+        'Assuming a quiet frequency means the pattern is clear',
+        'Skipping altitude — non-radio traffic still needs vertical separation from you',
+        'Relying on the radio instead of looking outside for traffic that cannot answer',
+      ],
+      ...(pack ? { pack } : {}),
+    },
   ]
 }
 

@@ -17,6 +17,7 @@ export async function PUT(req: NextRequest) {
   const name = clean(body.name, 40)
   const tower = clean(body.tower, 12)
   const runway = clean(body.runway, 6).toUpperCase()
+  const towered = typeof body.towered === 'boolean' ? body.towered : true
 
   const db = getPool()
   if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
@@ -25,7 +26,7 @@ export async function PUT(req: NextRequest) {
   const field = ident ? lookupAirport(ident) : null
   if (ident && field) {
     await db.query(
-      'UPDATE rc_users SET home_ident = $1, home_name = NULL, home_tower = NULL, home_runway = NULL WHERE id = $2',
+      'UPDATE rc_users SET home_ident = $1, home_name = NULL, home_tower = NULL, home_runway = NULL, home_towered = NULL WHERE id = $2',
       [ident, user.userId],
     )
     // Fetch + cache real taxiway geometry for this field (best-effort).
@@ -34,18 +35,18 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'unknown_ident', ident }, { status: 404 })
   } else if (name && tower && runway) {
     await db.query(
-      'UPDATE rc_users SET home_ident = NULL, home_name = $1, home_tower = $2, home_runway = $3 WHERE id = $4',
-      [name, tower, runway, user.userId],
+      'UPDATE rc_users SET home_ident = NULL, home_name = $1, home_tower = $2, home_runway = $3, home_towered = $4 WHERE id = $5',
+      [name, tower, runway, towered, user.userId],
     )
   } else {
     await db.query(
-      'UPDATE rc_users SET home_ident = NULL, home_name = NULL, home_tower = NULL, home_runway = NULL WHERE id = $1',
+      'UPDATE rc_users SET home_ident = NULL, home_name = NULL, home_tower = NULL, home_runway = NULL, home_towered = NULL WHERE id = $1',
       [user.userId],
     )
   }
 
   const r = await db.query(
-    'SELECT home_ident, home_name, home_tower, home_runway FROM rc_users WHERE id = $1',
+    'SELECT home_ident, home_name, home_tower, home_runway, home_towered FROM rc_users WHERE id = $1',
     [user.userId],
   )
   return NextResponse.json({ home: resolveHomeProfile(r.rows[0]) })
