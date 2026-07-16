@@ -34,6 +34,21 @@ export default async function RegionHub({ params }: { params: Promise<{ state: s
           Real tower, ground, ATIS and clearance frequencies for {list.length} towered{' '}
           {name} airport{list.length === 1 ? '' : 's'} — then practice the calls at your home field, graded instantly.
         </p>
+        {(code === 'HI' || code === 'AK') && (
+          <a
+            href={`/train?pack=${code === 'HI' ? 'hawaii' : 'alaska'}`}
+            className="block mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 hover:border-blue-400 transition-colors"
+          >
+            <span className="font-mono text-[10px] font-bold tracking-widest text-blue-700">
+              {code === 'HI' ? 'HAWAII PACK' : 'ALASKA PACK'}
+            </span>
+            <span className="block text-sm text-blue-900 mt-0.5">
+              {code === 'HI'
+                ? `Practice real ${name} radio calls — inter-island clearances, tower checkins, CTAF self-announce, and more →`
+                : `Practice real ${name} radio calls — bush-strip self-announce, tower checkins, flight following, and more →`}
+            </span>
+          </a>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
           {list.map((a) => (
             <a key={a.ident} href={`/airports/${a.ident}`} className="border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-400 transition-colors">

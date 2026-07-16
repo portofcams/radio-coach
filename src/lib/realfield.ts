@@ -97,6 +97,11 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
   if (!rwy) return []
   const name = field.radioName || shortName(field.name)
   const cs = spokenCallsign(callsign)
+  // Regional-flavor badge for the HI/AK marketing pack (feature #89) — any real
+  // Hawaii or Alaska field a pilot sets as their home field gets tagged too, not
+  // just the 16 curated static scenarios. Purely cosmetic: does not change
+  // grading, does not exclude these from adaptive/duel/daily pools (see Scenario.pack).
+  const pack = field.region === 'US-HI' ? 'hawaii' as const : field.region === 'US-AK' ? 'alaska' as const : undefined
   const rwRaw = rwy.le
   const rw = runwayPhonetic(rwy.le)
   const diagramRunways = toDiagramRunways(field.runways)
@@ -115,6 +120,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['cleared for takeoff', `runway ${rw}`, 'call sign'],
         correctReadback: `Cleared for takeoff runway ${rw}, ${cs}.`,
         commonMistakes: ['Forgetting to read back the runway', 'Omitting your call sign'],
+        ...(pack ? { pack } : {}),
       },
       {
         id: 'home-lineup-wait', title: `${name} Tower — line up and wait`,
@@ -125,6 +131,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['line up and wait', `runway ${rw}`, 'call sign'],
         correctReadback: `Line up and wait runway ${rw}, ${cs}.`,
         commonMistakes: ['Reading it back as a takeoff clearance', 'Dropping the runway'],
+        ...(pack ? { pack } : {}),
       },
       {
         id: 'home-pattern', title: `${name} Tower — enter the pattern`,
@@ -135,6 +142,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['left downwind', `runway ${rw}`, 'call sign'],
         correctReadback: `Enter left downwind runway ${rw}, ${cs}.`,
         commonMistakes: ['Reading back the wrong pattern leg', 'Omitting the runway'],
+        ...(pack ? { pack } : {}),
       },
       {
         id: 'home-landing', title: `${name} Tower — cleared to land`,
@@ -145,6 +153,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['cleared to land', `runway ${rw}`, 'call sign'],
         correctReadback: `Cleared to land runway ${rw}, ${cs}.`,
         commonMistakes: ['Not reading back the landing clearance', 'Dropping the runway number'],
+        ...(pack ? { pack } : {}),
       },
     ]
 
@@ -163,6 +172,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['runway heading', 'altitude', `departure ${depSpoken}`, `squawk ${squawk}`, 'call sign'],
         correctReadback: `Runway heading, maintain VFR at or below three thousand five hundred, departure ${depSpoken}, squawk ${squawk}, ${cs}.`,
         commonMistakes: ['Not reading back the squawk code', 'Garbling the departure frequency', 'Dropping the altitude restriction'],
+        ...(pack ? { pack } : {}),
       })
     }
 
@@ -178,6 +188,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['altimeter three zero zero one', 'information bravo', 'call sign'],
         correctReadback: `Altimeter three zero zero one, information Bravo, ${cs}.`,
         commonMistakes: ['Not reading back the altimeter', 'Forgetting the information code'],
+        ...(pack ? { pack } : {}),
       })
     }
 
@@ -198,6 +209,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: [`runway ${rw}`, ...(via ? [`via ${NATO[taxiRef!]}`] : []), `hold short runway ${hsRw}`, 'call sign'],
         correctReadback: `Taxi to runway ${rw}${via}, hold short runway ${hsRw}, ${cs}.`,
         commonMistakes: ['Dropping the hold-short — the #1 readback DPEs fail you on', 'Saying "hold short" without the runway number', 'Forgetting your call sign'],
+        ...(pack ? { pack } : {}),
       })
     }
 
@@ -212,6 +224,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
         requiredElements: ['climb and maintain', 'four thousand five hundred', 'call sign'],
         correctReadback: `Climb and maintain four thousand five hundred, ${cs}.`,
         commonMistakes: ['Not reading back the assigned altitude', 'Forgetting your call sign'],
+        ...(pack ? { pack } : {}),
       })
     }
 
@@ -225,6 +238,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       requiredElements: ['going around', 'call sign'],
       correctReadback: `Going around, ${cs}.`,
       commonMistakes: ['Continuing the approach', 'Long-winded readback — fly first, talk second'],
+      ...(pack ? { pack } : {}),
     })
 
     return list
@@ -244,6 +258,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       requiredElements: ['departing', `runway ${rw}`, 'call sign'],
       correctReadback: `${name} traffic, ${cs}, departing runway ${rw}, ${name}.`,
       commonMistakes: ['Forgetting to state the field name', 'Not announcing the runway'],
+      ...(pack ? { pack } : {}),
     },
     {
       id: 'home-ctaf-inbound', title: `${name} CTAF — inbound`,
@@ -254,6 +269,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       requiredElements: ['inbound', `runway ${rw}`, 'call sign'],
       correctReadback: `${name} traffic, ${cs}, ten miles south, inbound landing runway ${rw}, ${name}.`,
       commonMistakes: ['Not stating your distance and direction', 'Omitting the field-name bookend'],
+      ...(pack ? { pack } : {}),
     },
     {
       id: 'home-ctaf-downwind', title: `${name} CTAF — left downwind`,
@@ -264,6 +280,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       requiredElements: ['left downwind', `runway ${rw}`, 'call sign'],
       correctReadback: `${name} traffic, ${cs}, left downwind runway ${rw}, ${name}.`,
       commonMistakes: ['Omitting the field name at the end', 'Vague position'],
+      ...(pack ? { pack } : {}),
     },
     {
       id: 'home-ctaf-clear', title: `${name} CTAF — clear of the runway`,
@@ -274,6 +291,7 @@ export function realFieldScenarios(field: AirportData, callsign?: string | null)
       requiredElements: ['clear of', `runway ${rw}`, 'call sign'],
       correctReadback: `${name} traffic, ${cs}, clear of runway ${rw}, ${name}.`,
       commonMistakes: ['Not reporting clear so others know the runway is free', 'Omitting call sign'],
+      ...(pack ? { pack } : {}),
     },
   ]
 }

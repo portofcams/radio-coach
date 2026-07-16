@@ -46,6 +46,7 @@ export default function TrainPage() {
   const [facilityFilter, setFacilityFilter] = useState<Facility | null>(null)
   const [diffFilter, setDiffFilter] = useState<1 | 2 | 3 | null>(null)
   const [heliOnly, setHeliOnly] = useState(false)
+  const [packFilter, setPackFilter] = useState<'hawaii' | 'alaska' | null>(null)
   const [homeList, setHomeList] = useState<Scenario[]>([])
   const [homeChecked, setHomeChecked] = useState(false)
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
@@ -55,6 +56,14 @@ export default function TrainPage() {
     try {
       if (!localStorage.getItem('wilco_train_seen')) setShowFirstRunTip(true)
     } catch { /* localStorage unavailable (private mode) -- skip the tip, not worth failing over */ }
+  }, [])
+
+  // Optional ?pack=hawaii|alaska deep link (e.g. from marketing copy). Read
+  // from window.location, not useSearchParams, to avoid a new Suspense
+  // boundary -- same convention as the ?duel= param in train/scenario/page.tsx.
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get('pack')
+    if (p === 'hawaii' || p === 'alaska') setPackFilter(p)
   }, [])
 
   const dismissFirstRunTip = () => {
@@ -177,8 +186,8 @@ export default function TrainPage() {
             {/* Facility filter */}
             <div className="flex flex-wrap gap-1.5">
               <button
-                onClick={() => { setFacilityFilter(null); setHeliOnly(false) }}
-                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${!facilityFilter && !heliOnly ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                onClick={() => { setFacilityFilter(null); setHeliOnly(false); setPackFilter(null) }}
+                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${!facilityFilter && !heliOnly && !packFilter ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
               >
                 All
               </button>
@@ -197,6 +206,18 @@ export default function TrainPage() {
               >
                 HELI
               </button>
+              <button
+                onClick={() => { setPackFilter(p => p === 'hawaii' ? null : 'hawaii'); setHeliOnly(false) }}
+                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${packFilter === 'hawaii' ? 'text-blue-700 border-blue-300 bg-blue-50 font-bold' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+              >
+                HI
+              </button>
+              <button
+                onClick={() => { setPackFilter(p => p === 'alaska' ? null : 'alaska'); setHeliOnly(false) }}
+                className={`text-xs font-mono px-2.5 py-1 rounded-md border transition-colors ${packFilter === 'alaska' ? 'text-indigo-700 border-indigo-300 bg-indigo-50 font-bold' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+              >
+                AK
+              </button>
             </div>
             {/* Difficulty filter + active count */}
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -206,14 +227,15 @@ export default function TrainPage() {
                   {DIFF_LABELS[d].label}
                 </button>
               ))}
-              {(facilityFilter || diffFilter) && (() => {
+              {(facilityFilter || diffFilter || packFilter) && (() => {
                 const n = scenarios
                   .filter(s => !facilityFilter || s.facility === facilityFilter)
-                  .filter(s => !diffFilter || s.difficulty === diffFilter).length
+                  .filter(s => !diffFilter || s.difficulty === diffFilter)
+                  .filter(s => !packFilter || s.pack === packFilter).length
                 return (
                   <span className="ml-auto text-xs text-gray-400 font-mono">
                     {n} of {scenarios.length}
-                    <button onClick={() => { setFacilityFilter(null); setDiffFilter(null) }} className="ml-2 text-gray-400 hover:text-gray-700">✕</button>
+                    <button onClick={() => { setFacilityFilter(null); setDiffFilter(null); setPackFilter(null) }} className="ml-2 text-gray-400 hover:text-gray-700">✕</button>
                   </span>
                 )
               })()}
@@ -224,7 +246,7 @@ export default function TrainPage() {
         {/* Scenarios tab */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
-            {!facilityFilter && !diffFilter && !heliOnly && (() => {
+            {!facilityFilter && !diffFilter && !heliOnly && !packFilter && (() => {
               const c = getCallOfTheDay()
               const done = completed[c.id]
               return (
@@ -239,7 +261,7 @@ export default function TrainPage() {
                 </Link>
               )
             })()}
-            {assignments.length > 0 && !facilityFilter && !diffFilter && !heliOnly && (
+            {assignments.length > 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
               <div>
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Assigned by your CFI</h2>
                 <div className="space-y-2">
@@ -270,7 +292,7 @@ export default function TrainPage() {
                 </div>
               </div>
             )}
-            {homeList.length > 0 && !facilityFilter && !diffFilter && !heliOnly && (
+            {homeList.length > 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
               <div id="home-field">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">
@@ -288,6 +310,8 @@ export default function TrainPage() {
                             <div className="font-medium group-hover:text-gray-900 truncate">{s.title}</div>
                             <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                               <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-cyan-600 text-white leading-4 tracking-wide">HOME</span>
+                              {s.pack === 'hawaii' && <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-blue-600 text-white leading-4 tracking-wide">HI</span>}
+                              {s.pack === 'alaska' && <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-indigo-600 text-white leading-4 tracking-wide">AK</span>}
                               {s.frequency && <span className="font-mono text-xs text-gray-500">{s.frequency}</span>}
                             </div>
                           </div>
@@ -299,7 +323,7 @@ export default function TrainPage() {
                 </div>
               </div>
             )}
-            {homeChecked && homeList.length === 0 && !facilityFilter && !diffFilter && !heliOnly && (
+            {homeChecked && homeList.length === 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
               <div id="home-field" className="border border-dashed border-cyan-300 bg-cyan-50/40 rounded-xl px-4 py-4 mb-2">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
@@ -315,6 +339,7 @@ export default function TrainPage() {
                 .filter((s) => s.category === 'helicopter')
                 .filter((s) => !facilityFilter || s.facility === facilityFilter)
                 .filter((s) => !diffFilter || s.difficulty === diffFilter)
+                .filter((s) => !packFilter || s.pack === packFilter)
               if (!heli.length) return null
               return (
                 <div>
@@ -348,6 +373,7 @@ export default function TrainPage() {
                 .filter((s) => s.category !== 'helicopter')
                 .filter((s) => !facilityFilter || s.facility === facilityFilter)
                 .filter((s) => !diffFilter || s.difficulty === diffFilter)
+                .filter((s) => !packFilter || s.pack === packFilter)
               if (!phaseScenarios.length) return null
               return (
                 <div key={phase}>
@@ -375,6 +401,8 @@ export default function TrainPage() {
                                 {s.tier === 'pro' && (
                                   <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-gray-900 text-white leading-4 tracking-wide">PRO</span>
                                 )}
+                                {s.pack === 'hawaii' && <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-blue-600 text-white leading-4 tracking-wide">HI</span>}
+                                {s.pack === 'alaska' && <span className="font-mono text-[10px] font-bold px-1.5 py-0 rounded bg-indigo-600 text-white leading-4 tracking-wide">AK</span>}
                                 {s.airport && <span className="font-mono text-xs text-blue-600">{s.airport}</span>}
                                 {s.facility && (
                                   <span className={`font-mono text-xs px-1.5 py-0 rounded border leading-4 ${

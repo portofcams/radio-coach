@@ -80,6 +80,12 @@ export interface Scenario {
   tier?: 'pro'
   /** optional track grouping, e.g. the helicopter phraseology set */
   category?: 'helicopter'
+  /** optional regional-flavor content tag (marketing/browse grouping). Unlike
+   * `category`, a `pack` scenario is NOT excluded from the adaptive picker,
+   * duel pool, or Call of the Day — it's ordinary phraseology at a real
+   * regional field, not a different aircraft class, so it belongs in the
+   * general pool. */
+  pack?: 'hawaii' | 'alaska'
   /** optional second exchange: ATC throws an amendment after the first readback */
   curveball?: {
     setup?: string
