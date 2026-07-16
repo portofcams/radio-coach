@@ -378,6 +378,20 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Auto-focus — one-tap composite session, always shown (matches /api/bootcamp's
+            own always-resolves-via-fallback behavior, even for brand-new accounts) */}
+        <div className="border border-gray-200 rounded-xl p-5 mb-6 flex items-center justify-between gap-4">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Auto-focus</div>
+            <div className="text-sm text-gray-600">
+              {weakspots.length > 0 ? 'One tap, your 3 weakest categories back to back.' : 'One tap, the calls most pilots trip on — tunes to you after a few graded scenarios.'}
+            </div>
+          </div>
+          <a href="/session?id=drill-auto" className="shrink-0 text-sm bg-gray-900 text-white rounded-lg px-4 py-2.5 font-medium hover:bg-gray-800 transition-colors whitespace-nowrap">
+            Drill my weakest →
+          </a>
+        </div>
+
         {/* Weak spots — adaptive, mined from graded scenarios */}
         {weakspots.length > 0 && (
           <div className="border border-gray-200 rounded-xl p-5 mb-6">

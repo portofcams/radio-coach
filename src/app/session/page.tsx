@@ -21,12 +21,47 @@ export default function FlightSessionPage() {
 function FlightSessionPageInner() {
   const id = useSearchParams().get('id') ?? ''
   const router = useRouter()
-  const session = getFlightSession(id)
+  const isDrill = id.startsWith('drill-')
+  // Three-state: undefined = still loading (only the async drill-auto path
+  // ever goes through this), null = resolved, not found, FlightSession =
+  // resolved, found. getFlightSession's own `undefined` return ("not found")
+  // is normalized to `null` here so it's never confused with "still loading".
+  const [session, setSession] = useState<ReturnType<typeof getFlightSession> | null | undefined>(
+    () => (id === 'drill-auto' ? undefined : (getFlightSession(id) ?? null))
+  )
+
+  useEffect(() => {
+    let cancelled = false
+    if (id === 'drill-auto') {
+      setSession(undefined)
+      fetch('/api/bootcamp')
+        .then((r) => r.json())
+        .then((d: { blocks?: Array<{ scenarios: Array<{ id: string }> }> }) => {
+          if (cancelled) return
+          const ids = Array.from(new Set(
+            (d.blocks ?? []).flatMap((b) => b.scenarios.slice(0, 2).map((s) => s.id))
+          ))
+          setSession(ids.length > 0 ? {
+            id: 'drill-auto',
+            title: 'Weak-spot focus session',
+            description: 'Your weakest categories, back to back.',
+            airport: '',
+            difficulty: 'intermediate',
+            scenarioIds: ids,
+          } : null)
+        })
+        .catch(() => { if (!cancelled) setSession(null) })
+    } else {
+      setSession(getFlightSession(id) ?? null)
+    }
+    return () => { cancelled = true }
+  }, [id])
 
   const [step, setStep] = useState(0)
   const [readback, setReadback] = useState('')
   const [grading, setGrading] = useState(false)
   const [result, setResult] = useState<GradeResult | null>(null)
+  const [gradeError, setGradeError] = useState<string | null>(null)
   const [results, setResults] = useState<Array<{ scenarioId: string; score: number; passed: boolean; missed: string[] }>>([])
   const [ttsLoading, setTtsLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -91,6 +126,7 @@ function FlightSessionPageInner() {
   const submitReadback = useCallback(async () => {
     if (!scenario || !readback.trim() || grading) return
     setGrading(true)
+    setGradeError(null)
     try {
       const res = await fetch('/api/grade', {
         method: 'POST',
@@ -98,7 +134,10 @@ function FlightSessionPageInner() {
         body: JSON.stringify({ scenarioId: scenario.id, readback }),
       })
       const data = await res.json()
+      if (!res.ok) { setGradeError('Something went wrong grading that one — try again.'); return }
       setResult(data)
+    } catch {
+      setGradeError('Something went wrong grading that one — try again.')
     } finally {
       setGrading(false)
     }
@@ -117,6 +156,10 @@ function FlightSessionPageInner() {
     }
   }, [result, scenario, step, totalSteps, results])
 
+  if (session === undefined) {
+    return <div className="max-w-2xl mx-auto px-6 py-16 text-gray-400">Building your focus session…</div>
+  }
+
   if (!session) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-16 text-gray-500">
@@ -125,14 +168,20 @@ function FlightSessionPageInner() {
     )
   }
 
-  // Checkrides are a Solo Pilot feature — free users get sent to the launcher to upgrade
+  // Checkrides AND weak-spot drills are a Solo Pilot feature — free users get sent to upgrade
   if (entLoaded && !pro) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="max-w-sm w-full text-center">
-          <h1 className="text-2xl font-semibold mb-2">Checkride mode</h1>
-          <p className="text-gray-500 mb-6">Full-flight checkrides are a Solo Pilot feature. Go unlimited to fly them and see your readiness verdict.</p>
-          <a href="/checkride" className="inline-block bg-gray-900 hover:bg-black text-white font-semibold px-6 py-3 rounded-xl transition-colors">View checkrides</a>
+          <h1 className="text-2xl font-semibold mb-2">{isDrill ? 'Weak-spot drills' : 'Checkride mode'}</h1>
+          <p className="text-gray-500 mb-6">
+            {isDrill
+              ? 'Targeted, back-to-back drills on your weakest elements are a Solo Pilot feature. Go unlimited to auto-focus your practice.'
+              : 'Full-flight checkrides are a Solo Pilot feature. Go unlimited to fly them and see your readiness verdict.'}
+          </p>
+          <a href={isDrill ? '/profile' : '/checkride'} className="inline-block bg-gray-900 hover:bg-black text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+            {isDrill ? 'See my weak spots' : 'View checkrides'}
+          </a>
         </div>
       </main>
     )
@@ -143,11 +192,14 @@ function FlightSessionPageInner() {
     const passed = results.filter((r) => r.passed).length
     const failed = results.filter((r) => !r.passed)
     const avg = Math.round(results.reduce((s, r) => s + r.score, 0) / total)
-    // checkride-style verdict: any failed leg is a "below standard" item
-    const verdict =
-      failed.length === 0 ? { label: 'CHECKRIDE READY', tone: 'green', line: 'Every leg to standard — your radio work is checkride-ready.' }
-      : failed.length === 1 && avg >= 80 ? { label: 'ALMOST THERE', tone: 'amber', line: 'One leg below standard. Clean that up and you are ready.' }
-      : { label: 'NOT YET', tone: 'red', line: `${failed.length} legs below standard. Drill these, then re-fly.` }
+    // checkride-style verdict: any failed leg/scenario is a "below standard" item
+    const verdict = isDrill
+      ? (failed.length === 0 ? { label: 'WEAK SPOTS CLEARED', tone: 'green', line: 'Every scenario to standard — nice work.' }
+        : failed.length === 1 && avg >= 80 ? { label: 'ALMOST THERE', tone: 'amber', line: 'One scenario below standard. Clean that up and you are set.' }
+        : { label: 'KEEP DRILLING', tone: 'red', line: `${failed.length} scenarios below standard. Drill these, then re-fly.` })
+      : (failed.length === 0 ? { label: 'CHECKRIDE READY', tone: 'green', line: 'Every leg to standard — your radio work is checkride-ready.' }
+        : failed.length === 1 && avg >= 80 ? { label: 'ALMOST THERE', tone: 'amber', line: 'One leg below standard. Clean that up and you are ready.' }
+        : { label: 'NOT YET', tone: 'red', line: `${failed.length} legs below standard. Drill these, then re-fly.` })
     const toneBg = verdict.tone === 'green' ? 'bg-green-500' : verdict.tone === 'amber' ? 'bg-amber-500' : 'bg-red-500'
     const toneText = verdict.tone === 'green' ? 'text-green-600' : verdict.tone === 'amber' ? 'text-amber-600' : 'text-red-600'
 
@@ -157,12 +209,12 @@ function FlightSessionPageInner() {
           <div className={`mx-auto mb-3 w-14 h-14 rounded-full flex items-center justify-center text-white ${toneBg}`}>
             <CheckIcon className="text-2xl" />
           </div>
-          <div className="font-mono text-[11px] uppercase tracking-widest text-gray-400 mb-1">Checkride report · {session.title}</div>
+          <div className="font-mono text-[11px] uppercase tracking-widest text-gray-400 mb-1">{isDrill ? 'Drill report' : 'Checkride report'} · {session.title}</div>
           <h1 className={`text-3xl font-bold mb-1 ${toneText}`}>{verdict.label}</h1>
           <p className="text-gray-500 text-sm mb-5">{verdict.line}</p>
 
           <div className="flex items-center justify-center gap-6 mb-6">
-            <div><div className="text-2xl font-bold">{passed}/{total}</div><div className="text-xs text-gray-400 uppercase tracking-wide">legs to standard</div></div>
+            <div><div className="text-2xl font-bold">{passed}/{total}</div><div className="text-xs text-gray-400 uppercase tracking-wide">{isDrill ? 'scenarios' : 'legs'} to standard</div></div>
             <div><div className="text-2xl font-bold">{avg}</div><div className="text-xs text-gray-400 uppercase tracking-wide">avg score</div></div>
           </div>
 
@@ -183,7 +235,7 @@ function FlightSessionPageInner() {
 
           {failed.length > 0 && (
             <div className="text-left border border-red-100 bg-red-50/50 rounded-xl p-4 mb-6">
-              <div className="text-xs font-semibold uppercase tracking-widest text-red-500 mb-2">Focus before your checkride</div>
+              <div className="text-xs font-semibold uppercase tracking-widest text-red-500 mb-2">{isDrill ? 'Still shaky on' : 'Focus before your checkride'}</div>
               <ul className="text-sm text-gray-700 space-y-1">
                 {failed.map((r, i) => {
                   const s = getScenario(r.scenarioId)
@@ -197,8 +249,8 @@ function FlightSessionPageInner() {
             <button onClick={() => { setStep(0); setResults([]); setResult(null); setReadback(''); setDone(false) }} className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm font-medium hover:border-gray-400">
               Re-fly
             </button>
-            <a href="/checkride" className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 text-sm font-medium text-center hover:bg-gray-800">
-              All checkrides
+            <a href={isDrill ? '/profile' : '/checkride'} className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 text-sm font-medium text-center hover:bg-gray-800">
+              {isDrill ? 'Back to my weak spots' : 'All checkrides'}
             </a>
           </div>
         </div>
@@ -269,6 +321,12 @@ function FlightSessionPageInner() {
                 {grading ? 'Grading...' : 'Submit'}
               </button>
             </div>
+            {gradeError && (
+              <div className="mt-3 flex items-center justify-between gap-3 border border-red-200 bg-red-50 rounded-lg px-4 py-2.5">
+                <span className="text-sm text-red-700">{gradeError}</span>
+                <button onClick={submitReadback} className="shrink-0 text-sm font-medium text-red-700 hover:underline">Retry</button>
+              </div>
+            )}
           </div>
         )}
 
