@@ -50,6 +50,8 @@ export default function ProfilePage() {
   const [lookup, setLookup] = useState<FieldSummary | null>(null)
   const [lookupErr, setLookupErr] = useState('')
   const [looking, setLooking] = useState(false)
+  const [requesting, setRequesting] = useState(false)
+  const [requestResult, setRequestResult] = useState<{ requestCount: number; alreadyRequested: boolean } | null>(null)
   const [manual, setManual] = useState({ name: '', tower: '', runway: '', towered: true })
   const [showManual, setShowManual] = useState(false)
   const [savingHome, setSavingHome] = useState(false)
@@ -96,6 +98,19 @@ export default function ProfilePage() {
       if (res.ok) { setLookup((await res.json()).field) }
       else { setLookupErr(`No field "${ident.trim().toUpperCase()}" found. Try the ICAO ident, or enter it manually.`) }
     } finally { setLooking(false) }
+  }
+
+  async function requestField() {
+    setRequesting(true)
+    try {
+      const res = await fetch('/api/airports/request', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ident: ident.trim().toUpperCase() }),
+      })
+      const data = await res.json()
+      if (res.status === 409) { setLookupErr(''); lookupField(); return } // just became available — re-run lookup
+      if (res.ok) setRequestResult(data)
+    } finally { setRequesting(false) }
   }
 
   async function saveBranding() {
@@ -429,7 +444,7 @@ export default function ProfilePage() {
           <div className="flex gap-2">
             <input
               value={ident}
-              onChange={(e) => { setIdent(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)); setLookup(null); setLookupErr('') }}
+              onChange={(e) => { setIdent(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)); setLookup(null); setLookupErr(''); setRequestResult(null) }}
               onKeyDown={(e) => { if (e.key === 'Enter') lookupField() }}
               placeholder="ICAO ident (e.g. KPAE, PHTO, EIDW)"
               className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gray-900"
@@ -441,6 +456,18 @@ export default function ProfilePage() {
           </div>
 
           {lookupErr && <p className="text-xs text-red-600 mt-2">{lookupErr}</p>}
+          {lookupErr && !requestResult && (
+            <button onClick={requestField} disabled={requesting} className="text-xs text-blue-600 hover:underline mt-1 block">
+              {requesting ? 'Requesting…' : `Request ${ident} be added to the real-data library`}
+            </button>
+          )}
+          {requestResult && (
+            <p className="text-xs text-green-700 mt-1">
+              {requestResult.alreadyRequested
+                ? `You've already asked for ${ident} — ${requestResult.requestCount} pilot${requestResult.requestCount === 1 ? '' : 's'} waiting on it.`
+                : `Requested — you're pilot #${requestResult.requestCount} asking for ${ident}. We pull real FAA data in batches. Use manual entry below in the meantime.`}
+            </p>
+          )}
 
           {lookup && (
             <div className="mt-3 border border-gray-200 rounded-lg p-3 bg-gray-50">

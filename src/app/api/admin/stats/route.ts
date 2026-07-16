@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPool } from '@/lib/db'
 import { getCadenceStatus } from '@/lib/blog-cadence'
+import { lookupAirport } from '@/lib/airports'
 
 // Owner usage dashboard data. Gated by ?key=ADMIN_KEY (env). Every query is
 // graceful so a missing table/column degrades to 0 rather than 500ing.
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
   const num = (sql: string) => db.query(sql).then((r) => Number(r.rows[0]?.n ?? 0)).catch(() => 0)
   const rows = (sql: string) => db.query(sql).then((r) => r.rows).catch(() => [] as Record<string, unknown>[])
 
-  const [users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals] = await Promise.all([
+  const [users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals, airportRequestRows] = await Promise.all([
     num('SELECT count(*) n FROM rc_users'),
     num("SELECT count(*) n FROM rc_users WHERE created_at > now() - interval '7 days'"),
     num("SELECT count(*) n FROM rc_grades WHERE created_at > now() - interval '7 days'"),
@@ -29,7 +30,10 @@ export async function GET(req: NextRequest) {
     // utm_source:utm_medium (e.g. "embed:crosswind", "directory:georges-aviation").
     // 30d, not 7d -- this is long-tail referral traffic, not a hot page.
     rows("SELECT ref, count(*)::int hits FROM rc_events WHERE ref IS NOT NULL AND ts > now() - interval '30 days' GROUP BY ref ORDER BY hits DESC LIMIT 20"),
+    rows("SELECT id, ident, note, request_count, created_at FROM rc_airport_requests WHERE status='open' ORDER BY request_count DESC, created_at ASC LIMIT 50"),
   ])
 
-  return NextResponse.json({ users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals, blogCadence: getCadenceStatus() })
+  const airportRequests = airportRequestRows.map((r) => ({ ...r, nowAvailable: !!lookupAirport(r.ident as string) }))
+
+  return NextResponse.json({ users, signups7, grades7, pageviews7, visitors7, paid, platforms, topPaths, daily, referrals, airportRequests, blogCadence: getCadenceStatus() })
 }

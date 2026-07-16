@@ -337,6 +337,31 @@ export async function initDB(): Promise<void> {
     )
   `)
 
+  // Demand-tracking for airports not yet in the real-data library. One row per
+  // requested ident; rc_airport_request_votes both dedupes per-pilot and lets
+  // request_count only increment on a genuinely new vote (same shape as the
+  // community-scenario upvote pair above).
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_airport_requests (
+      id SERIAL PRIMARY KEY,
+      ident TEXT UNIQUE NOT NULL,
+      note TEXT,
+      status TEXT NOT NULL DEFAULT 'open',
+      request_count INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`CREATE INDEX IF NOT EXISTS rc_airport_requests_status ON rc_airport_requests(status, request_count DESC)`)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_airport_request_votes (
+      request_id INTEGER NOT NULL REFERENCES rc_airport_requests(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES rc_users(id) ON DELETE CASCADE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (request_id, user_id)
+    )
+  `)
+
   // "7 days to radio confidence" email drip subscribers.
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_drip_subscribers (

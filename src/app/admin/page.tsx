@@ -8,6 +8,7 @@ interface Stats {
   topPaths: { path: string; views: number }[]
   daily: { d: string; visitors: number; views: number }[]
   referrals: { ref: string; hits: number }[]
+  airportRequests: { id: number; ident: string; note: string | null; request_count: number; created_at: string; nowAvailable: boolean }[]
   blogCadence: {
     lastPostDate: string | null; daysSincePost: number | null; due: boolean
     postsLast30Days: number; postsPerWeekTarget: number
@@ -35,6 +36,13 @@ export default function AdminPage() {
     const k = new URLSearchParams(location.search).get('key') || (() => { try { return localStorage.getItem('rc_admin_key') || '' } catch { return '' } })()
     if (k) { setKey(k); load(k) }
   }, [])
+
+  async function resolveAirportRequest(id: number, status: 'added' | 'declined') {
+    await fetch(`/api/admin/airport-requests/${id}?key=${encodeURIComponent(key)}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }),
+    }).catch(() => {})
+    load(key)
+  }
 
   const maxV = data ? Math.max(1, ...data.daily.map((d) => d.visitors)) : 1
 
@@ -113,6 +121,28 @@ export default function AdminPage() {
                 <span className="text-gray-500">{r.hits.toLocaleString()}</span>
               </div>
             ))}
+
+            <h2 className="text-sm font-mono uppercase tracking-widest text-gray-400 mt-8 mb-3">Requested airports · open</h2>
+            {data.airportRequests.length === 0 ? (
+              <p className="text-gray-400 text-sm">No open requests — pilots see a &quot;Request&quot; link when their home field isn&apos;t found on Profile.</p>
+            ) : (
+              <div className="space-y-2">
+                {data.airportRequests.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between gap-3 border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                    <div className="min-w-0">
+                      <span className="font-mono font-semibold">{r.ident}</span>
+                      <span className="text-gray-500 ml-2">{r.request_count} pilot{r.request_count === 1 ? '' : 's'}</span>
+                      {r.nowAvailable && <span className="ml-2 px-1.5 py-0.5 rounded bg-green-100 text-green-800 text-xs font-semibold">now in dataset</span>}
+                      {r.note && <div className="text-xs text-gray-400 truncate">{r.note}</div>}
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button onClick={() => resolveAirportRequest(r.id, 'added')} className="text-xs text-green-700 hover:underline">Mark added</button>
+                      <button onClick={() => resolveAirportRequest(r.id, 'declined')} className="text-xs text-gray-400 hover:underline">Decline</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <h2 className="text-sm font-mono uppercase tracking-widest text-gray-400 mt-8 mb-3">Blog cadence · target {data.blogCadence.postsPerWeekTarget}/wk</h2>
             <div className="flex items-center gap-3 mb-4 text-sm">
