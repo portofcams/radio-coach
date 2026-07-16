@@ -12,7 +12,7 @@ interface Report {
   callsign: string | null
   weakspots: Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number }>
   readiness: { score: number; level: string; label: string; factors: { recentAccuracy: number; passRate: number; coverage: number } } | null
-  recent: Array<{ id: number; scenario_id: string; score: number; passed: boolean; created_at: string }>
+  recent: Array<{ id: number; scenario_id: string; score: number; passed: boolean; readback: string; correct_readback: string; created_at: string }>
   assignments: Array<{ scenario_id: string; done: boolean; created_at: string; due_at?: string | null }>
   comments: Array<{ id: number; body: string; scenario_id: string | null; grade_id: number | null; created_at: string }>
   endorsements: string[]
@@ -42,6 +42,7 @@ function StudentReportInner() {
   const [posting, setPosting] = useState(false)
   const [noteFor, setNoteFor] = useState<string | null>(null)
   const [noteText, setNoteText] = useState('')
+  const [transcriptOpen, setTranscriptOpen] = useState<Set<number>>(new Set())
   const [customs, setCustoms] = useState<Array<{ id: string; title: string }>>([])
 
   async function load() {
@@ -82,6 +83,10 @@ function StudentReportInner() {
     if (!body.trim()) return
     await fetch(`/api/cfi/students/${id}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, scenarioId, gradeId }) })
     await load()
+  }
+
+  function toggleTranscript(gradeId: number) {
+    setTranscriptOpen((s) => { const n = new Set(s); n.has(gradeId) ? n.delete(gradeId) : n.add(gradeId); return n })
   }
 
   async function postComment() {
@@ -276,10 +281,17 @@ function StudentReportInner() {
                           <span className="text-gray-600 capitalize">{g.scenario_id.replace(/-/g, ' ')}<span className="text-[10px] text-gray-300 ml-1.5 normal-case">{new Date(g.created_at).toLocaleDateString()}</span></span>
                           <div className="flex items-center gap-2">
                             {notes.length > 0 && <span className="text-[10px] text-blue-600">{notes.length} note{notes.length > 1 ? 's' : ''}</span>}
+                            <button onClick={() => toggleTranscript(g.id)} className="text-[11px] text-gray-400 hover:text-gray-700">{transcriptOpen.has(g.id) ? 'hide' : 'what they said'}</button>
                             <button onClick={() => { setNoteFor(noteFor === key ? null : key); setNoteText('') }} className="text-[11px] text-gray-400 hover:text-gray-700">+ note</button>
                             <span className={`font-mono text-xs ${g.passed ? 'text-green-600' : 'text-red-500'}`}>{g.score}</span>
                           </div>
                         </div>
+                        {transcriptOpen.has(g.id) && (
+                          <div className="text-[11px] bg-gray-50 rounded-lg px-2.5 py-1.5 mt-1 space-y-1">
+                            <div><span className="text-gray-400 font-semibold uppercase tracking-wide text-[9px] mr-1">Said</span><span className="text-gray-600">&ldquo;{g.readback}&rdquo;</span></div>
+                            <div><span className="text-gray-400 font-semibold uppercase tracking-wide text-[9px] mr-1">Expected</span><span className="text-gray-500">&ldquo;{g.correct_readback}&rdquo;</span></div>
+                          </div>
+                        )}
                         {notes.map((c) => (
                           <div key={c.id} className="text-[11px] text-gray-500 bg-gray-50 rounded px-2 py-1 mt-1">{c.body}</div>
                         ))}
