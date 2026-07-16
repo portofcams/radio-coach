@@ -12,7 +12,7 @@ import { generateScenario } from '@/lib/procedural'
 import type { Scenario } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
-  const { scenarioId, readback, hintUsed, part } = await req.json()
+  const { scenarioId, readback, hintUsed, part, paceMs } = await req.json()
 
   if (!scenarioId || !readback?.trim()) {
     return NextResponse.json({ error: 'Missing scenarioId or readback' }, { status: 400 })
@@ -92,14 +92,15 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const result = await gradeReadback(scenario, readback.trim(), hintUsed)
+  const paceMsClean = typeof paceMs === 'number' && Number.isFinite(paceMs) ? Math.round(paceMs) : null
+  const result = await gradeReadback(scenario, readback.trim(), hintUsed, paceMsClean)
 
   // Save to score history if the user is authenticated
   if (user && db) {
     db.query(
       `INSERT INTO rc_grades
-         (user_id, scenario_id, score, passed, readback, correct_readback, missed_elements, phrase_issues, hint_used)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+         (user_id, scenario_id, score, passed, readback, correct_readback, missed_elements, phrase_issues, hint_used, pace_ms)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         user.userId,
         scenarioId,
@@ -110,6 +111,7 @@ export async function POST(req: NextRequest) {
         JSON.stringify(result.elements.missed),
         JSON.stringify(result.phraseologyIssues),
         hintUsed ?? false,
+        paceMsClean,
       ]
     ).catch(console.error)
   }

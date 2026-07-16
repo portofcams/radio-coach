@@ -127,4 +127,6 @@ export interface GradeResult {
   phraseologyIssues: string[]
   correctReadback: string
   feedback: string
+  /** Set only when timing-pressure mode was on and dead air before key-up cost points. */
+  paceNote?: string
 }

@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { GradeResult, Scenario } from './types'
-import { ruleGradeReadback } from './rule-grader'
+import { ruleGradeReadback, paceDeduction } from './rule-grader'
 import { checkBudget, logUsage } from './anthropic-budget'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -57,10 +57,11 @@ export async function gradeReadback(
   scenario: Scenario,
   studentReadback: string,
   hintUsed?: boolean,
+  paceMs?: number | null,
 ): Promise<GradeResult> {
   // $0 default — no LLM spend unless explicitly enabled
   if (!aiEnabled()) {
-    return ruleGradeReadback(scenario, studentReadback, hintUsed)
+    return ruleGradeReadback(scenario, studentReadback, hintUsed, paceMs)
   }
 
   const userMessage = `
@@ -92,9 +93,16 @@ Grade this readback.`
       if (result.score < 70 && result.passFail === 'PARTIAL') result.passFail = 'FAIL'
       if (result.score < 90 && result.passFail === 'PASS') result.passFail = 'PARTIAL'
     }
+    const { deduct, note } = paceDeduction(paceMs, scenario.facility)
+    if (deduct > 0) {
+      result.score = Math.max(0, result.score - deduct)
+      if (result.score < 70 && result.passFail === 'PARTIAL') result.passFail = 'FAIL'
+      if (result.score < 90 && result.passFail === 'PASS') result.passFail = 'PARTIAL'
+      result.paceNote = note ?? undefined
+    }
     return result
   } catch {
     // API error, no credits, or unparseable output → deterministic grader
-    return ruleGradeReadback(scenario, studentReadback, hintUsed)
+    return ruleGradeReadback(scenario, studentReadback, hintUsed, paceMs)
   }
 }

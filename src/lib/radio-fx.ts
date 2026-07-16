@@ -114,6 +114,10 @@ export interface RadioFxController {
   cue(steppedOn?: boolean): void
   /** call on audio 'ended' — key-down squelch tail + fade the static out */
   release(): void
+  /** Call when the student has been silent too long after ATC keyed off — a
+   * standalone congestion burst (squelch + party-line chatter), independent
+   * of cue()/release()'s ATC-playback lifecycle. No-op in 'clean' mode. */
+  pressureCue(): void
 }
 
 const _attached = new WeakMap<HTMLAudioElement, RadioFxController>()
@@ -277,6 +281,23 @@ export function attachRadioFx(el: HTMLAudioElement, initialMode: RadioMode = get
       noiseGain.gain.setTargetAtTime(0, t + 0.14, 0.06)
       chatterGain.gain.setTargetAtTime(0, t, 0.1)
       try { chatterSrc?.stop(t + 0.3) } catch { /* */ }
+    },
+    pressureCue() {
+      if (mode === 'clean') return
+      if (c!.state === 'suspended') c!.resume().catch(() => {})
+      const t = c!.currentTime
+      squelchBurst(t, 0.3)
+      const idx = Math.floor(Math.random() * CHATTER_COUNT)
+      loadChatter(c!, idx).then((buf) => {
+        if (!buf || mode === 'clean') return
+        try { chatterSrc?.stop() } catch { /* */ }
+        chatterSrc = c!.createBufferSource()
+        chatterSrc.buffer = buf
+        chatterSrc.connect(chatterBp)
+        chatterGain.gain.setValueAtTime(0.14, c!.currentTime)
+        try { chatterSrc.start(c!.currentTime + 0.05) } catch { /* */ }
+        chatterGain.gain.setTargetAtTime(0, c!.currentTime + 1.2, 0.3)
+      })
     },
   }
 

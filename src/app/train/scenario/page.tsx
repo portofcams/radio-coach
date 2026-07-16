@@ -110,6 +110,11 @@ function ScenarioPageInner() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const autoPlayedRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // Timing-pressure measurement: T0 = ATC keyed off, T1 = student keyed up.
+  // Only meaningful when timerEnabled was on at the moment ATC finished.
+  const atcEndedAtRef = useRef<number | null>(null)
+  const keyUpAtRef = useRef<number | null>(null)
+  const pressureFiredRef = useRef(false)
   const recognitionRef = useRef<{ stop: () => void } | null>(null)
   const isNativeRef = useRef(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -208,10 +213,21 @@ function ScenarioPageInner() {
 
   // Timer
   const startTimer = useCallback(() => {
+    keyUpAtRef.current = null
+    pressureFiredRef.current = false
+    // Only stamp T0 if timing-pressure mode was ON at the moment ATC
+    // finished — a mid-scenario toggle shouldn't produce a surprise
+    // deduction on submit for an exchange that wasn't timed.
+    atcEndedAtRef.current = timerEnabled ? Date.now() : null
     if (!timerEnabled) return
     if (timerRef.current) clearInterval(timerRef.current)
     setTimer(15)
     timerRef.current = setInterval(() => {
+      if (!pressureFiredRef.current && keyUpAtRef.current === null && atcEndedAtRef.current !== null
+          && Date.now() - atcEndedAtRef.current >= 3000) {
+        pressureFiredRef.current = true
+        fxRef.current?.pressureCue()
+      }
       setTimer(t => {
         if (t === null || t <= 1) { clearInterval(timerRef.current!); return 0 }
         return t - 1
@@ -339,6 +355,9 @@ function ScenarioPageInner() {
   }, [])
 
   const startListening = useCallback(async () => {
+    // Only the FIRST key-up per exchange counts — re-records/STT-fallback
+    // retries shouldn't reset (or let a slow start be gamed away by) the clock.
+    if (keyUpAtRef.current === null) keyUpAtRef.current = Date.now()
     stopRecognition()
     setInterimText('')
     setUsingFallbackStt(false)
@@ -445,7 +464,7 @@ function ScenarioPageInner() {
       u.onend = () => {
         setRadioState('ready')
         startTimer()
-        if (voiceMode) setTimeout(() => startListening(), 700)
+        if (voiceMode && !timerEnabled) setTimeout(() => startListening(), 700)
       }
       u.onerror = () => setRadioState('ready')
       setRadioState('atc_playing')
@@ -475,7 +494,7 @@ function ScenarioPageInner() {
         setRadioState('ready')
         startTimer()
         // Auto-mic after ATC finishes
-        if (voiceMode) setTimeout(() => startListening(), 700)
+        if (voiceMode && !timerEnabled) setTimeout(() => startListening(), 700)
       }
       setRadioState('atc_playing')
       fxRef.current?.cue(isSteppedOnLeg)
@@ -504,6 +523,13 @@ function ScenarioPageInner() {
     }
   }, [scenario, playTransmission])
 
+  // Text-mode has no auto-mic-open to suppress — the first keystroke IS the
+  // key-up moment. Same first-write-wins guard as startListening's T1 stamp.
+  const handleReadbackChange = useCallback((v: string) => {
+    if (keyUpAtRef.current === null && v.length > 0) keyUpAtRef.current = Date.now()
+    setReadback(v)
+  }, [])
+
   // Submit
   const submitReadback = useCallback(async (text?: string) => {
     const rb = text ?? readback
@@ -515,10 +541,13 @@ function ScenarioPageInner() {
 
     setRadioState('grading')
     try {
+      const paceMs = (atcEndedAtRef.current != null && keyUpAtRef.current != null)
+        ? Math.max(0, keyUpAtRef.current - atcEndedAtRef.current)
+        : null
       const res = await fetch('/api/grade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown, part: exchangeRef.current === 'curveball' ? 'curveball' : undefined }),
+        body: JSON.stringify({ scenarioId: scenario.id, readback: rb, hintUsed: hintShown, part: exchangeRef.current === 'curveball' ? 'curveball' : undefined, paceMs }),
       })
       // server-enforced gate (daily cap, or a Pro-only advanced scenario) → paywall
       if (res.status === 402) {
@@ -621,6 +650,7 @@ function ScenarioPageInner() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setTimerEnabled(v => !v)}
+              title="Adds a soft pace penalty for slow readbacks and requires you to key up the mic yourself — mimics a congested frequency."
               className={`text-xs px-2 py-1 rounded border transition-colors ${timerEnabled ? 'border-orange-300 text-orange-700 bg-orange-50' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
             >
               {timerEnabled ? 'timer on' : 'timer off'}
@@ -812,6 +842,7 @@ function ScenarioPageInner() {
               interimText={interimText}
               readback={readback}
               usingFallbackStt={usingFallbackStt}
+              timerEnabled={timerEnabled}
               onMicClick={() => {
                 // Stopping (native record→Scribe, web Scribe, or Web Speech) lets the
                 // recorder's stop handler drive transcription + the next state.
@@ -825,7 +856,7 @@ function ScenarioPageInner() {
           ) : (
             <TextInput
               readback={readback}
-              onChange={setReadback}
+              onChange={handleReadbackChange}
               onSubmit={() => submitReadback()}
               grading={radioState === 'grading'}
               textareaRef={textareaRef}
@@ -847,6 +878,11 @@ function ScenarioPageInner() {
                     {momentum >= 2 && (
                       <span className="ml-2 text-xs font-semibold text-orange-600 bg-orange-50 border border-orange-200 rounded-full px-2 py-0.5">
                         {momentum} in a row
+                      </span>
+                    )}
+                    {result.paceNote && (
+                      <span title={result.paceNote} className="ml-2 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
+                        slow to key up
                       </span>
                     )}
                   </div>
@@ -967,13 +1003,14 @@ function ScenarioPageInner() {
 // ── Voice Input Component ──────────────────────────────────────────────────────
 
 function VoiceInput({
-  radioState, interimText, readback, usingFallbackStt,
+  radioState, interimText, readback, usingFallbackStt, timerEnabled,
   onMicClick, onSubmit, onRerecord, onSwitchToText,
 }: {
   radioState: RadioState
   interimText: string
   readback: string
   usingFallbackStt: boolean
+  timerEnabled?: boolean
   onMicClick: () => void
   onSubmit: () => void
   onRerecord: () => void
@@ -993,7 +1030,7 @@ function VoiceInput({
         {/* State label above mic */}
         <div className="text-xs font-mono uppercase tracking-widest text-gray-400 mb-5 h-4">
           {isListening && 'Listening — speak your readback'}
-          {isReady && !isGrading && 'Tap mic to transmit'}
+          {isReady && !isGrading && (timerEnabled ? "Tap mic to transmit — you're on the clock" : 'Tap mic to transmit')}
           {isGrading && 'Grading...'}
           {isTranscribed && 'Got it — submit or re-record'}
         </div>

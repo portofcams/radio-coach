@@ -40,6 +40,8 @@ export async function initDB(): Promise<void> {
     )
   `)
 
+  await db.query(`ALTER TABLE rc_grades ADD COLUMN IF NOT EXISTS pace_ms INTEGER`)
+
   await db.query(`
     CREATE INDEX IF NOT EXISTS rc_grades_user_id ON rc_grades(user_id);
     CREATE INDEX IF NOT EXISTS rc_grades_scenario_id ON rc_grades(scenario_id);

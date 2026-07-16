@@ -1,4 +1,4 @@
-import type { GradeResult, Scenario } from './types'
+import type { GradeResult, Scenario, Facility } from './types'
 
 // Deterministic, $0 readback grader — no LLM call. A heuristic, but solid enough
 // for the free tier and the Ground School "live-comms taste". The AI grader stays
@@ -172,10 +172,40 @@ const BAD_PHRASES: { re: RegExp; label: string }[] = [
   { re: /\broger\s+that\b/, label: '"roger that" — say "roger"' },
 ]
 
+// Busier facilities give less grace before dead air starts costing points —
+// mirrors how a congested tower/approach frequency punishes hesitation harder
+// than a quiet CTAF or ramp. Facility not in the map (or scenario.facility
+// undefined) falls back to the default.
+const PACE_GRACE_MS: Partial<Record<Facility, number>> = {
+  APPROACH: 1500, DEPARTURE: 1500, CENTER: 1500,
+  TOWER: 2000, GROUND: 2500, CLEARANCE: 2500,
+  CTAF: 3000, UNICOM: 3000,
+}
+const PACE_DEFAULT_GRACE_MS = 2000
+const PACE_PENALTY_PER_SEC = 3
+const PACE_MAX_PENALTY = 15
+
+/**
+ * Soft "dead air" pace penalty — deducted when the student takes too long to
+ * key up after ATC stops talking, mimicking real frequency-congestion
+ * pressure. `paceMs` is null unless the client had timing-pressure mode on;
+ * this function is a no-op in that case, so it costs nothing when unused.
+ */
+export function paceDeduction(paceMs: number | null | undefined, facility?: Facility): { deduct: number; note: string | null } {
+  if (paceMs == null) return { deduct: 0, note: null }
+  const grace = (facility && PACE_GRACE_MS[facility]) ?? PACE_DEFAULT_GRACE_MS
+  if (paceMs <= grace) return { deduct: 0, note: null }
+  const overSec = Math.ceil((paceMs - grace) / 1000)
+  const deduct = Math.min(PACE_MAX_PENALTY, overSec * PACE_PENALTY_PER_SEC)
+  const secs = (paceMs / 1000).toFixed(1)
+  return { deduct, note: `${secs}s of dead air before you keyed up — real traffic would've stepped on you (−${deduct} pts)` }
+}
+
 export function ruleGradeReadback(
   scenario: Scenario,
   readback: string,
   hintUsed?: boolean,
+  paceMs?: number | null,
 ): GradeResult {
   const rbTokens = normalize(readback)
   const required = scenario.requiredElements
@@ -202,11 +232,14 @@ export function ruleGradeReadback(
   const requiresSayAgain = !!scenario.steppedOn
   const sayAgainViolation = requiresSayAgain && !SAY_AGAIN_RE.test(readback)
 
+  const { deduct: paceDeduct, note: paceNote } = paceDeduction(paceMs, scenario.facility)
+
   let score = 100
   const perMiss = required.length ? Math.round(60 / required.length) : 10
   score -= missed.length * Math.max(10, Math.min(20, perMiss))
   score -= phraseologyIssues.length * 8
   if (hintUsed) score -= 10
+  if (paceDeduct) score -= paceDeduct
   if (holdShortViolation) score = Math.min(score, 40)
   if (sayAgainViolation) score = Math.min(score, 40)
   score = Math.max(0, Math.min(100, score))
@@ -236,5 +269,6 @@ export function ruleGradeReadback(
     phraseologyIssues,
     correctReadback: scenario.correctReadback,
     feedback,
+    ...(paceNote ? { paceNote } : {}),
   }
 }
