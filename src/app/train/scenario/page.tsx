@@ -18,6 +18,8 @@ import { gradeHaptic, startNativeRecording, stopNativeRecordingTranscribe } from
 import { saveRecording, loadRecording } from '@/lib/recordings'
 import { homeScenario, type HomeProfile } from '@/lib/home-client'
 import { generateScenario } from '@/lib/procedural'
+import { getEslMode, setEslMode } from '@/lib/esl'
+import { eslGlossFor } from '@/lib/esl-glossary'
 
 const DIFF_LABELS: Record<number, string> = { 1: 'Student', 2: 'Intermediate', 3: 'Advanced' }
 
@@ -102,6 +104,7 @@ function ScenarioPageInner() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const fxRef = useRef<RadioFxController | null>(null)
   const [fx, setFx] = useState<RadioFxSettings>({ mode: 'radio', speed: 'normal' })
+  const [eslMode, setEslModeState] = useState(false)
   const fxValueRef = useRef(fx)
   // Item 3: hear your own readback played back through the radio FX.
   const replayAudioRef = useRef<HTMLAudioElement | null>(null)
@@ -438,7 +441,7 @@ function ScenarioPageInner() {
   }, [stopRecognition, startWebSpeechFallback])
 
   // Load saved comms-FX preference
-  useEffect(() => { const v = getRadioFx(); fxValueRef.current = v; setFx(v) }, [])
+  useEffect(() => { const v = getRadioFx(); fxValueRef.current = v; setFx(v); setEslModeState(getEslMode()) }, [])
 
   const updateFx = useCallback((patch: Partial<RadioFxSettings>) => {
     const next = { ...fxValueRef.current, ...patch }
@@ -653,6 +656,7 @@ function ScenarioPageInner() {
   const scoreColor = !result ? '' : result.score >= 80 ? 'text-green-700' : result.score >= 60 ? 'text-yellow-700' : 'text-red-700'
   const scoreBg = !result ? '' : result.score >= 80 ? 'bg-green-50 border-green-200' : result.score >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
   const safetyTieIn = result ? safetyTieInFor(result) : null
+  const eslTerms = eslMode && scenario ? eslGlossFor(`${scenario.atcTransmission} ${scenario.correctReadback}`) : []
   const freeRemaining = (pro || user) ? null : session.remaining
   const callsign = user?.callsign ?? null
   const callsignDisplay = user?.callsign ? toPhonetic(user.callsign) : null
@@ -813,7 +817,7 @@ function ScenarioPageInner() {
           ))}
           <span className="text-gray-300 mx-1">·</span>
           <span className="text-gray-400 tracking-wider">PACE</span>
-          {(['normal', 'fast', 'real'] as RadioSpeed[]).map((s) => (
+          {(['slow', 'normal', 'fast', 'real'] as RadioSpeed[]).map((s) => (
             <button
               key={s}
               onClick={() => updateFx({ speed: s })}
@@ -822,7 +826,31 @@ function ScenarioPageInner() {
               {s === 'real' ? 'real-time' : s}
             </button>
           ))}
+          <span className="text-gray-300 mx-1">·</span>
+          <button
+            onClick={() => {
+              const next = !eslMode
+              setEslModeState(next)
+              setEslMode(next)
+              if (next) updateFx({ mode: 'clean', speed: 'slow' })
+            }}
+            title="Slower playback, plain radio filter, and a key-terms glossary for each call"
+            className={`px-2 py-0.5 rounded border transition-colors ${eslMode ? 'border-amber-400 text-amber-700 bg-amber-50' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
+          >
+            Learner mode {eslMode ? 'on' : 'off'}
+          </button>
         </div>
+
+        {eslTerms.length > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-2">Key terms in this call</div>
+            {eslTerms.map((t) => (
+              <div key={t.term} className="text-sm text-blue-900 mb-1.5 last:mb-0">
+                <span className="font-semibold">{t.term}</span> — {t.gloss}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Airport diagram — schematic taxi chart; reveals the cleared route after grading */}
         {scenario.diagram && (

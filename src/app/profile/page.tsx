@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toPhonetic } from '@/lib/phonetic'
 import { isNative } from '@/lib/native'
 import NativePurchaseButtons from '@/components/NativePurchaseButtons'
+import { getEslMode, setEslMode } from '@/lib/esl'
 
 interface Stats {
   total: number
@@ -46,6 +47,8 @@ export default function ProfilePage() {
   const [weakspots, setWeakspots] = useState<Array<{ key: string; label: string; tip: string; rate: number; misses: number; opportunities: number; drill: string[] }>>([])
   const [native, setNative] = useState(false)
   useEffect(() => { setNative(isNative()) }, [])
+  const [eslMode, setEslModeUI] = useState(false)
+  useEffect(() => setEslModeUI(getEslMode()), [])
   const [ident, setIdent] = useState('')
   const [lookup, setLookup] = useState<FieldSummary | null>(null)
   const [lookupErr, setLookupErr] = useState('')
@@ -440,6 +443,22 @@ export default function ProfilePage() {
               Phonetic: <span className="text-gray-600">{toPhonetic(callsign)}</span>
             </div>
           )}
+        </div>
+
+        {/* Learner-paced mode — presentation/pacing preference, not a paywalled feature */}
+        <div className="border border-gray-200 rounded-xl p-5 mb-6">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={eslMode}
+              onChange={(e) => { setEslModeUI(e.target.checked); setEslMode(e.target.checked) }}
+              className="mt-0.5"
+            />
+            <span>
+              <span className="block text-sm font-medium text-gray-900">Learner-paced mode</span>
+              <span className="block text-xs text-gray-400 mt-0.5">Slower playback, plain radio filter, and a key-term glossary on every scenario — built for international student pilots.</span>
+            </span>
+          </label>
         </div>
 
         {/* Home field — real FAA frequencies + runways for your airport */}

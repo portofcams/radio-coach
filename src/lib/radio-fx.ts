@@ -14,7 +14,7 @@
  */
 
 export type RadioMode = 'clean' | 'radio' | 'busy'
-export type RadioSpeed = 'normal' | 'fast' | 'real'
+export type RadioSpeed = 'slow' | 'normal' | 'fast' | 'real'
 
 export interface RadioFxSettings {
   mode: RadioMode
@@ -25,7 +25,7 @@ const STORE_KEY = 'wilco_radio_fx'
 const DEFAULT: RadioFxSettings = { mode: 'radio', speed: 'normal' }
 
 // ElevenLabs voice_settings.speed tops out at ~1.2 and preserves pitch.
-const SPEED_MAP: Record<RadioSpeed, number> = { normal: 1.0, fast: 1.12, real: 1.2 }
+const SPEED_MAP: Record<RadioSpeed, number> = { slow: 0.85, normal: 1.0, fast: 1.12, real: 1.2 }
 
 export function getRadioFx(): RadioFxSettings {
   if (typeof window === 'undefined') return DEFAULT
@@ -34,7 +34,7 @@ export function getRadioFx(): RadioFxSettings {
     if (!raw) return DEFAULT
     const v = JSON.parse(raw)
     const modes: RadioMode[] = ['clean', 'radio', 'busy']
-    const speeds: RadioSpeed[] = ['normal', 'fast', 'real']
+    const speeds: RadioSpeed[] = ['slow', 'normal', 'fast', 'real']
     return {
       mode: modes.includes(v?.mode) ? v.mode : DEFAULT.mode,
       speed: speeds.includes(v?.speed) ? v.speed : DEFAULT.speed,
