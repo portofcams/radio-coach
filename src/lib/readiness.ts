@@ -16,6 +16,17 @@ export interface Readiness {
   factors: { recentAccuracy: number; passRate: number; coverage: number }
 }
 
+/** One reconstructed weekly point from /api/user/readiness/history --
+ *  retroactive, not stored; rc_grades is INSERT-only so any past instant's
+ *  readiness is exactly reconstructable from immutable history. */
+export interface ReadinessHistoryPoint {
+  weekEnd: string // 'YYYY-MM-DD', the week's ending boundary (clamped to now() for the latest bucket)
+  score: number
+  level: Readiness['level']
+  cumulativeAttempts: number
+  weekAttempts: number
+}
+
 /** Distinct scenarios passed for "full coverage". */
 export const READINESS_TARGET = 25
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Readiness } from '@/lib/readiness'
+import type { Readiness, ReadinessHistoryPoint } from '@/lib/readiness'
 
 interface Stats {
   total: number
@@ -25,6 +25,7 @@ export default function ProgressPage() {
   const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
   const [rd, setRd] = useState<Readiness | null>(null)
+  const [history, setHistory] = useState<ReadinessHistoryPoint[]>([])
   const [coach, setCoach] = useState<CoachComment[]>([])
   const [email, setEmail] = useState<string | null>(null)
   const [emailing, setEmailing] = useState(false)
@@ -37,12 +38,14 @@ export default function ProgressPage() {
       fetch('/api/user/stats').then((r) => r.json()),
       fetch('/api/user/readiness').then((r) => r.json()),
       fetch('/api/user/coach').then((r) => r.json()),
-    ]).then(([me, s, r, c]) => {
+      fetch('/api/user/readiness/history').then((r) => r.json()),
+    ]).then(([me, s, r, c, h]) => {
       if (!me.user) { router.push('/login'); return }
       setEmail(me.user.email ?? null)
       if (!s.error) setStats(s)
       if (r && typeof r.score === 'number') setRd(r)
       if (c?.coach?.comments) setCoach(c.coach.comments)
+      if (Array.isArray(h?.weeks)) setHistory(h.weeks)
     }).finally(() => setLoading(false))
   }, [router])
 
@@ -112,6 +115,43 @@ export default function ProgressPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Readiness trend (composite score, weekly) */}
+        <div className="border border-gray-200 rounded-xl p-5 mb-6">
+          <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Readiness trend · weekly</div>
+          {history.length >= 2 ? (
+            <>
+              <svg viewBox="0 0 300 100" preserveAspectRatio="none" className="w-full h-24">
+                <polyline
+                  fill="none" stroke={rdColor} strokeWidth="2" vectorEffect="non-scaling-stroke"
+                  points={history.map((p, i) => {
+                    const x = (i / (history.length - 1)) * 300
+                    const y = 92 - (p.score / 100) * 84
+                    return `${x},${y}`
+                  }).join(' ')}
+                />
+                {history.map((p, i) => {
+                  const x = (i / (history.length - 1)) * 300
+                  const y = 92 - (p.score / 100) * 84
+                  return (
+                    <circle key={p.weekEnd} cx={x} cy={y} r="2.5" fill={rdColor}>
+                      <title>{`${p.weekEnd.slice(5)}: ${p.score} (${p.weekAttempts} session${p.weekAttempts === 1 ? '' : 's'})`}</title>
+                    </circle>
+                  )
+                })}
+              </svg>
+              <div className="flex justify-between text-[10px] text-gray-400 mt-2">
+                <span>{history[0].weekEnd.slice(5)}</span>
+                <span>composite readiness · not raw score</span>
+                <span>{history[history.length - 1].weekEnd.slice(5)}</span>
+              </div>
+            </>
+          ) : history.length === 1 ? (
+            <div className="text-sm text-gray-400">Train a few more weeks to see your trend.</div>
+          ) : (
+            <div className="text-sm text-gray-400">Not enough history yet — keep training to build your trendline.</div>
+          )}
         </div>
 
         {/* Notes from your instructor */}
