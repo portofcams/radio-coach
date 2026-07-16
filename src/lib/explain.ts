@@ -2,6 +2,9 @@
 // Pattern-matched (elements are scenario-specific phrases), with a safe fallback.
 // Order matters: first matching rule wins, so the most specific go first.
 
+import type { GradeResult, Scenario } from './types'
+import { CATEGORIES } from './weakspots'
+
 const RULES: Array<{ re: RegExp; why: string }> = [
   { re: /call\s?sign/i, why: 'Ending with your call sign confirms ATC is talking to the right aircraft and that you are the one who copied the instruction.' },
   { re: /aircraft\s*type/i, why: 'Your aircraft type tells ATC your performance and wake category, which is how they sequence and separate you from other traffic.' },
@@ -44,4 +47,31 @@ const FALLBACK = 'Reading this element back lets the controller confirm you hear
 export function explainElement(element: string): string {
   for (const r of RULES) if (r.re.test(element)) return r.why
   return FALLBACK
+}
+
+/**
+ * The single headline takeaway from a grade, shown proactively (no click
+ * required) — priority: a missed safety-tracked category, then any other
+ * missed element, then a phraseology flag, then a forward-looking tip on
+ * a clean pass. Reuses the same category regexes weak-spot tracking already
+ * depends on, so it carries no risk beyond what that feature already assumes.
+ */
+export function cfiTip(
+  result: Pick<GradeResult, 'elements' | 'phraseologyIssues'>,
+  scenario?: Scenario,
+): string {
+  const { missed } = result.elements
+  if (missed.length > 0) {
+    for (const cat of CATEGORIES) {
+      if (missed.some((m) => cat.match.test(m))) return cat.tip
+    }
+    return explainElement(missed[0])
+  }
+  if (result.phraseologyIssues.length > 0) {
+    return `A CFI would flag this: ${result.phraseologyIssues[0]}.`
+  }
+  const next = scenario?.commonMistakes[0]
+  return next
+    ? `Nice work. Watch for this next time: ${next.charAt(0).toLowerCase()}${next.slice(1)}.`
+    : 'Nice work — keep that same discipline as scenarios get tougher: full readback, standard phraseology, every time.'
 }

@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { GradeResult, Scenario } from './types'
 import { ruleGradeReadback, paceDeduction } from './rule-grader'
+import { cfiTip } from './explain'
 import { checkBudget, logUsage } from './anthropic-budget'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -88,6 +89,7 @@ Grade this readback.`
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
     const result = JSON.parse(text) as GradeResult
+    result.cfiTip = cfiTip(result, scenario)
     if (hintUsed) {
       result.score = Math.max(0, result.score - 10)
       if (result.score < 70 && result.passFail === 'PARTIAL') result.passFail = 'FAIL'

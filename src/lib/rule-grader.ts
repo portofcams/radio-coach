@@ -1,4 +1,5 @@
 import type { GradeResult, Scenario, Facility } from './types'
+import { cfiTip } from './explain'
 
 // Deterministic, $0 readback grader — no LLM call. A heuristic, but solid enough
 // for the free tier and the Ground School "live-comms taste". The AI grader stays
@@ -269,6 +270,7 @@ export function ruleGradeReadback(
     phraseologyIssues,
     correctReadback: scenario.correctReadback,
     feedback,
+    cfiTip: cfiTip({ elements: { required, hit, missed }, phraseologyIssues }, scenario),
     ...(paceNote ? { paceNote } : {}),
   }
 }

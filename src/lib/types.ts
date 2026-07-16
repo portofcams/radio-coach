@@ -129,4 +129,8 @@ export interface GradeResult {
   feedback: string
   /** Set only when timing-pressure mode was on and dead air before key-up cost points. */
   paceNote?: string
+  /** Proactive, single-line "what would a CFI say" tip — synthesized by
+   *  cfiTip() (lib/explain.ts) from elements/phraseologyIssues/scenario.
+   *  Populated by BOTH graders (rule and AI), so it's always present. */
+  cfiTip: string
 }

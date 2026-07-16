@@ -285,6 +285,13 @@ function FlightSessionPageInner() {
               </div>
             </div>
 
+            {result.cfiTip && (
+              <div className="border border-slate-200 bg-slate-50 rounded-xl p-4">
+                <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">What a CFI would say</div>
+                <p className="text-sm text-slate-700 leading-relaxed">{result.cfiTip}</p>
+              </div>
+            )}
+
             {safetyTieInFor(result) && (
               <p className="text-xs text-gray-500 leading-relaxed px-1">
                 <span className="font-semibold text-gray-600">Why this matters — </span>
