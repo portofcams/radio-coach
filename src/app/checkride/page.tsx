@@ -71,9 +71,14 @@ export default function CheckridePage() {
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h2 className="font-semibold text-gray-900">{s.title}</h2>
                     <span className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${s.difficulty === 'advanced' ? 'bg-red-100 text-red-700' : s.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>{s.difficulty}</span>
+                    {s.oralQuestionIds?.length ? (
+                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">Oral + Radio</span>
+                    ) : null}
                   </div>
                   <p className="text-sm text-gray-500 leading-relaxed">{s.description}</p>
-                  <div className="text-xs text-gray-400 mt-2 font-mono">{s.scenarioIds.length} legs · {s.airport}</div>
+                  <div className="text-xs text-gray-400 mt-2 font-mono">
+                    {s.oralQuestionIds?.length ? `${s.oralQuestionIds.length} oral + ` : ''}{s.scenarioIds.length} legs · {s.airport}
+                  </div>
                 </div>
               </div>
             )

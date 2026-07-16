@@ -4,11 +4,13 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense, useState, useRef, useCallback, useEffect } from 'react'
 import { getSessionOrDrill as getFlightSession } from '@/lib/flight-sessions'
 import { getScenario } from '@/lib/scenarios'
+import { getOralQuestion } from '@/lib/oral'
 import type { GradeResult } from '@/lib/types'
 import { safetyTieInFor } from '@/lib/safety-tiein'
 import { CheckIcon } from '@/components/icons'
 import { attachRadioFx, getRadioFx, ttsSpeed, type RadioFxController } from '@/lib/radio-fx'
 import { personalizeText } from '@/lib/personalize'
+import { voiceForKey } from '@/lib/voices'
 
 export default function FlightSessionPage() {
   return (
@@ -57,6 +59,16 @@ function FlightSessionPageInner() {
     return () => { cancelled = true }
   }, [id])
 
+  // Two-phase state machine: an optional oral-quiz preamble (self-rated Q&A,
+  // same bank as /oral), then the existing radio-leg machine takes over
+  // unchanged. Sessions with no oralQuestionIds skip straight to 'radio'.
+  const [phase, setPhase] = useState<'oral' | 'radio'>(() => (session?.oralQuestionIds?.length ? 'oral' : 'radio'))
+  const [oralStep, setOralStep] = useState(0)
+  const [oralRevealed, setOralRevealed] = useState(false)
+  const [oralResults, setOralResults] = useState<Array<{ questionId: string; rating: 'got' | 'review' }>>([])
+  const [oralTtsLoading, setOralTtsLoading] = useState(false)
+  const [usingFallbackVoice, setUsingFallbackVoice] = useState(false)
+
   const [step, setStep] = useState(0)
   const [readback, setReadback] = useState('')
   const [grading, setGrading] = useState(false)
@@ -77,6 +89,38 @@ function FlightSessionPageInner() {
       .finally(() => setEntLoaded(true))
   }, [])
 
+  // Resume progress across an accidental refresh. Combined oral+radio sessions
+  // roughly double the total steps versus the existing radio-only sessions, so
+  // losing progress to a reload costs more here -- worth the small persistence
+  // this file otherwise has none of. One restore attempt per distinct session id.
+  const restoredForIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!session || restoredForIdRef.current === session.id) return
+    restoredForIdRef.current = session.id
+    try {
+      const raw = sessionStorage.getItem(`wilco_session_${session.id}`)
+      if (!raw) return
+      const saved = JSON.parse(raw)
+      if (typeof saved.phase === 'string') setPhase(saved.phase)
+      if (typeof saved.oralStep === 'number') setOralStep(saved.oralStep)
+      if (Array.isArray(saved.oralResults)) setOralResults(saved.oralResults)
+      if (typeof saved.step === 'number') setStep(saved.step)
+      if (Array.isArray(saved.results)) setResults(saved.results)
+    } catch { /* malformed or unavailable storage -- ignore, start fresh */ }
+  }, [session])
+
+  useEffect(() => {
+    if (!session || done) return
+    try {
+      sessionStorage.setItem(`wilco_session_${session.id}`, JSON.stringify({ phase, oralStep, oralResults, step, results }))
+    } catch { /* ignore */ }
+  }, [session, phase, oralStep, oralResults, step, results, done])
+
+  useEffect(() => {
+    if (!session || !done) return
+    try { sessionStorage.removeItem(`wilco_session_${session.id}`) } catch { /* ignore */ }
+  }, [session, done])
+
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const fxRef = useRef<RadioFxController | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -84,19 +128,80 @@ function FlightSessionPageInner() {
 
   const scenario = session ? getScenario(session.scenarioIds[step]) : null
   const totalSteps = session?.scenarioIds.length ?? 0
-  const progress = totalSteps > 0 ? ((step + (result ? 1 : 0)) / totalSteps) * 100 : 0
+  const oralCount = session?.oralQuestionIds?.length ?? 0
+  const totalUnits = oralCount + totalSteps
+  const unitsDone = phase === 'oral' ? oralStep : oralCount + step + (result ? 1 : 0)
+  const progress = totalUnits > 0 ? (unitsDone / totalUnits) * 100 : 0
+  const oralQuestion = session?.oralQuestionIds?.length ? getOralQuestion(session.oralQuestionIds[oralStep]) : null
+
+  // ElevenLabs down/out of quota -> speak with the browser's built-in voice
+  // instead of silently going dead-air. No radio FX (plain utterance), but at
+  // least the pilot hears SOMETHING. Unlike train/scenario/page.tsx's version,
+  // nothing here needs to run once speech ends (no auto-listen/timer chain in
+  // this simpler text-only player), so this is a one-shot fire-and-forget.
+  const speakFallback = useCallback((text: string): boolean => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return false
+    setUsingFallbackVoice(true)
+    window.speechSynthesis.cancel()
+    const u = new SpeechSynthesisUtterance(text)
+    u.rate = 1.0
+    window.speechSynthesis.speak(u)
+    return true
+  }, [])
+
+  const hearOral = useCallback(async () => {
+    if (!oralQuestion || !session) return
+    setOralTtsLoading(true)
+    try {
+      setUsingFallbackVoice(false)
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Voice pinned to the SESSION (not per-question) so the examiner sounds
+        // like one consistent person across all oral questions -- distinct from
+        // the (also constant, but separately-keyed) controller voice used for
+        // the radio legs, matching how a real DPE's voice differs from ATC's.
+        body: JSON.stringify({ text: oralQuestion.question, speed: 1.0, voice: voiceForKey(session.id) }),
+      })
+      if (!res.ok) { speakFallback(oralQuestion.question); return }
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      if (audioRef.current) {
+        if (!fxRef.current) fxRef.current = attachRadioFx(audioRef.current, 'radio')
+        audioRef.current.src = url
+        audioRef.current.onended = () => fxRef.current?.release()
+        fxRef.current?.cue()
+        await audioRef.current.play().catch(() => {})
+      }
+    } finally {
+      setOralTtsLoading(false)
+    }
+  }, [oralQuestion, session, speakFallback])
+
+  const oralRate = useCallback((gotIt: boolean) => {
+    if (!session?.oralQuestionIds || !oralQuestion) return
+    const newOralResults = [...oralResults, { questionId: oralQuestion.id, rating: gotIt ? ('got' as const) : ('review' as const) }]
+    setOralResults(newOralResults)
+    if (oralStep + 1 >= session.oralQuestionIds.length) {
+      setPhase('radio')
+    } else {
+      setOralStep((s) => s + 1)
+      setOralRevealed(false)
+    }
+  }, [session, oralQuestion, oralStep, oralResults])
 
   const playTransmission = useCallback(async () => {
     if (!scenario) return
     setTtsLoading(true)
     try {
+      setUsingFallbackVoice(false)
       const fx = getRadioFx()
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: personalizeText(scenario.atcTransmission, callsign), speed: ttsSpeed(fx.speed) }),
       })
-      if (!res.ok) return
+      if (!res.ok) { speakFallback(personalizeText(scenario.atcTransmission, callsign)); return }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       if (audioRef.current) {
@@ -110,18 +215,18 @@ function FlightSessionPageInner() {
     } finally {
       setTtsLoading(false)
     }
-  }, [scenario, callsign])
+  }, [scenario, callsign, speakFallback])
 
   useEffect(() => {
     autoPlayedRef.current = false
   }, [step])
 
   useEffect(() => {
-    if (!autoPlayedRef.current && scenario) {
+    if (phase === 'radio' && !autoPlayedRef.current && scenario) {
       autoPlayedRef.current = true
       playTransmission()
     }
-  }, [scenario, playTransmission])
+  }, [phase, scenario, playTransmission])
 
   const submitReadback = useCallback(async () => {
     if (!scenario || !readback.trim() || grading) return
@@ -202,6 +307,13 @@ function FlightSessionPageInner() {
         : { label: 'NOT YET', tone: 'red', line: `${failed.length} legs below standard. Drill these, then re-fly.` })
     const toneBg = verdict.tone === 'green' ? 'bg-green-500' : verdict.tone === 'amber' ? 'bg-amber-500' : 'bg-red-500'
     const toneText = verdict.tone === 'green' ? 'text-green-600' : verdict.tone === 'amber' ? 'text-amber-600' : 'text-red-600'
+    // Oral tally is informational only -- kept entirely separate from the
+    // radio-leg verdict/avg above, which stays computed from `results` alone.
+    // Self-rated Q&A and deterministically rule-graded readbacks are two
+    // different kinds of signal; blending them would cheapen the one Checkride
+    // mode is actually sold on.
+    const oralGot = oralResults.filter((r) => r.rating === 'got').length
+    const oralReview = oralResults.filter((r) => r.rating === 'review').length
 
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-10">
@@ -210,8 +322,16 @@ function FlightSessionPageInner() {
             <CheckIcon className="text-2xl" />
           </div>
           <div className="font-mono text-[11px] uppercase tracking-widest text-gray-400 mb-1">{isDrill ? 'Drill report' : 'Checkride report'} · {session.title}</div>
+          {oralResults.length > 0 && (
+            <p className="text-xs text-gray-500 mb-2">
+              Oral: <span className="text-green-600 font-medium">{oralGot} solid</span>, <span className="text-amber-600 font-medium">{oralReview} flagged to review</span>
+            </p>
+          )}
           <h1 className={`text-3xl font-bold mb-1 ${toneText}`}>{verdict.label}</h1>
-          <p className="text-gray-500 text-sm mb-5">{verdict.line}</p>
+          <p className="text-gray-500 text-sm mb-5">
+            {verdict.line}
+            {oralReview > 0 && <span className="block text-gray-400 text-xs mt-1">Also flagged {oralReview} oral question{oralReview === 1 ? '' : 's'} to review.</span>}
+          </p>
 
           <div className="flex items-center justify-center gap-6 mb-6">
             <div><div className="text-2xl font-bold">{passed}/{total}</div><div className="text-xs text-gray-400 uppercase tracking-wide">{isDrill ? 'scenarios' : 'legs'} to standard</div></div>
@@ -246,13 +366,82 @@ function FlightSessionPageInner() {
           )}
 
           <div className="flex gap-3">
-            <button onClick={() => { setStep(0); setResults([]); setResult(null); setReadback(''); setDone(false) }} className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm font-medium hover:border-gray-400">
+            <button
+              onClick={() => {
+                setStep(0); setResults([]); setResult(null); setReadback(''); setDone(false)
+                setOralStep(0); setOralResults([]); setOralRevealed(false)
+                setPhase(session?.oralQuestionIds?.length ? 'oral' : 'radio')
+              }}
+              className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm font-medium hover:border-gray-400"
+            >
               Re-fly
             </button>
             <a href={isDrill ? '/profile' : '/checkride'} className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 text-sm font-medium text-center hover:bg-gray-800">
               {isDrill ? 'Back to my weak spots' : 'All checkrides'}
             </a>
           </div>
+        </div>
+      </main>
+    )
+  }
+
+  if (phase === 'oral' && oralQuestion) {
+    return (
+      <main className="min-h-screen">
+        <audio ref={audioRef} />
+        <div className="max-w-2xl mx-auto px-6 py-10">
+          {/* Session header — spans both the oral preamble and the radio legs */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <a href="/train" className="text-gray-400 hover:text-gray-600 text-sm">← training</a>
+                <span className="text-gray-300">|</span>
+                <span className="text-sm font-medium text-gray-700">{session.title}</span>
+              </div>
+              <span className="text-sm text-gray-400">Oral {oralStep + 1} / {oralCount}</span>
+            </div>
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-full bg-gray-900 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+
+          <div className="border border-gray-200 rounded-xl p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-400">{oralQuestion.area}</span>
+              <div className="flex items-center gap-2">
+                {usingFallbackVoice && (
+                  <span className="text-xs text-amber-600 font-mono" title="Primary voice is unavailable right now — using your device's built-in voice instead.">backup voice</span>
+                )}
+                <button onClick={hearOral} disabled={oralTtsLoading} className="text-xs text-blue-600 hover:underline disabled:opacity-40">
+                  {oralTtsLoading ? 'loading...' : 'Hear the examiner →'}
+                </button>
+              </div>
+            </div>
+            <p className="text-lg font-medium text-gray-900 mb-5">{oralQuestion.question}</p>
+
+            {!oralRevealed ? (
+              <button onClick={() => setOralRevealed(true)} className="w-full bg-gray-900 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-gray-800">
+                Answer aloud, then reveal
+              </button>
+            ) : (
+              <div>
+                <div className="border border-gray-100 bg-gray-50 rounded-lg p-4 mb-3">
+                  <p className="text-sm text-gray-800 leading-relaxed mb-3">{oralQuestion.answer}</p>
+                  <ul className="space-y-1">
+                    {oralQuestion.keyPoints.map((k) => (
+                      <li key={k} className="text-sm text-gray-600 flex items-start gap-2"><span className="text-green-600">✓</span>{k}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => oralRate(false)} className="flex-1 border border-amber-300 text-amber-700 rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-amber-50">Review this</button>
+                  <button onClick={() => oralRate(true)} className="flex-1 bg-gray-900 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-gray-800">I had it →</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <p className="mt-4 text-xs text-gray-400 text-center">Answer out loud like a real examiner question, then reveal the model answer and rate yourself honestly.</p>
         </div>
       </main>
     )
@@ -272,7 +461,7 @@ function FlightSessionPageInner() {
               <span className="text-gray-300">|</span>
               <span className="text-sm font-medium text-gray-700">{session.title}</span>
             </div>
-            <span className="text-sm text-gray-400">{step + 1} / {totalSteps}</span>
+            <span className="text-sm text-gray-400">{oralCount > 0 ? `Leg ${step + 1} / ${totalSteps}` : `${step + 1} / ${totalSteps}`}</span>
           </div>
           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div className="h-full bg-gray-900 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
@@ -292,9 +481,14 @@ function FlightSessionPageInner() {
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-green-400 font-mono text-xs uppercase tracking-widest">ATC</span>
             </div>
-            <button onClick={playTransmission} disabled={ttsLoading} className="text-xs text-gray-400 hover:text-green-400 font-mono disabled:opacity-40">
-              {ttsLoading ? 'loading...' : '▶ play'}
-            </button>
+            <div className="flex items-center gap-2">
+              {usingFallbackVoice && (
+                <span className="text-xs text-amber-500 font-mono" title="Primary voice is unavailable right now — using your device's built-in voice instead.">backup voice</span>
+              )}
+              <button onClick={playTransmission} disabled={ttsLoading} className="text-xs text-gray-400 hover:text-green-400 font-mono disabled:opacity-40">
+                {ttsLoading ? 'loading...' : '▶ play'}
+              </button>
+            </div>
           </div>
           <p className="text-green-400 font-mono text-sm leading-relaxed">
             &ldquo;{personalizeText(scenario.atcTransmission, callsign)}&rdquo;

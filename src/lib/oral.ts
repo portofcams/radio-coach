@@ -124,3 +124,7 @@ export const ORAL_QUESTIONS: OralQuestion[] = [
     keyPoints: ['Read back freq + call sign', 'Switch frequency', 'Check on with altitude'],
   },
 ]
+
+export function getOralQuestion(id: string): OralQuestion | undefined {
+  return ORAL_QUESTIONS.find((q) => q.id === id)
+}

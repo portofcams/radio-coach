@@ -7,9 +7,31 @@ export interface FlightSession {
   airport: string
   scenarioIds: string[]
   difficulty: 'beginner' | 'intermediate' | 'advanced'
+  /** optional oral-quiz preamble -- self-rated Q&A (same bank as /oral) run
+   *  before the radio legs. Sessions that omit this skip straight to radio. */
+  oralQuestionIds?: string[]
 }
 
 export const FLIGHT_SESSIONS: FlightSession[] = [
+  {
+    id: 'ppl-mock-dpe-full',
+    title: 'Private Pilot Mock DPE — Oral + Full Flight',
+    description: 'The full checkride experience in one continuous run: examiner questions first, then the whole flight\'s radio work — taxi to landing.',
+    airport: 'KPHTO',
+    difficulty: 'advanced',
+    oralQuestionIds: ['o-atis', 'o-initial-call', 'o-readback', 'o-roger-wilco', 'o-classd', 'o-lineup-wait', 'o-frequency-change', 'o-lostcomms-squawk'],
+    scenarioIds: [
+      'atis-initial-call',
+      'ground-taxi-hold-short',
+      'hold-short-critical',
+      'class-d-takeoff',
+      'departure-turn-instruction',
+      'vfr-flight-following-initial',
+      'pattern-entry',
+      'sequence-traffic-in-sight',
+      'cleared-for-option',
+    ],
+  },
   {
     id: 'ppl-full-vfr-checkride',
     title: 'Private Pilot Checkride — Full VFR Flight',

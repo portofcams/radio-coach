@@ -59,6 +59,7 @@ export default function OralPage() {
         <h1 className="text-2xl font-semibold mb-2">Mock oral complete</h1>
         <p className="text-gray-500 mb-6">You felt solid on <strong className="text-green-600">{got}</strong> and flagged <strong className="text-amber-600">{review}</strong> to review.</p>
         <button onClick={() => { setI(0); setGot(0); setReview(0); setDone(false); setRevealed(false) }} className="bg-gray-900 text-white rounded-xl px-6 py-3 text-sm font-semibold hover:bg-gray-800">Run it again</button>
+        <p className="mt-4"><Link href="/checkride" className="text-sm text-blue-600 hover:underline">Ready for the full mock DPE? Chain this into a live radio checkride →</Link></p>
         <p className="mt-6"><Link href="/train" className="text-sm text-gray-400 hover:text-gray-600">← training</Link></p>
       </main>
     )
