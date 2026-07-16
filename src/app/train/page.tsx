@@ -53,11 +53,18 @@ export default function TrainPage() {
   const [homeChecked, setHomeChecked] = useState(false)
   const [assignments, setAssignments] = useState<Array<{ scenario_id: string; done: boolean; due_at?: string | null }>>([])
   const [showFirstRunTip, setShowFirstRunTip] = useState(false)
+  const [bracket, setBracket] = useState<{ scenario: { id: string; title: string }; you: { rank: number; score: number } | null } | null>(null)
 
   useEffect(() => {
     try {
       if (!localStorage.getItem('wilco_train_seen')) setShowFirstRunTip(true)
     } catch { /* localStorage unavailable (private mode) -- skip the tip, not worth failing over */ }
+  }, [])
+
+  // Weekly bracket banner -- works logged-out too (public standings), same as
+  // Call of the Day; only "you"/rank needs an account.
+  useEffect(() => {
+    fetch('/api/bracket').then((r) => (r.ok ? r.json() : null)).then((d) => { if (d) setBracket(d) }).catch(() => {})
   }, [])
 
   // Optional ?pack=hawaii|alaska deep link (e.g. from marketing copy). Read
@@ -134,6 +141,7 @@ export default function TrainPage() {
               { href: '/oral', label: 'Oral' },
               { href: '/community', label: 'Community' },
               { href: '/leaderboard', label: 'Leaderboard' },
+              { href: '/bracket', label: 'Bracket' },
               { href: '/guides', label: 'Guides' },
               { href: '/glossary', label: 'Glossary' },
               { href: '/tools', label: 'Tools' },
@@ -264,6 +272,17 @@ export default function TrainPage() {
                 </Link>
               )
             })()}
+            {bracket && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
+              <Link href="/bracket" className="block rounded-xl p-4 border border-blue-300 bg-blue-50 hover:border-blue-400 transition-colors">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10px] font-bold tracking-widest text-blue-600 mb-0.5">THIS WEEK&apos;S BRACKET</div>
+                    <div className="font-medium text-gray-900 truncate">{bracket.scenario.title}</div>
+                  </div>
+                  <span className="shrink-0 text-sm font-medium text-blue-700">{bracket.you ? `#${bracket.you.rank} · ${bracket.you.score}` : 'Compete →'}</span>
+                </div>
+              </Link>
+            )}
             {assignments.length > 0 && !facilityFilter && !diffFilter && !heliOnly && !packFilter && (
               <div>
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Assigned by your CFI</h2>
