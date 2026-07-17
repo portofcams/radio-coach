@@ -1,0 +1,716 @@
+[
+  {
+    "category": "scenario",
+    "id": "ground-taxi-hold-short",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ground-taxi-hold-short.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "runway-crossing",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/runway-crossing.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "amended-taxi",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/amended-taxi.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "engine-runup-area",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/engine-runup-area.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "atis-initial-call",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/atis-initial-call.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "hold-short-critical",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/hold-short-critical.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "class-d-takeoff",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/class-d-takeoff.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "line-up-wait",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/line-up-wait.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "departure-squawk-heading",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/departure-squawk-heading.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "departure-turn-instruction",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/departure-turn-instruction.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "wake-turbulence",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/wake-turbulence.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "pattern-entry",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/pattern-entry.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "sequence-traffic-in-sight",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/sequence-traffic-in-sight.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "go-around",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/go-around.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "cleared-for-option",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/cleared-for-option.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "traffic-not-in-sight",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/traffic-not-in-sight.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "flight-following-squawk",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/flight-following-squawk.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "vfr-flight-following-initial",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/vfr-flight-following-initial.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "class-c-entry",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/class-c-entry.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "frequency-change",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/frequency-change.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "descent-and-maintain",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/descent-and-maintain.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ctaf-position-report",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ctaf-position-report.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-clearance",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-approach-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-approach-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-missed-approach",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-missed-approach.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "clearance-void-time",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/clearance-void-time.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "intersection-departure",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/intersection-departure.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "progressive-taxi",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/progressive-taxi.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "pushback-approved",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/pushback-approved.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "runway-incursion-stop",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/runway-incursion-stop.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "vfr-squawk-departure",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/vfr-squawk-departure.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "bravo-transition",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/bravo-transition.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-full-clearance",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-full-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "void-time-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/void-time-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "touch-and-go",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/touch-and-go.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "extend-downwind",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/extend-downwind.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "short-approach-approved",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/short-approach-approved.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "go-around-wind-shear",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/go-around-wind-shear.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "climb-to-altitude",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/climb-to-altitude.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "traffic-advisory-confirm",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/traffic-advisory-confirm.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "weather-deviation-approved",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/weather-deviation-approved.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "center-frequency-change",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/center-frequency-change.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ils-full-approach",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ils-full-approach.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "star-with-restriction",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/star-with-restriction.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "missed-approach-amended",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/missed-approach-amended.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "emergency-mayday",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/emergency-mayday.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "radar-vectors-final",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/radar-vectors-final.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "vor-holding-pattern",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/vor-holding-pattern.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "pirep-request",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/pirep-request.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "special-vfr-request",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/special-vfr-request.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "atis-copy-and-report",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/atis-copy-and-report.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "altitude-block-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/altitude-block-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "declare-mayday",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/declare-mayday.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "pan-pan-urgency",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/pan-pan-urgency.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "emergency-squawk-ident",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/emergency-squawk-ident.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "emergency-vectors-to-land",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/emergency-vectors-to-land.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "medical-emergency-divert",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/medical-emergency-divert.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-clearance-craft-full",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-clearance-craft-full.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-holding-instructions",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-holding-instructions.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "class-b-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/class-b-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "flight-following-terminated",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/flight-following-terminated.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "three-sixty-for-spacing",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/three-sixty-for-spacing.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "immediate-takeoff",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/immediate-takeoff.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "sidestep-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/sidestep-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "lost-comms-transmit-blind",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/lost-comms-transmit-blind.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ctaf-inbound-tenmiles",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ctaf-inbound-tenmiles.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-hover-taxi",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/heli-hover-taxi.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-air-taxi",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/heli-air-taxi.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-departure-present-position",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/heli-departure-present-position.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-helipad-landing",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/heli-helipad-landing.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-closed-traffic",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/heli-closed-traffic.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "heli-delta-transition",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/heli-delta-transition.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "svfr-clearance",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/svfr-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "svfr-departure",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/svfr-departure.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "night-airport-in-sight",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/night-airport-in-sight.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "night-ctaf-landing",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/night-ctaf-landing.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "curveball-runway-change",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/curveball-runway-change.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "curveball-go-around",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/curveball-go-around.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "curveball-amended-departure",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/curveball-amended-departure.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-popup-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-popup-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-hold-for-release",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-hold-for-release.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-climb-via-sid",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-climb-via-sid.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-descend-via-star",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-descend-via-star.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-cruise-clearance",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-cruise-clearance.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-cancel-airborne",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-cancel-airborne.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-circling-approach",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/scenario/ifr-circling-approach.mp3"
+  },
+  {
+    "category": "scenario",
+    "id": "ifr-efc-holding",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/scenario/ifr-efc-holding.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l1",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l1.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l2",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l2.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l3",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l3.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l4",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l4.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l5",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l5.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l6",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l6.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l7",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l7.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l8",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l8.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l9",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l9.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l10",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l10.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l11",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l11.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l12",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l12.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l13",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l13.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l14",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l14.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l15",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/listen/l15.mp3"
+  },
+  {
+    "category": "listen",
+    "id": "l16",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/listen/l16.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-classb",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-classb.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-classc",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-classc.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-classd",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-classd.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-lightgun-land",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-lightgun-land.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-lightgun-ground",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-lightgun-ground.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-lostcomms-squawk",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-lostcomms-squawk.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-svfr",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-svfr.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-atis",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-atis.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-readback",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-readback.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-roger-wilco",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-roger-wilco.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-initial-call",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-initial-call.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-emergency",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-emergency.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-vfr-squawk",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-vfr-squawk.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-lineup-wait",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-lineup-wait.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-ctaf",
+    "voice": "en-US-ChristopherNeural",
+    "path": "Native/Resources/audio/oral/o-ctaf.mp3"
+  },
+  {
+    "category": "oral",
+    "id": "o-frequency-change",
+    "voice": "en-US-AriaNeural",
+    "path": "Native/Resources/audio/oral/o-frequency-change.mp3"
+  }
+]

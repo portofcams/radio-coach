@@ -4,6 +4,20 @@ node_modules/
 .env
 .env.local
 *.tsbuildinfo
-ios/
+
+# ios/ was ignored back when it was a throwaway Capacitor scaffold you could
+# recreate with `npx cap add ios`. It isn't that anymore: App/Native/ is a
+# hand-written SwiftUI app (44 files, holds @main) and IS the shipped iOS
+# product, plus 119 pre-rendered ATC mp3s that cost ElevenLabs credits to
+# regenerate. Keeping it ignored meant the real app lived on exactly one
+# Mac's disk. Now tracked; only genuinely-derived/per-user junk is excluded.
+ios/**/xcuserdata/
+ios/**/DerivedData/
+ios/**/build/
+ios/**/*.xcarchive
+ios/**/*.ipa
+ios/App/Pods/
+ios/App/App/public/
+
 android/
 .env.tmp

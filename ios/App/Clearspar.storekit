@@ -1,0 +1,44 @@
+{
+  "identifier" : "A1B2C3D4",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_applicationInternalID" : "6781150292",
+    "_developerTeamID" : "CCSWC89S2V",
+    "_lastSynchronizedDate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500001",
+      "localizations" : [],
+      "name" : "Clearspar Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "21500002",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited grading and the full advanced scenario library.",
+              "displayName" : "Solo Pilot",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.binnacleai.radiocoach.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Solo Pilot Monthly",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

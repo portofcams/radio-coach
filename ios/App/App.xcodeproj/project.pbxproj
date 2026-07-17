@@ -1,0 +1,1476 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		000AF5D903151EC263CFA2B5 /* listening.json in Resources */ = {isa = PBXBuildFile; fileRef = 7371819039EFCE87547FCABE /* listening.json */; };
+		00A70172BF2E8E56F9B39577 /* ifr-holding-instructions.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 53739AC7A034169B588640E3 /* ifr-holding-instructions.mp3 */; };
+		00AEE07CDD43A10223D149A2 /* ifr-cancel-airborne.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5EA1E9AF8C697107C738B9C4 /* ifr-cancel-airborne.mp3 */; };
+		00B713BB8E6BC640DFDCEB9F /* radar-vectors-final.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2849633386A9B18907B286B8 /* radar-vectors-final.mp3 */; };
+		00E5358CEB04F5F566CCD541 /* l5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DB04C1D152650C16E47A18C0 /* l5.mp3 */; };
+		027976C71C2450231EE7F1E7 /* WilcoWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1166BA291ECEE679673BB267 /* WilcoWatchApp.swift */; };
+		047718BC9C246F842015948A /* o-lightgun-land.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 036F0C5399D3C2D60DE2F150 /* o-lightgun-land.mp3 */; };
+		05162227BC32DB6E82F2F128 /* o-classd.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FBD819730152857FEFBE2E12 /* o-classd.mp3 */; };
+		05F0986D18CC67D5CC0AF6CC /* sequence-traffic-in-sight.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AA2D13DA0FACCAEE0E074563 /* sequence-traffic-in-sight.mp3 */; };
+		0845E558EA84438AA0C00192 /* ReminderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8CB88DA2D341D9A28D65B5 /* ReminderSettingsView.swift */; };
+		08B319B58515150AA9378C23 /* o-atis.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D631D853C61194872E560A93 /* o-atis.mp3 */; };
+		0976FD2C0DC875B0806E4CE2 /* scenarios.json in Resources */ = {isa = PBXBuildFile; fileRef = 08DBC83A794BD19CF7FBB516 /* scenarios.json */; };
+		0CE63AC090C4C939E87DDFCB /* RadioCoachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523BA754F62DC45C33385AF1 /* RadioCoachApp.swift */; };
+		0D0208E3092F59B35DCC1B0A /* ifr-circling-approach.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6CDF463E13A6E83B9123102B /* ifr-circling-approach.mp3 */; };
+		0E20B7879E6691B5D2D644F8 /* svfr-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 99244302F376E1857F30FEBB /* svfr-clearance.mp3 */; };
+		0FB9FC9BC8936CABEF1B592F /* emergency-vectors-to-land.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 825D296D3DA98F458F6AECD7 /* emergency-vectors-to-land.mp3 */; };
+		178C4A5A4C49102C40D81D75 /* sidestep-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0549DB6784B9EEE3930C5C65 /* sidestep-clearance.mp3 */; };
+		1958596A15FBABC34DC4D250 /* l13.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B21561A3B6AA47E423E5EFC9 /* l13.mp3 */; };
+		1A5EF100980485DCEBEDC8B0 /* ifr-hold-for-release.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A7A99D4E63D5DA87CD712FBE /* ifr-hold-for-release.mp3 */; };
+		1D2A8B6F5B4F292E19AD0495 /* class-c-entry.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DEE0E52FBB2624CDA9136D63 /* class-c-entry.mp3 */; };
+		2335060A783308148076FB29 /* o-initial-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 157E2ACF1BBEAB9799022C7F /* o-initial-call.mp3 */; };
+		253D0CC440CF5F5A1F5FC832 /* ifr-clearance-craft-full.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D4D825C1DA0D20CA492A9CF9 /* ifr-clearance-craft-full.mp3 */; };
+		261AA2510CC45F5F68B96986 /* ground-taxi-hold-short.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 72F7990317E1ED9418FB8840 /* ground-taxi-hold-short.mp3 */; };
+		2621BA36DE197A93F940FE27 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3AE536837DCCA3FFB8BC6B /* Models.swift */; };
+		262CEDF382055E1DA2ECEB12 /* ctaf-inbound-tenmiles.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B37A1674E33CB77C424F329A /* ctaf-inbound-tenmiles.mp3 */; };
+		28170DD5E38BE80FB747F5D2 /* o-vfr-squawk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5AB2A8DF3A1392B5C958F24E /* o-vfr-squawk.mp3 */; };
+		2B7F46FECA024BF3ABDA11B5 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D058D0231BC1452CB799D7CE /* NotificationManager.swift */; };
+		2E388C2BCA0A6E5E2D0E0F74 /* OralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207A2EEEB3EC2107ABBCC3 /* OralView.swift */; };
+		2F80A56FD93E91E04D46CEA5 /* amended-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0C6BA71BF28C6FF51593D701 /* amended-taxi.mp3 */; };
+		33186D38F25B615787B56AAE /* pushback-approved.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D7E49BF6AE3501F4A5EA84F1 /* pushback-approved.mp3 */; };
+		333E6C5CE9C4DC4ECE44051F /* TrainHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AAB6589BB36389E345E2B4 /* TrainHubView.swift */; };
+		334F22D1092DBABE94CA3CA1 /* o-roger-wilco.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A6AF01C90D26B77B43B8ABDD /* o-roger-wilco.mp3 */; };
+		35844706B211D2AEE1D78973 /* l3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 653AAE1672A529BBD44A5F11 /* l3.mp3 */; };
+		35A799D957AFA0D2798451C5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27738012D5F2AD5A7B9F25CB /* Foundation.framework */; };
+		35D2431C71E40722F9A073FB /* l10.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 31FE988D6F242531A7474450 /* l10.mp3 */; };
+		35D6F76C3CEB320DE2A3829D /* climb-to-altitude.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A6F36D7554F356C2F6C55151 /* climb-to-altitude.mp3 */; };
+		365C727838026F639C0FE6D7 /* WilcoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9963477149DEC5FC32E6D911 /* WilcoWidget.swift */; };
+		3931A4EB836403B29D9B9034 /* ksea.png in Resources */ = {isa = PBXBuildFile; fileRef = 6EDC38EA784FC914C2B345FF /* ksea.png */; };
+		39A2887424D07C2431DDA41B /* departure-squawk-heading.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC5F30A763FD853AD322BD12 /* departure-squawk-heading.mp3 */; };
+		3A0FB7336D29AC3181EAEB62 /* descent-and-maintain.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 59AC727D47811DEFB137B4AE /* descent-and-maintain.mp3 */; };
+		3B95EE1FBB4F41320295EACA /* ScenarioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EABE892A0A22C8CD3CB2F1 /* ScenarioDetailView.swift */; };
+		3E74E2A5B4DA0B829C2B05E9 /* pattern-entry.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 61CA131446B2DC8C81795B7A /* pattern-entry.mp3 */; };
+		3F8152BFD30BBB4EBB432054 /* l11.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 102C6F7D164C27A8797B054F /* l11.mp3 */; };
+		3FA666EF0CE4A86BD959E415 /* ils-full-approach.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F8E152A355C9E6DC18E346D /* ils-full-approach.mp3 */; };
+		3FD86B0B69DB720DA6ECD0B1 /* TrainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B45117B20FE432AF158E2E5 /* TrainViewModel.swift */; };
+		42B93238F8C0A3D988A62B6D /* o-lostcomms-squawk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8BDEBAC1E3CDBF82D6C638C1 /* o-lostcomms-squawk.mp3 */; };
+		430488FC0318D96C3F06A5B4 /* lost-comms-transmit-blind.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9AC22BC2990FF5364EC12787 /* lost-comms-transmit-blind.mp3 */; };
+		435DA7D63583FC4CB945C623 /* extend-downwind.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 37099F9658BB1B8C30D8CB3E /* extend-downwind.mp3 */; };
+		4827D8A1E784269A582349A8 /* ProfileStatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD59DFBDC20C5AC7094159E /* ProfileStatsViewModel.swift */; };
+		48E38FD265D9CEC6A074B18B /* wake-turbulence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */; };
+		498EC7375E5149D679D0D7CC /* o-classc.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F734D2A4BCE0097945649FFB /* o-classc.mp3 */; };
+		4ADFE0E4AD63B76DA068D906 /* altitude-block-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EADDC968AC3731E0E26A75D1 /* altitude-block-clearance.mp3 */; };
+		4C3B0A968158D7897A701862 /* flight-following-squawk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 64693900C905DA5D2832CAB2 /* flight-following-squawk.mp3 */; };
+		4D5AC75865AE4EA857D946BA /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB33117ACF7D04E6B0ED5B5 /* AudioManager.swift */; };
+		4DA415559B48FB54E9A81E26 /* ListenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CE7E488FD19053A31C1466 /* ListenView.swift */; };
+		4F317CE69DBD40E424A88E92 /* vfr-flight-following-initial.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FAE034C6B3EA2E00B78916E5 /* vfr-flight-following-initial.mp3 */; };
+		4F95CAD7D7945E46482161D8 /* l9.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6AB58E76E5ED265C84C388E4 /* l9.mp3 */; };
+		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
+		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
+		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
+		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
+		50DEA06711B5498DE591AB61 /* PracticeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725FC43F3E22643A986F2A6F /* PracticeData.swift */; };
+		51C411D99F937FBAFD75FEB9 /* svfr-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 58562909FF339BF999A7F10F /* svfr-departure.mp3 */; };
+		532A353D7C20C5E99E701B2F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17F6B3CF120CC46CC23C767 /* ProfileView.swift */; };
+		544C8EF3858BAD18A322C62F /* curveball-runway-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 25B75B3D71019284F907252F /* curveball-runway-change.mp3 */; };
+		54D3E79447B9D9CABF3A9CFC /* UserStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BAD4DFBCF3B548405FEF6B /* UserStats.swift */; };
+		55A4F278DB4917EF63A9486B /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49616667BC4D82A5715D767F /* ChallengeView.swift */; };
+		55EE0233C8F75E0B6021071C /* o-frequency-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 46D7A29D4B391B7109A25000 /* o-frequency-change.mp3 */; };
+		56CB821D95507AD9B17AD39D /* ifr-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 678453679F3492387EBA0A87 /* ifr-clearance.mp3 */; };
+		573EFDFC01E82472D4FA5E44 /* o-ctaf.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41CF0B2EF1DBF0618110469A /* o-ctaf.mp3 */; };
+		5A2A28FF5E7D9399AAD81156 /* l6.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3D8D5B7B8DC851E93F977 /* l6.mp3 */; };
+		5C165E2C2E4B04D4A57ACD56 /* medical-emergency-divert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5F0C5C3FF57D6F8D14984880 /* medical-emergency-divert.mp3 */; };
+		5CF60752BD28731DDE62B4E9 /* WilcoComplicationBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3644AB6884EB900D839A3E7 /* WilcoComplicationBundle.swift */; };
+		5DA4925B742DC255276E4AA8 /* ifr-popup-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E1A17013BB05F1C9B1E556F7 /* ifr-popup-clearance.mp3 */; };
+		61649743A2A6D57DB19172F5 /* l16.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 66E03A67D97B73B5D0E78C64 /* l16.mp3 */; };
+		6220B3FF9B679389559C74D4 /* kpae.png in Resources */ = {isa = PBXBuildFile; fileRef = B01759868151C519F98C59B7 /* kpae.png */; };
+		62D43ED42952AEC6204C82EB /* WilcoWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1E6AD29541AA2485A85616AF /* WilcoWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6415EB9D7680376FAAB097C4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27738012D5F2AD5A7B9F25CB /* Foundation.framework */; };
+		6434CBF4E90A29051E52FF18 /* ScenarioStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8109F7467F86AD1D63A602A7 /* ScenarioStore.swift */; };
+		656199533919AF6E6F5CBACE /* traffic-advisory-confirm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 86C40C8A7F4280695EBCAC4E /* traffic-advisory-confirm.mp3 */; };
+		6606CF151590A088C05EC2D6 /* ifr-descend-via-star.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ED064C3000589F256279E349 /* ifr-descend-via-star.mp3 */; };
+		6788F6CFACC0E4F192ABC158 /* SpeechFallbackPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C1CBC28BA16CE911EA3EEA /* SpeechFallbackPlayer.swift */; };
+		699E0ACECB477280A57E81D4 /* curveball-go-around.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B01A671E72CA47F178477519 /* curveball-go-around.mp3 */; };
+		6BE1CEF88974AF86A30D9DA4 /* l8.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A96301D4C067D8AC4648652D /* l8.mp3 */; };
+		6DED0A161F1DE7E207097243 /* WilcoComplication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 385A32E4E6291D8FB82AA5DC /* WilcoComplication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6E97FD121C214715BBBA6699 /* o-emergency.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4293B5C184FA6732960E169B /* o-emergency.mp3 */; };
+		7266AAAE58A979FC56D09884 /* ifr-efc-holding.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FACE976ECB3E39041D124094 /* ifr-efc-holding.mp3 */; };
+		728D562EE9AE98BDCA676C23 /* AirportDiagramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7688A38399070DFC4549708 /* AirportDiagramView.swift */; };
+		7349D1E579EF7D1D9D7D0527 /* o-readback.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7F2F3D37F04EEB8911B1352F /* o-readback.mp3 */; };
+		76B7F2C7F6944F0CD5F1BA3B /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA9748D0B5C0FA612B947E /* Scenario.swift */; };
+		77E7A5EF030E71737A99475B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A44D500A2C448C178918E06B /* Assets.xcassets */; };
+		7825F4B2F0D74413EA40F8E0 /* GradeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2445C3885A7CC9A6D06DB35F /* GradeResult.swift */; };
+		7918BB8C951DF0045E36CFC7 /* DrillViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192F1079C31E255CC800B37F /* DrillViews.swift */; };
+		7A00A0FBC6E65697461FCC6A /* hold-short-critical.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F7809CF5268B2CCD2FF8C0AE /* hold-short-critical.mp3 */; };
+		7AA4756ADF80FA6936E3C4C7 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150FB1AB8086C3E492CBE0E /* PaywallView.swift */; };
+		7BF86CFC6C9FB4DDDF502F36 /* o-lineup-wait.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0F05E9CD721607E785255B76 /* o-lineup-wait.mp3 */; };
+		7D527DFC2666C1E87F0DA1FF /* class-b-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9CF7C1AB5A0A70829F99006D /* class-b-clearance.mp3 */; };
+		7DAA6A99B65C3E4DB6CEFCBC /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCE5E1113A7B91DCAF1E337 /* NetworkClient.swift */; };
+		7FF9BBCA38B94E686B21E384 /* o-classb.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D5DE8BD81291A4DF5C861 /* o-classb.mp3 */; };
+		86B52B6B3D6E1FF69C9373DA /* Drills.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8EE8D749DA9806D5D62CF4 /* Drills.swift */; };
+		877A069555D67D3D0D20F2DD /* l14.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 24033C8AED72195F07EBC677 /* l14.mp3 */; };
+		8897048832E5632097566FF6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38AC35F2EE8B474599B5C7CF /* Assets.xcassets */; };
+		8A35877400B0C2864E6FE79D /* center-frequency-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0A00CEECBD01983C25ECFE4 /* center-frequency-change.mp3 */; };
+		8B188FF7B773A8DD252158AC /* PlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33C32077D860F1EDD59F5FA /* PlanCard.swift */; };
+		8B5703D6721BD32AFBAFBAEB /* atis-initial-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AA680F9A3E8D7A88CA9EE5F4 /* atis-initial-call.mp3 */; };
+		8BBA723BE63C86D12598FDF4 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902F1F20198EF36A58F5543A /* IAPManager.swift */; };
+		8FAB84AA29A8219A566F6DB3 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C44EC25BEA830CACD9BF1 /* LoginView.swift */; };
+		8FE1F1F5F97E38B622D35863 /* weather-deviation-approved.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C0AA00F1BA8566F05308409 /* weather-deviation-approved.mp3 */; };
+		904B46A4F138FC1B1C54720E /* departure-turn-instruction.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4E33BAC3450EB69749351370 /* departure-turn-instruction.mp3 */; };
+		912CA6CEC0C715279959B0FC /* special-vfr-request.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 16333211D9D2A330ED4986BC /* special-vfr-request.mp3 */; };
+		91499157C46ED63F0DB2BCA6 /* o-lightgun-ground.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 003BA500BEE5F5928A6F1C3C /* o-lightgun-ground.mp3 */; };
+		932F081476693D0FB906003E /* traffic-not-in-sight.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EB6ECA3418E17B49253915B4 /* traffic-not-in-sight.mp3 */; };
+		9389DB91BF27D645B0CBEC0F /* class-d-takeoff.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C538B41DFE05DE772E14CD19 /* class-d-takeoff.mp3 */; };
+		944A0BE131DE61AC0BB4DA69 /* clearance-void-time.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DDA0CBB94397BABC4E104927 /* clearance-void-time.mp3 */; };
+		96B3690E5F144397338B0763 /* flight-following-terminated.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 50B1A601691570E6DE57B731 /* flight-following-terminated.mp3 */; };
+		9731777A5639D2EDAC28F987 /* phto.png in Resources */ = {isa = PBXBuildFile; fileRef = B70F90FC8DA13D2207FAE33D /* phto.png */; };
+		990154B04E3DF04FA2734F33 /* HomeFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60277F980D65A05504023155 /* HomeFieldView.swift */; };
+		993AEB45CF972D73C570C164 /* night-airport-in-sight.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1BE4F9513E4DC22083C8DC46 /* night-airport-in-sight.mp3 */; };
+		994928299194D0B615742FB9 /* ifr-missed-approach.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DB01BC1C30F19E6293C59CA5 /* ifr-missed-approach.mp3 */; };
+		9A35EEBD88B5FDE72D6E7115 /* heli-closed-traffic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7160266A1E426090684D7234 /* heli-closed-traffic.mp3 */; };
+		9A8534DD0F990F887A28044F /* l7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FADA70229CFA06D7252051A9 /* l7.mp3 */; };
+		9EEBF788BC22CD5159EF7439 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5083671624204720C88BAA8A /* ComingSoonView.swift */; };
+		9F306A66EA35C5645FFEDDFD /* bravo-transition.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3DEC6303C9FACB1CB4313806 /* bravo-transition.mp3 */; };
+		A20FEC4051A18A6D113DCA63 /* ifr-cruise-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCCA78254E55284F7BCE8733 /* ifr-cruise-clearance.mp3 */; };
+		A47F2B89D2D8297657A8BE00 /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24065945635D4019EECE5DB3 /* PracticeView.swift */; };
+		A4AF282ED43EC8277927C0A2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CDB2545352A7FC502B8ADA0 /* RootView.swift */; };
+		A927A81089E3E3E687DFA50B /* missed-approach-amended.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BB836EC4B8624000C7C92407 /* missed-approach-amended.mp3 */; };
+		A9DE00F69071FEB7309DDAA2 /* progressive-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9AA124CBD8C089632EB08E06 /* progressive-taxi.mp3 */; };
+		AAB5DACC64BA6EE0D59D5DE5 /* curveball-amended-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C882F7EBC36F10BD3C444658 /* curveball-amended-departure.mp3 */; };
+		ABA85B1D9D0E878F09815535 /* star-with-restriction.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3A748C729AD1743D7CDAA2E6 /* star-with-restriction.mp3 */; };
+		AC291F7C266D5E7F3F0225A3 /* heli-delta-transition.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC107B049570606AE28DD009 /* heli-delta-transition.mp3 */; };
+		AD6FEA0135B287894FDD2811 /* WilcoComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F759ACD31EBA553A1C347D9 /* WilcoComplication.swift */; };
+		AE2DFC753990B08F1646B9E8 /* heli-hover-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A9384BC0041FEB02497E748C /* heli-hover-taxi.mp3 */; };
+		B052FC0DC21B16BAC8ED3263 /* l4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F230ED830EB7485E63505F58 /* l4.mp3 */; };
+		B0E5237314380A127A74657B /* go-around-wind-shear.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2592DF910EF1C067E27205AE /* go-around-wind-shear.mp3 */; };
+		B2DF9219E3F71FA7259129C8 /* WilcoShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2355176AFDFD781A8C17A15E /* WilcoShortcuts.swift */; };
+		B4E37B8A3A9790AF892D1625 /* runway-incursion-stop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D085258E4BAAD77C32DB8308 /* runway-incursion-stop.mp3 */; };
+		B5CF8AF7AC4A3660AAC40DA6 /* l1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 217FDF7D2C5D9E198587E3E2 /* l1.mp3 */; };
+		B697E3473B2AACC1201AEECF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0BD61FE4729043000EA0A3 /* Foundation.framework */; };
+		BB2F8127C860F24CCC78B945 /* void-time-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7EB5F9FE99EFBDFB51E531BE /* void-time-clearance.mp3 */; };
+		BC836127C4192A38F99B0ED4 /* ifr-full-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 50A1E8778B2C8064E7CDEDFE /* ifr-full-clearance.mp3 */; };
+		C15EE9C5A1F4A9AF34D5EB68 /* runway-crossing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EAD90C4B915B8AA687FFC32B /* runway-crossing.mp3 */; };
+		C2BA88874E62B627297D2C9E /* o-svfr.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FD4FC29EF2D32E5CAE4B3AEF /* o-svfr.mp3 */; };
+		C371C332F6021678193AD0C6 /* ifr-approach-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9CDC41B3EF748FE662DF5A00 /* ifr-approach-clearance.mp3 */; };
+		C3C783A8E1378B0641EBC94F /* vor-holding-pattern.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E61DD698564DD6A8F36E75A5 /* vor-holding-pattern.mp3 */; };
+		C597F4883C2BDF1890CCD8F5 /* atis-copy-and-report.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FAAC8700EEEB4A775474725D /* atis-copy-and-report.mp3 */; };
+		C5FBB05E747F8740A45814C8 /* night-ctaf-landing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6464CE3E16DE578F0F73B9A4 /* night-ctaf-landing.mp3 */; };
+		C6F9D172D3220C85986A03F9 /* emergency-mayday.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3E391AE37F1235A14B5200BF /* emergency-mayday.mp3 */; };
+		C7C97F8A23481B660B25510F /* immediate-takeoff.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9EE17042F5D4986E5C356212 /* immediate-takeoff.mp3 */; };
+		C8903DE234FF1AC4FB82B7D1 /* pan-pan-urgency.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C87F3A9F3CD5E322F0669CC6 /* pan-pan-urgency.mp3 */; };
+		C99E1808096F460D8085FF73 /* AppleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0221F78D954E95A5B38FAB /* AppleSignInButton.swift */; };
+		CE122A6F51B2B8244052B244 /* intersection-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6EF270D7852B921D85B9EDC4 /* intersection-departure.mp3 */; };
+		CFEC6D73C895DABE5EEDBE69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A27C715415FA43C00F150451 /* Assets.xcassets */; };
+		CFF5ED543B684AE2D82F0A77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC2642EC5BC2C37E5847B89 /* AuthManager.swift */; };
+		D1837345091583C771ACC8F1 /* heli-departure-present-position.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A465C18E164C50C23C45AD75 /* heli-departure-present-position.mp3 */; };
+		D2400B1C47612518C176838A /* l15.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7AC0FC48D5EF86F7E97433D5 /* l15.mp3 */; };
+		D33D45D46952ABBDB99EE0C7 /* declare-mayday.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6635F9B2DBAFEC075D1AF5A /* declare-mayday.mp3 */; };
+		D33F2C3200D1A5A8E918E780 /* heli-helipad-landing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 72B0F7318ED42C35542591EB /* heli-helipad-landing.mp3 */; };
+		D4B1287671A2B29EAF31EAE2 /* WilcoWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CBC7A3993E2B281E2F7C0A /* WilcoWidgetBundle.swift */; };
+		D555411AE093A57FDE9127E7 /* go-around.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 02C00BBF81D86D71FAA54E7F /* go-around.mp3 */; };
+		DADCEE494C7165BDE05CA0DE /* l12.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6CFA808AB349440EEDEBBE3C /* l12.mp3 */; };
+		DB74FA7E7EBB0A78375AA68F /* heli-air-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0C31FB21F7C1D4805B6BA8B6 /* heli-air-taxi.mp3 */; };
+		DCF0E51D2E97F6F6E2558069 /* BundledAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */; };
+		DF03962A132B3C39D2FE3E5B /* line-up-wait.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2D71CCA7B3DAE5B2B33B368F /* line-up-wait.mp3 */; };
+		E0B6BE74B9964F5D6509F6FB /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E5B9312C4EB723E6354CF6 /* Tips.swift */; };
+		E1E115CE06E8D06A3972B77B /* emergency-squawk-ident.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73052EA474E27E4EE8F85CDE /* emergency-squawk-ident.mp3 */; };
+		E3AFA7C08145E6ADC2532F26 /* three-sixty-for-spacing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4200CEF92C7B9591941A8263 /* three-sixty-for-spacing.mp3 */; };
+		E3B156E470C27001B081683E /* engine-runup-area.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D2DE74D75B67999831B95837 /* engine-runup-area.mp3 */; };
+		E71E2DE0A66DC685253FECCB /* RadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01536235B3FDE14DE9906C19 /* RadioPlayer.swift */; };
+		E89A3C4E78AC7E2953CD589F /* short-approach-approved.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CBAC829F9DFD92374F8105E5 /* short-approach-approved.mp3 */; };
+		E9096987370594188E35407F /* ProfileStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5F64A1A4D54F96764AB2C5 /* ProfileStatsView.swift */; };
+		EE862BCEB73AB781A97CA55E /* pirep-request.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D21E6676D8452863E5FE1869 /* pirep-request.mp3 */; };
+		F09EF146CAE6733FBD8A113F /* oral.json in Resources */ = {isa = PBXBuildFile; fileRef = 163DCDF69FD244D4CFF27A9A /* oral.json */; };
+		F2AC8F1609A2FC41FF2E21FB /* ScenarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68EB5B9A6A8BAC3D1EDBD5B /* ScenarioViewModel.swift */; };
+		F49A2DB2147EF1D88CB8B21C /* frequency-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B247E7C1C69D675E5C09EE0D /* frequency-change.mp3 */; };
+		F6F23A0260141F36624F60A9 /* ifr-climb-via-sid.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F4FDBD085DAE2A8E3F892B97 /* ifr-climb-via-sid.mp3 */; };
+		F82912477E5502D490C7C7E6 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE27E6052BCC243121FE5C6 /* WelcomeView.swift */; };
+		F914C3A0C870B235767278E2 /* cleared-for-option.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9FB58A3CAE02F965321E6832 /* cleared-for-option.mp3 */; };
+		F98DDF2774CE724FCC9CD043 /* ctaf-position-report.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2911596BC7D7EE5E36F95769 /* ctaf-position-report.mp3 */; };
+		FB310D2A0FBF58EED9439CBD /* touch-and-go.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 67602BF5A2ED8D554B713815 /* touch-and-go.mp3 */; };
+		FB4961013CCB85FD3F197764 /* l2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 331D969964ACC83E6E2F46EB /* l2.mp3 */; };
+		FC0F936AB14A362E9B20387B /* vfr-squawk-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 95BAA4CAB35D4A1FB20C4C9C /* vfr-squawk-departure.mp3 */; };
+		FEA5666F78AC5FB3A33391CF /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF00CB81B065363FC38844B /* KeychainHelper.swift */; };
+		FF93C279450AD970A48E3C9A /* WilcoWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BD44D2EEEAA5395816D6F711 /* WilcoWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		03B3461633D176F4AF579D85 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A2E18DF9C92054FF2916FC2B;
+			remoteInfo = WilcoWatch;
+		};
+		707E930874A5A127FF73A72C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A84E4623C1EF486FF360441;
+			remoteInfo = WilcoComplication;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		427E349A4911FD89EF947A2E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FF93C279450AD970A48E3C9A /* WilcoWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		667166CC42389B2741B4906D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6DED0A161F1DE7E207097243 /* WilcoComplication.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3C4C1984F7910AF506547D1 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				62D43ED42952AEC6204C82EB /* WilcoWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		003BA500BEE5F5928A6F1C3C /* o-lightgun-ground.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lightgun-ground.mp3"; path = "Native/Resources/audio/oral/o-lightgun-ground.mp3"; sourceTree = "<group>"; };
+		01536235B3FDE14DE9906C19 /* RadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Audio/RadioPlayer.swift; sourceTree = "<group>"; };
+		01CBC7A3993E2B281E2F7C0A /* WilcoWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoWidgetBundle.swift; sourceTree = "<group>"; };
+		02C00BBF81D86D71FAA54E7F /* go-around.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "go-around.mp3"; path = "Native/Resources/audio/scenario/go-around.mp3"; sourceTree = "<group>"; };
+		036F0C5399D3C2D60DE2F150 /* o-lightgun-land.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lightgun-land.mp3"; path = "Native/Resources/audio/oral/o-lightgun-land.mp3"; sourceTree = "<group>"; };
+		0549DB6784B9EEE3930C5C65 /* sidestep-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "sidestep-clearance.mp3"; path = "Native/Resources/audio/scenario/sidestep-clearance.mp3"; sourceTree = "<group>"; };
+		08DBC83A794BD19CF7FBB516 /* scenarios.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Native/Resources/scenarios.json; sourceTree = "<group>"; };
+		0B5D5DE8BD81291A4DF5C861 /* o-classb.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-classb.mp3"; path = "Native/Resources/audio/oral/o-classb.mp3"; sourceTree = "<group>"; };
+		0C31FB21F7C1D4805B6BA8B6 /* heli-air-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-air-taxi.mp3"; path = "Native/Resources/audio/scenario/heli-air-taxi.mp3"; sourceTree = "<group>"; };
+		0C6BA71BF28C6FF51593D701 /* amended-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "amended-taxi.mp3"; path = "Native/Resources/audio/scenario/amended-taxi.mp3"; sourceTree = "<group>"; };
+		0CDB2545352A7FC502B8ADA0 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/RootView.swift; sourceTree = "<group>"; };
+		0F05E9CD721607E785255B76 /* o-lineup-wait.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lineup-wait.mp3"; path = "Native/Resources/audio/oral/o-lineup-wait.mp3"; sourceTree = "<group>"; };
+		0F8EE8D749DA9806D5D62CF4 /* Drills.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Drills.swift; sourceTree = "<group>"; };
+		0FA3D8D5B7B8DC851E93F977 /* l6.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l6.mp3; path = Native/Resources/audio/listen/l6.mp3; sourceTree = "<group>"; };
+		102C6F7D164C27A8797B054F /* l11.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l11.mp3; path = Native/Resources/audio/listen/l11.mp3; sourceTree = "<group>"; };
+		1166BA291ECEE679673BB267 /* WilcoWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoWatchApp.swift; sourceTree = "<group>"; };
+		157E2ACF1BBEAB9799022C7F /* o-initial-call.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-initial-call.mp3"; path = "Native/Resources/audio/oral/o-initial-call.mp3"; sourceTree = "<group>"; };
+		16333211D9D2A330ED4986BC /* special-vfr-request.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "special-vfr-request.mp3"; path = "Native/Resources/audio/scenario/special-vfr-request.mp3"; sourceTree = "<group>"; };
+		163DCDF69FD244D4CFF27A9A /* oral.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Native/Resources/oral.json; sourceTree = "<group>"; };
+		192F1079C31E255CC800B37F /* DrillViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrillViews.swift; sourceTree = "<group>"; };
+		1BE4F9513E4DC22083C8DC46 /* night-airport-in-sight.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "night-airport-in-sight.mp3"; path = "Native/Resources/audio/scenario/night-airport-in-sight.mp3"; sourceTree = "<group>"; };
+		1CF00CB81B065363FC38844B /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Networking/KeychainHelper.swift; sourceTree = "<group>"; };
+		1E6AD29541AA2485A85616AF /* WilcoWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WilcoWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		217FDF7D2C5D9E198587E3E2 /* l1.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l1.mp3; path = Native/Resources/audio/listen/l1.mp3; sourceTree = "<group>"; };
+		2355176AFDFD781A8C17A15E /* WilcoShortcuts.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoShortcuts.swift; sourceTree = "<group>"; };
+		24033C8AED72195F07EBC677 /* l14.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l14.mp3; path = Native/Resources/audio/listen/l14.mp3; sourceTree = "<group>"; };
+		24065945635D4019EECE5DB3 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Practice/PracticeView.swift; sourceTree = "<group>"; };
+		2445C3885A7CC9A6D06DB35F /* GradeResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/GradeResult.swift; sourceTree = "<group>"; };
+		2592DF910EF1C067E27205AE /* go-around-wind-shear.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "go-around-wind-shear.mp3"; path = "Native/Resources/audio/scenario/go-around-wind-shear.mp3"; sourceTree = "<group>"; };
+		25B75B3D71019284F907252F /* curveball-runway-change.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "curveball-runway-change.mp3"; path = "Native/Resources/audio/scenario/curveball-runway-change.mp3"; sourceTree = "<group>"; };
+		27738012D5F2AD5A7B9F25CB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		2849633386A9B18907B286B8 /* radar-vectors-final.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "radar-vectors-final.mp3"; path = "Native/Resources/audio/scenario/radar-vectors-final.mp3"; sourceTree = "<group>"; };
+		2911596BC7D7EE5E36F95769 /* ctaf-position-report.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ctaf-position-report.mp3"; path = "Native/Resources/audio/scenario/ctaf-position-report.mp3"; sourceTree = "<group>"; };
+		2CB33117ACF7D04E6B0ED5B5 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Audio/AudioManager.swift; sourceTree = "<group>"; };
+		2D71CCA7B3DAE5B2B33B368F /* line-up-wait.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "line-up-wait.mp3"; path = "Native/Resources/audio/scenario/line-up-wait.mp3"; sourceTree = "<group>"; };
+		31FE988D6F242531A7474450 /* l10.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l10.mp3; path = Native/Resources/audio/listen/l10.mp3; sourceTree = "<group>"; };
+		331D969964ACC83E6E2F46EB /* l2.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l2.mp3; path = Native/Resources/audio/listen/l2.mp3; sourceTree = "<group>"; };
+		35CE7E488FD19053A31C1466 /* ListenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Practice/ListenView.swift; sourceTree = "<group>"; };
+		37099F9658BB1B8C30D8CB3E /* extend-downwind.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "extend-downwind.mp3"; path = "Native/Resources/audio/scenario/extend-downwind.mp3"; sourceTree = "<group>"; };
+		385A32E4E6291D8FB82AA5DC /* WilcoComplication.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WilcoComplication.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		38AC35F2EE8B474599B5C7CF /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3A748C729AD1743D7CDAA2E6 /* star-with-restriction.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "star-with-restriction.mp3"; path = "Native/Resources/audio/scenario/star-with-restriction.mp3"; sourceTree = "<group>"; };
+		3DEC6303C9FACB1CB4313806 /* bravo-transition.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "bravo-transition.mp3"; path = "Native/Resources/audio/scenario/bravo-transition.mp3"; sourceTree = "<group>"; };
+		3E391AE37F1235A14B5200BF /* emergency-mayday.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "emergency-mayday.mp3"; path = "Native/Resources/audio/scenario/emergency-mayday.mp3"; sourceTree = "<group>"; };
+		3F8E152A355C9E6DC18E346D /* ils-full-approach.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ils-full-approach.mp3"; path = "Native/Resources/audio/scenario/ils-full-approach.mp3"; sourceTree = "<group>"; };
+		4150FB1AB8086C3E492CBE0E /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/IAP/PaywallView.swift; sourceTree = "<group>"; };
+		41CF0B2EF1DBF0618110469A /* o-ctaf.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-ctaf.mp3"; path = "Native/Resources/audio/oral/o-ctaf.mp3"; sourceTree = "<group>"; };
+		4200CEF92C7B9591941A8263 /* three-sixty-for-spacing.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "three-sixty-for-spacing.mp3"; path = "Native/Resources/audio/scenario/three-sixty-for-spacing.mp3"; sourceTree = "<group>"; };
+		4293B5C184FA6732960E169B /* o-emergency.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-emergency.mp3"; path = "Native/Resources/audio/oral/o-emergency.mp3"; sourceTree = "<group>"; };
+		46D7A29D4B391B7109A25000 /* o-frequency-change.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-frequency-change.mp3"; path = "Native/Resources/audio/oral/o-frequency-change.mp3"; sourceTree = "<group>"; };
+		49616667BC4D82A5715D767F /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Practice/ChallengeView.swift; sourceTree = "<group>"; };
+		4C0AA00F1BA8566F05308409 /* weather-deviation-approved.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "weather-deviation-approved.mp3"; path = "Native/Resources/audio/scenario/weather-deviation-approved.mp3"; sourceTree = "<group>"; };
+		4E33BAC3450EB69749351370 /* departure-turn-instruction.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "departure-turn-instruction.mp3"; path = "Native/Resources/audio/scenario/departure-turn-instruction.mp3"; sourceTree = "<group>"; };
+		504EC3041FED79650016851F /* Wilco.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wilco.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		504EC30C1FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		504EC30E1FED79650016851F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5083671624204720C88BAA8A /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Practice/ComingSoonView.swift; sourceTree = "<group>"; };
+		50A1E8778B2C8064E7CDEDFE /* ifr-full-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-full-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-full-clearance.mp3"; sourceTree = "<group>"; };
+		50B1A601691570E6DE57B731 /* flight-following-terminated.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "flight-following-terminated.mp3"; path = "Native/Resources/audio/scenario/flight-following-terminated.mp3"; sourceTree = "<group>"; };
+		523BA754F62DC45C33385AF1 /* RadioCoachApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/RadioCoachApp.swift; sourceTree = "<group>"; };
+		53739AC7A034169B588640E3 /* ifr-holding-instructions.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-holding-instructions.mp3"; path = "Native/Resources/audio/scenario/ifr-holding-instructions.mp3"; sourceTree = "<group>"; };
+		58562909FF339BF999A7F10F /* svfr-departure.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "svfr-departure.mp3"; path = "Native/Resources/audio/scenario/svfr-departure.mp3"; sourceTree = "<group>"; };
+		59AC727D47811DEFB137B4AE /* descent-and-maintain.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "descent-and-maintain.mp3"; path = "Native/Resources/audio/scenario/descent-and-maintain.mp3"; sourceTree = "<group>"; };
+		5AB2A8DF3A1392B5C958F24E /* o-vfr-squawk.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-vfr-squawk.mp3"; path = "Native/Resources/audio/oral/o-vfr-squawk.mp3"; sourceTree = "<group>"; };
+		5B45117B20FE432AF158E2E5 /* TrainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Train/TrainViewModel.swift; sourceTree = "<group>"; };
+		5D0221F78D954E95A5B38FAB /* AppleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Auth/AppleSignInButton.swift; sourceTree = "<group>"; };
+		5E8CB88DA2D341D9A28D65B5 /* ReminderSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Notifications/ReminderSettingsView.swift; sourceTree = "<group>"; };
+		5EA1E9AF8C697107C738B9C4 /* ifr-cancel-airborne.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-cancel-airborne.mp3"; path = "Native/Resources/audio/scenario/ifr-cancel-airborne.mp3"; sourceTree = "<group>"; };
+		5F0C5C3FF57D6F8D14984880 /* medical-emergency-divert.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "medical-emergency-divert.mp3"; path = "Native/Resources/audio/scenario/medical-emergency-divert.mp3"; sourceTree = "<group>"; };
+		60277F980D65A05504023155 /* HomeFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/HomeFieldView.swift; sourceTree = "<group>"; };
+		61BAD4DFBCF3B548405FEF6B /* UserStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/UserStats.swift; sourceTree = "<group>"; };
+		61CA131446B2DC8C81795B7A /* pattern-entry.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pattern-entry.mp3"; path = "Native/Resources/audio/scenario/pattern-entry.mp3"; sourceTree = "<group>"; };
+		6464CE3E16DE578F0F73B9A4 /* night-ctaf-landing.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "night-ctaf-landing.mp3"; path = "Native/Resources/audio/scenario/night-ctaf-landing.mp3"; sourceTree = "<group>"; };
+		64693900C905DA5D2832CAB2 /* flight-following-squawk.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "flight-following-squawk.mp3"; path = "Native/Resources/audio/scenario/flight-following-squawk.mp3"; sourceTree = "<group>"; };
+		653AAE1672A529BBD44A5F11 /* l3.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l3.mp3; path = Native/Resources/audio/listen/l3.mp3; sourceTree = "<group>"; };
+		66E03A67D97B73B5D0E78C64 /* l16.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l16.mp3; path = Native/Resources/audio/listen/l16.mp3; sourceTree = "<group>"; };
+		67602BF5A2ED8D554B713815 /* touch-and-go.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "touch-and-go.mp3"; path = "Native/Resources/audio/scenario/touch-and-go.mp3"; sourceTree = "<group>"; };
+		678453679F3492387EBA0A87 /* ifr-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-clearance.mp3"; sourceTree = "<group>"; };
+		69E5B9312C4EB723E6354CF6 /* Tips.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
+		6AB58E76E5ED265C84C388E4 /* l9.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l9.mp3; path = Native/Resources/audio/listen/l9.mp3; sourceTree = "<group>"; };
+		6B5F64A1A4D54F96764AB2C5 /* ProfileStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/ProfileStatsView.swift; sourceTree = "<group>"; };
+		6CDF463E13A6E83B9123102B /* ifr-circling-approach.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-circling-approach.mp3"; path = "Native/Resources/audio/scenario/ifr-circling-approach.mp3"; sourceTree = "<group>"; };
+		6CFA808AB349440EEDEBBE3C /* l12.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l12.mp3; path = Native/Resources/audio/listen/l12.mp3; sourceTree = "<group>"; };
+		6EDC38EA784FC914C2B345FF /* ksea.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Native/Resources/charts/ksea.png; sourceTree = "<group>"; };
+		6EF270D7852B921D85B9EDC4 /* intersection-departure.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "intersection-departure.mp3"; path = "Native/Resources/audio/scenario/intersection-departure.mp3"; sourceTree = "<group>"; };
+		7160266A1E426090684D7234 /* heli-closed-traffic.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-closed-traffic.mp3"; path = "Native/Resources/audio/scenario/heli-closed-traffic.mp3"; sourceTree = "<group>"; };
+		725FC43F3E22643A986F2A6F /* PracticeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/PracticeData.swift; sourceTree = "<group>"; };
+		72B0F7318ED42C35542591EB /* heli-helipad-landing.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-helipad-landing.mp3"; path = "Native/Resources/audio/scenario/heli-helipad-landing.mp3"; sourceTree = "<group>"; };
+		72F7990317E1ED9418FB8840 /* ground-taxi-hold-short.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ground-taxi-hold-short.mp3"; path = "Native/Resources/audio/scenario/ground-taxi-hold-short.mp3"; sourceTree = "<group>"; };
+		73052EA474E27E4EE8F85CDE /* emergency-squawk-ident.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "emergency-squawk-ident.mp3"; path = "Native/Resources/audio/scenario/emergency-squawk-ident.mp3"; sourceTree = "<group>"; };
+		7371819039EFCE87547FCABE /* listening.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Native/Resources/listening.json; sourceTree = "<group>"; };
+		7AC0FC48D5EF86F7E97433D5 /* l15.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l15.mp3; path = Native/Resources/audio/listen/l15.mp3; sourceTree = "<group>"; };
+		7EB5F9FE99EFBDFB51E531BE /* void-time-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "void-time-clearance.mp3"; path = "Native/Resources/audio/scenario/void-time-clearance.mp3"; sourceTree = "<group>"; };
+		7F2F3D37F04EEB8911B1352F /* o-readback.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-readback.mp3"; path = "Native/Resources/audio/oral/o-readback.mp3"; sourceTree = "<group>"; };
+		7F759ACD31EBA553A1C347D9 /* WilcoComplication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoComplication.swift; sourceTree = "<group>"; };
+		8109F7467F86AD1D63A602A7 /* ScenarioStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/ScenarioStore.swift; sourceTree = "<group>"; };
+		825D296D3DA98F458F6AECD7 /* emergency-vectors-to-land.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "emergency-vectors-to-land.mp3"; path = "Native/Resources/audio/scenario/emergency-vectors-to-land.mp3"; sourceTree = "<group>"; };
+		82C1CBC28BA16CE911EA3EEA /* SpeechFallbackPlayer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SpeechFallbackPlayer.swift; path = Native/Audio/SpeechFallbackPlayer.swift; sourceTree = "<group>"; };
+		86C40C8A7F4280695EBCAC4E /* traffic-advisory-confirm.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "traffic-advisory-confirm.mp3"; path = "Native/Resources/audio/scenario/traffic-advisory-confirm.mp3"; sourceTree = "<group>"; };
+		8BDEBAC1E3CDBF82D6C638C1 /* o-lostcomms-squawk.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lostcomms-squawk.mp3"; path = "Native/Resources/audio/oral/o-lostcomms-squawk.mp3"; sourceTree = "<group>"; };
+		8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "wake-turbulence.mp3"; path = "Native/Resources/audio/scenario/wake-turbulence.mp3"; sourceTree = "<group>"; };
+		902F1F20198EF36A58F5543A /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/IAP/IAPManager.swift; sourceTree = "<group>"; };
+		95BAA4CAB35D4A1FB20C4C9C /* vfr-squawk-departure.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "vfr-squawk-departure.mp3"; path = "Native/Resources/audio/scenario/vfr-squawk-departure.mp3"; sourceTree = "<group>"; };
+		95FA9748D0B5C0FA612B947E /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/Scenario.swift; sourceTree = "<group>"; };
+		98AAB6589BB36389E345E2B4 /* TrainHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Train/TrainHubView.swift; sourceTree = "<group>"; };
+		99244302F376E1857F30FEBB /* svfr-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "svfr-clearance.mp3"; path = "Native/Resources/audio/scenario/svfr-clearance.mp3"; sourceTree = "<group>"; };
+		9963477149DEC5FC32E6D911 /* WilcoWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoWidget.swift; sourceTree = "<group>"; };
+		9AA124CBD8C089632EB08E06 /* progressive-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "progressive-taxi.mp3"; path = "Native/Resources/audio/scenario/progressive-taxi.mp3"; sourceTree = "<group>"; };
+		9AC22BC2990FF5364EC12787 /* lost-comms-transmit-blind.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "lost-comms-transmit-blind.mp3"; path = "Native/Resources/audio/scenario/lost-comms-transmit-blind.mp3"; sourceTree = "<group>"; };
+		9BCE5E1113A7B91DCAF1E337 /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Networking/NetworkClient.swift; sourceTree = "<group>"; };
+		9BD59DFBDC20C5AC7094159E /* ProfileStatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/ProfileStatsViewModel.swift; sourceTree = "<group>"; };
+		9CDC41B3EF748FE662DF5A00 /* ifr-approach-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-approach-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-approach-clearance.mp3"; sourceTree = "<group>"; };
+		9CF7C1AB5A0A70829F99006D /* class-b-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "class-b-clearance.mp3"; path = "Native/Resources/audio/scenario/class-b-clearance.mp3"; sourceTree = "<group>"; };
+		9EE17042F5D4986E5C356212 /* immediate-takeoff.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "immediate-takeoff.mp3"; path = "Native/Resources/audio/scenario/immediate-takeoff.mp3"; sourceTree = "<group>"; };
+		9FB58A3CAE02F965321E6832 /* cleared-for-option.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "cleared-for-option.mp3"; path = "Native/Resources/audio/scenario/cleared-for-option.mp3"; sourceTree = "<group>"; };
+		A1B2C3D4E5F678901234ABCD /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		A27C715415FA43C00F150451 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A44D500A2C448C178918E06B /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A465C18E164C50C23C45AD75 /* heli-departure-present-position.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-departure-present-position.mp3"; path = "Native/Resources/audio/scenario/heli-departure-present-position.mp3"; sourceTree = "<group>"; };
+		A68EB5B9A6A8BAC3D1EDBD5B /* ScenarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Scenario/ScenarioViewModel.swift; sourceTree = "<group>"; };
+		A6AF01C90D26B77B43B8ABDD /* o-roger-wilco.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-roger-wilco.mp3"; path = "Native/Resources/audio/oral/o-roger-wilco.mp3"; sourceTree = "<group>"; };
+		A6F36D7554F356C2F6C55151 /* climb-to-altitude.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "climb-to-altitude.mp3"; path = "Native/Resources/audio/scenario/climb-to-altitude.mp3"; sourceTree = "<group>"; };
+		A7A99D4E63D5DA87CD712FBE /* ifr-hold-for-release.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-hold-for-release.mp3"; path = "Native/Resources/audio/scenario/ifr-hold-for-release.mp3"; sourceTree = "<group>"; };
+		A9384BC0041FEB02497E748C /* heli-hover-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-hover-taxi.mp3"; path = "Native/Resources/audio/scenario/heli-hover-taxi.mp3"; sourceTree = "<group>"; };
+		A96301D4C067D8AC4648652D /* l8.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l8.mp3; path = Native/Resources/audio/listen/l8.mp3; sourceTree = "<group>"; };
+		AA2D13DA0FACCAEE0E074563 /* sequence-traffic-in-sight.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "sequence-traffic-in-sight.mp3"; path = "Native/Resources/audio/scenario/sequence-traffic-in-sight.mp3"; sourceTree = "<group>"; };
+		AA680F9A3E8D7A88CA9EE5F4 /* atis-initial-call.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "atis-initial-call.mp3"; path = "Native/Resources/audio/scenario/atis-initial-call.mp3"; sourceTree = "<group>"; };
+		ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BundledAudio.swift; path = Native/Audio/BundledAudio.swift; sourceTree = "<group>"; };
+		B01759868151C519F98C59B7 /* kpae.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Native/Resources/charts/kpae.png; sourceTree = "<group>"; };
+		B01A671E72CA47F178477519 /* curveball-go-around.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "curveball-go-around.mp3"; path = "Native/Resources/audio/scenario/curveball-go-around.mp3"; sourceTree = "<group>"; };
+		B0A00CEECBD01983C25ECFE4 /* center-frequency-change.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "center-frequency-change.mp3"; path = "Native/Resources/audio/scenario/center-frequency-change.mp3"; sourceTree = "<group>"; };
+		B21561A3B6AA47E423E5EFC9 /* l13.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l13.mp3; path = Native/Resources/audio/listen/l13.mp3; sourceTree = "<group>"; };
+		B247E7C1C69D675E5C09EE0D /* frequency-change.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "frequency-change.mp3"; path = "Native/Resources/audio/scenario/frequency-change.mp3"; sourceTree = "<group>"; };
+		B3644AB6884EB900D839A3E7 /* WilcoComplicationBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoComplicationBundle.swift; sourceTree = "<group>"; };
+		B37A1674E33CB77C424F329A /* ctaf-inbound-tenmiles.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ctaf-inbound-tenmiles.mp3"; path = "Native/Resources/audio/scenario/ctaf-inbound-tenmiles.mp3"; sourceTree = "<group>"; };
+		B44E35461A35717578CA10B5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B70F90FC8DA13D2207FAE33D /* phto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Native/Resources/charts/phto.png; sourceTree = "<group>"; };
+		BB6C44EC25BEA830CACD9BF1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/LoginView.swift; sourceTree = "<group>"; };
+		BB836EC4B8624000C7C92407 /* missed-approach-amended.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "missed-approach-amended.mp3"; path = "Native/Resources/audio/scenario/missed-approach-amended.mp3"; sourceTree = "<group>"; };
+		BD44D2EEEAA5395816D6F711 /* WilcoWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WilcoWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD92CFF2DE6F88F9DB57F9BC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2207A2EEEB3EC2107ABBCC3 /* OralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Practice/OralView.swift; sourceTree = "<group>"; };
+		C33C32077D860F1EDD59F5FA /* PlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/PlanCard.swift; sourceTree = "<group>"; };
+		C538B41DFE05DE772E14CD19 /* class-d-takeoff.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "class-d-takeoff.mp3"; path = "Native/Resources/audio/scenario/class-d-takeoff.mp3"; sourceTree = "<group>"; };
+		C7688A38399070DFC4549708 /* AirportDiagramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Scenario/AirportDiagramView.swift; sourceTree = "<group>"; };
+		C87F3A9F3CD5E322F0669CC6 /* pan-pan-urgency.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pan-pan-urgency.mp3"; path = "Native/Resources/audio/scenario/pan-pan-urgency.mp3"; sourceTree = "<group>"; };
+		C882F7EBC36F10BD3C444658 /* curveball-amended-departure.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "curveball-amended-departure.mp3"; path = "Native/Resources/audio/scenario/curveball-amended-departure.mp3"; sourceTree = "<group>"; };
+		CB202B3C48A2CE4B54EC1408 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CBAC829F9DFD92374F8105E5 /* short-approach-approved.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "short-approach-approved.mp3"; path = "Native/Resources/audio/scenario/short-approach-approved.mp3"; sourceTree = "<group>"; };
+		CC107B049570606AE28DD009 /* heli-delta-transition.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-delta-transition.mp3"; path = "Native/Resources/audio/scenario/heli-delta-transition.mp3"; sourceTree = "<group>"; };
+		CC5F30A763FD853AD322BD12 /* departure-squawk-heading.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "departure-squawk-heading.mp3"; path = "Native/Resources/audio/scenario/departure-squawk-heading.mp3"; sourceTree = "<group>"; };
+		CCE27E6052BCC243121FE5C6 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/WelcomeView.swift; sourceTree = "<group>"; };
+		D058D0231BC1452CB799D7CE /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
+		D085258E4BAAD77C32DB8308 /* runway-incursion-stop.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "runway-incursion-stop.mp3"; path = "Native/Resources/audio/scenario/runway-incursion-stop.mp3"; sourceTree = "<group>"; };
+		D21E6676D8452863E5FE1869 /* pirep-request.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pirep-request.mp3"; path = "Native/Resources/audio/scenario/pirep-request.mp3"; sourceTree = "<group>"; };
+		D2DE74D75B67999831B95837 /* engine-runup-area.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "engine-runup-area.mp3"; path = "Native/Resources/audio/scenario/engine-runup-area.mp3"; sourceTree = "<group>"; };
+		D4D825C1DA0D20CA492A9CF9 /* ifr-clearance-craft-full.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-clearance-craft-full.mp3"; path = "Native/Resources/audio/scenario/ifr-clearance-craft-full.mp3"; sourceTree = "<group>"; };
+		D631D853C61194872E560A93 /* o-atis.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-atis.mp3"; path = "Native/Resources/audio/oral/o-atis.mp3"; sourceTree = "<group>"; };
+		D7E49BF6AE3501F4A5EA84F1 /* pushback-approved.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pushback-approved.mp3"; path = "Native/Resources/audio/scenario/pushback-approved.mp3"; sourceTree = "<group>"; };
+		DB01BC1C30F19E6293C59CA5 /* ifr-missed-approach.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-missed-approach.mp3"; path = "Native/Resources/audio/scenario/ifr-missed-approach.mp3"; sourceTree = "<group>"; };
+		DB04C1D152650C16E47A18C0 /* l5.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l5.mp3; path = Native/Resources/audio/listen/l5.mp3; sourceTree = "<group>"; };
+		DCCA78254E55284F7BCE8733 /* ifr-cruise-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-cruise-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-cruise-clearance.mp3"; sourceTree = "<group>"; };
+		DDA0CBB94397BABC4E104927 /* clearance-void-time.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "clearance-void-time.mp3"; path = "Native/Resources/audio/scenario/clearance-void-time.mp3"; sourceTree = "<group>"; };
+		DEE0E52FBB2624CDA9136D63 /* class-c-entry.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "class-c-entry.mp3"; path = "Native/Resources/audio/scenario/class-c-entry.mp3"; sourceTree = "<group>"; };
+		E17F6B3CF120CC46CC23C767 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/ProfileView.swift; sourceTree = "<group>"; };
+		E1A17013BB05F1C9B1E556F7 /* ifr-popup-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-popup-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-popup-clearance.mp3"; sourceTree = "<group>"; };
+		E61DD698564DD6A8F36E75A5 /* vor-holding-pattern.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "vor-holding-pattern.mp3"; path = "Native/Resources/audio/scenario/vor-holding-pattern.mp3"; sourceTree = "<group>"; };
+		E6635F9B2DBAFEC075D1AF5A /* declare-mayday.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "declare-mayday.mp3"; path = "Native/Resources/audio/scenario/declare-mayday.mp3"; sourceTree = "<group>"; };
+		EAD90C4B915B8AA687FFC32B /* runway-crossing.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "runway-crossing.mp3"; path = "Native/Resources/audio/scenario/runway-crossing.mp3"; sourceTree = "<group>"; };
+		EADDC968AC3731E0E26A75D1 /* altitude-block-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "altitude-block-clearance.mp3"; path = "Native/Resources/audio/scenario/altitude-block-clearance.mp3"; sourceTree = "<group>"; };
+		EB6ECA3418E17B49253915B4 /* traffic-not-in-sight.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "traffic-not-in-sight.mp3"; path = "Native/Resources/audio/scenario/traffic-not-in-sight.mp3"; sourceTree = "<group>"; };
+		ED064C3000589F256279E349 /* ifr-descend-via-star.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-descend-via-star.mp3"; path = "Native/Resources/audio/scenario/ifr-descend-via-star.mp3"; sourceTree = "<group>"; };
+		F230ED830EB7485E63505F58 /* l4.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l4.mp3; path = Native/Resources/audio/listen/l4.mp3; sourceTree = "<group>"; };
+		F3EABE892A0A22C8CD3CB2F1 /* ScenarioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Scenario/ScenarioDetailView.swift; sourceTree = "<group>"; };
+		F4FDBD085DAE2A8E3F892B97 /* ifr-climb-via-sid.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-climb-via-sid.mp3"; path = "Native/Resources/audio/scenario/ifr-climb-via-sid.mp3"; sourceTree = "<group>"; };
+		F734D2A4BCE0097945649FFB /* o-classc.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-classc.mp3"; path = "Native/Resources/audio/oral/o-classc.mp3"; sourceTree = "<group>"; };
+		F7809CF5268B2CCD2FF8C0AE /* hold-short-critical.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "hold-short-critical.mp3"; path = "Native/Resources/audio/scenario/hold-short-critical.mp3"; sourceTree = "<group>"; };
+		FA0BD61FE4729043000EA0A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		FAAC8700EEEB4A775474725D /* atis-copy-and-report.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "atis-copy-and-report.mp3"; path = "Native/Resources/audio/scenario/atis-copy-and-report.mp3"; sourceTree = "<group>"; };
+		FACE976ECB3E39041D124094 /* ifr-efc-holding.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-efc-holding.mp3"; path = "Native/Resources/audio/scenario/ifr-efc-holding.mp3"; sourceTree = "<group>"; };
+		FADA70229CFA06D7252051A9 /* l7.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l7.mp3; path = Native/Resources/audio/listen/l7.mp3; sourceTree = "<group>"; };
+		FAE034C6B3EA2E00B78916E5 /* vfr-flight-following-initial.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "vfr-flight-following-initial.mp3"; path = "Native/Resources/audio/scenario/vfr-flight-following-initial.mp3"; sourceTree = "<group>"; };
+		FB3AE536837DCCA3FFB8BC6B /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/Models.swift; sourceTree = "<group>"; };
+		FBD819730152857FEFBE2E12 /* o-classd.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-classd.mp3"; path = "Native/Resources/audio/oral/o-classd.mp3"; sourceTree = "<group>"; };
+		FD4FC29EF2D32E5CAE4B3AEF /* o-svfr.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-svfr.mp3"; path = "Native/Resources/audio/oral/o-svfr.mp3"; sourceTree = "<group>"; };
+		FEC2642EC5BC2C37E5847B89 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Auth/AuthManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		504EC3011FED79650016851F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E3F19387771AD546CEF2B365 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6415EB9D7680376FAAB097C4 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEAE04BE05220BC1E7686C78 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B697E3473B2AACC1201AEECF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8418A3910EA312C1B6A1462 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				35A799D957AFA0D2798451C5 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		27A0D572CE0AF613938E4D32 /* WilcoComplication */ = {
+			isa = PBXGroup;
+			children = (
+				7F759ACD31EBA553A1C347D9 /* WilcoComplication.swift */,
+				B3644AB6884EB900D839A3E7 /* WilcoComplicationBundle.swift */,
+				CB202B3C48A2CE4B54EC1408 /* Info.plist */,
+				38AC35F2EE8B474599B5C7CF /* Assets.xcassets */,
+			);
+			path = WilcoComplication;
+			sourceTree = "<group>";
+		};
+		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				744A7341D3CD5AD5E0255D3D /* watchOS */,
+				63EADDE202A907B25CB4454F /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4096F3B0159D4028129992E9 /* WilcoWatch */ = {
+			isa = PBXGroup;
+			children = (
+				1166BA291ECEE679673BB267 /* WilcoWatchApp.swift */,
+				0F8EE8D749DA9806D5D62CF4 /* Drills.swift */,
+				192F1079C31E255CC800B37F /* DrillViews.swift */,
+				B44E35461A35717578CA10B5 /* Info.plist */,
+				A44D500A2C448C178918E06B /* Assets.xcassets */,
+			);
+			path = WilcoWatch;
+			sourceTree = "<group>";
+		};
+		504EC2FB1FED79650016851F = {
+			isa = PBXGroup;
+			children = (
+				504EC3061FED79650016851F /* App */,
+				504EC3051FED79650016851F /* Products */,
+				27E2DDA53C4D2A4D1A88CE4A /* Frameworks */,
+				4096F3B0159D4028129992E9 /* WilcoWatch */,
+				AC3C1D05F7CE662ACBF539D5 /* WilcoWidget */,
+				27A0D572CE0AF613938E4D32 /* WilcoComplication */,
+			);
+			sourceTree = "<group>";
+		};
+		504EC3051FED79650016851F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				504EC3041FED79650016851F /* Wilco.app */,
+				1E6AD29541AA2485A85616AF /* WilcoWatch.app */,
+				BD44D2EEEAA5395816D6F711 /* WilcoWidget.appex */,
+				385A32E4E6291D8FB82AA5DC /* WilcoComplication.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		504EC3061FED79650016851F /* App */ = {
+			isa = PBXGroup;
+			children = (
+				504EC3071FED79650016851F /* AppDelegate.swift */,
+				1CF00CB81B065363FC38844B /* KeychainHelper.swift */,
+				9BCE5E1113A7B91DCAF1E337 /* NetworkClient.swift */,
+				FB3AE536837DCCA3FFB8BC6B /* Models.swift */,
+				FEC2642EC5BC2C37E5847B89 /* AuthManager.swift */,
+				5D0221F78D954E95A5B38FAB /* AppleSignInButton.swift */,
+				5E8CB88DA2D341D9A28D65B5 /* ReminderSettingsView.swift */,
+				D058D0231BC1452CB799D7CE /* NotificationManager.swift */,
+				61BAD4DFBCF3B548405FEF6B /* UserStats.swift */,
+				9BD59DFBDC20C5AC7094159E /* ProfileStatsViewModel.swift */,
+				6B5F64A1A4D54F96764AB2C5 /* ProfileStatsView.swift */,
+				60277F980D65A05504023155 /* HomeFieldView.swift */,
+				01536235B3FDE14DE9906C19 /* RadioPlayer.swift */,
+				C33C32077D860F1EDD59F5FA /* PlanCard.swift */,
+				C7688A38399070DFC4549708 /* AirportDiagramView.swift */,
+				B70F90FC8DA13D2207FAE33D /* phto.png */,
+				6EDC38EA784FC914C2B345FF /* ksea.png */,
+				B01759868151C519F98C59B7 /* kpae.png */,
+				CCE27E6052BCC243121FE5C6 /* WelcomeView.swift */,
+				725FC43F3E22643A986F2A6F /* PracticeData.swift */,
+				35CE7E488FD19053A31C1466 /* ListenView.swift */,
+				C2207A2EEEB3EC2107ABBCC3 /* OralView.swift */,
+				49616667BC4D82A5715D767F /* ChallengeView.swift */,
+				24065945635D4019EECE5DB3 /* PracticeView.swift */,
+				5083671624204720C88BAA8A /* ComingSoonView.swift */,
+				902F1F20198EF36A58F5543A /* IAPManager.swift */,
+				4150FB1AB8086C3E492CBE0E /* PaywallView.swift */,
+				5B45117B20FE432AF158E2E5 /* TrainViewModel.swift */,
+				98AAB6589BB36389E345E2B4 /* TrainHubView.swift */,
+				E17F6B3CF120CC46CC23C767 /* ProfileView.swift */,
+				A68EB5B9A6A8BAC3D1EDBD5B /* ScenarioViewModel.swift */,
+				F3EABE892A0A22C8CD3CB2F1 /* ScenarioDetailView.swift */,
+				2445C3885A7CC9A6D06DB35F /* GradeResult.swift */,
+				2CB33117ACF7D04E6B0ED5B5 /* AudioManager.swift */,
+				95FA9748D0B5C0FA612B947E /* Scenario.swift */,
+				8109F7467F86AD1D63A602A7 /* ScenarioStore.swift */,
+				08DBC83A794BD19CF7FBB516 /* scenarios.json */,
+				7371819039EFCE87547FCABE /* listening.json */,
+				163DCDF69FD244D4CFF27A9A /* oral.json */,
+				523BA754F62DC45C33385AF1 /* RadioCoachApp.swift */,
+				0CDB2545352A7FC502B8ADA0 /* RootView.swift */,
+				BB6C44EC25BEA830CACD9BF1 /* LoginView.swift */,
+				504EC30B1FED79650016851F /* Main.storyboard */,
+				504EC30E1FED79650016851F /* Assets.xcassets */,
+				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
+				504EC3131FED79650016851F /* Info.plist */,
+				A1B2C3D4E5F678901234ABCD /* App.entitlements */,
+				2355176AFDFD781A8C17A15E /* WilcoShortcuts.swift */,
+				82C1CBC28BA16CE911EA3EEA /* SpeechFallbackPlayer.swift */,
+				217FDF7D2C5D9E198587E3E2 /* l1.mp3 */,
+				31FE988D6F242531A7474450 /* l10.mp3 */,
+				102C6F7D164C27A8797B054F /* l11.mp3 */,
+				6CFA808AB349440EEDEBBE3C /* l12.mp3 */,
+				B21561A3B6AA47E423E5EFC9 /* l13.mp3 */,
+				24033C8AED72195F07EBC677 /* l14.mp3 */,
+				7AC0FC48D5EF86F7E97433D5 /* l15.mp3 */,
+				66E03A67D97B73B5D0E78C64 /* l16.mp3 */,
+				331D969964ACC83E6E2F46EB /* l2.mp3 */,
+				653AAE1672A529BBD44A5F11 /* l3.mp3 */,
+				F230ED830EB7485E63505F58 /* l4.mp3 */,
+				DB04C1D152650C16E47A18C0 /* l5.mp3 */,
+				0FA3D8D5B7B8DC851E93F977 /* l6.mp3 */,
+				FADA70229CFA06D7252051A9 /* l7.mp3 */,
+				A96301D4C067D8AC4648652D /* l8.mp3 */,
+				6AB58E76E5ED265C84C388E4 /* l9.mp3 */,
+				D631D853C61194872E560A93 /* o-atis.mp3 */,
+				0B5D5DE8BD81291A4DF5C861 /* o-classb.mp3 */,
+				F734D2A4BCE0097945649FFB /* o-classc.mp3 */,
+				FBD819730152857FEFBE2E12 /* o-classd.mp3 */,
+				41CF0B2EF1DBF0618110469A /* o-ctaf.mp3 */,
+				4293B5C184FA6732960E169B /* o-emergency.mp3 */,
+				46D7A29D4B391B7109A25000 /* o-frequency-change.mp3 */,
+				157E2ACF1BBEAB9799022C7F /* o-initial-call.mp3 */,
+				003BA500BEE5F5928A6F1C3C /* o-lightgun-ground.mp3 */,
+				036F0C5399D3C2D60DE2F150 /* o-lightgun-land.mp3 */,
+				0F05E9CD721607E785255B76 /* o-lineup-wait.mp3 */,
+				8BDEBAC1E3CDBF82D6C638C1 /* o-lostcomms-squawk.mp3 */,
+				7F2F3D37F04EEB8911B1352F /* o-readback.mp3 */,
+				A6AF01C90D26B77B43B8ABDD /* o-roger-wilco.mp3 */,
+				FD4FC29EF2D32E5CAE4B3AEF /* o-svfr.mp3 */,
+				5AB2A8DF3A1392B5C958F24E /* o-vfr-squawk.mp3 */,
+				EADDC968AC3731E0E26A75D1 /* altitude-block-clearance.mp3 */,
+				0C6BA71BF28C6FF51593D701 /* amended-taxi.mp3 */,
+				FAAC8700EEEB4A775474725D /* atis-copy-and-report.mp3 */,
+				AA680F9A3E8D7A88CA9EE5F4 /* atis-initial-call.mp3 */,
+				3DEC6303C9FACB1CB4313806 /* bravo-transition.mp3 */,
+				B0A00CEECBD01983C25ECFE4 /* center-frequency-change.mp3 */,
+				9CF7C1AB5A0A70829F99006D /* class-b-clearance.mp3 */,
+				DEE0E52FBB2624CDA9136D63 /* class-c-entry.mp3 */,
+				C538B41DFE05DE772E14CD19 /* class-d-takeoff.mp3 */,
+				DDA0CBB94397BABC4E104927 /* clearance-void-time.mp3 */,
+				9FB58A3CAE02F965321E6832 /* cleared-for-option.mp3 */,
+				A6F36D7554F356C2F6C55151 /* climb-to-altitude.mp3 */,
+				B37A1674E33CB77C424F329A /* ctaf-inbound-tenmiles.mp3 */,
+				2911596BC7D7EE5E36F95769 /* ctaf-position-report.mp3 */,
+				C882F7EBC36F10BD3C444658 /* curveball-amended-departure.mp3 */,
+				B01A671E72CA47F178477519 /* curveball-go-around.mp3 */,
+				25B75B3D71019284F907252F /* curveball-runway-change.mp3 */,
+				E6635F9B2DBAFEC075D1AF5A /* declare-mayday.mp3 */,
+				CC5F30A763FD853AD322BD12 /* departure-squawk-heading.mp3 */,
+				4E33BAC3450EB69749351370 /* departure-turn-instruction.mp3 */,
+				59AC727D47811DEFB137B4AE /* descent-and-maintain.mp3 */,
+				3E391AE37F1235A14B5200BF /* emergency-mayday.mp3 */,
+				73052EA474E27E4EE8F85CDE /* emergency-squawk-ident.mp3 */,
+				825D296D3DA98F458F6AECD7 /* emergency-vectors-to-land.mp3 */,
+				D2DE74D75B67999831B95837 /* engine-runup-area.mp3 */,
+				37099F9658BB1B8C30D8CB3E /* extend-downwind.mp3 */,
+				64693900C905DA5D2832CAB2 /* flight-following-squawk.mp3 */,
+				50B1A601691570E6DE57B731 /* flight-following-terminated.mp3 */,
+				B247E7C1C69D675E5C09EE0D /* frequency-change.mp3 */,
+				2592DF910EF1C067E27205AE /* go-around-wind-shear.mp3 */,
+				02C00BBF81D86D71FAA54E7F /* go-around.mp3 */,
+				72F7990317E1ED9418FB8840 /* ground-taxi-hold-short.mp3 */,
+				0C31FB21F7C1D4805B6BA8B6 /* heli-air-taxi.mp3 */,
+				7160266A1E426090684D7234 /* heli-closed-traffic.mp3 */,
+				CC107B049570606AE28DD009 /* heli-delta-transition.mp3 */,
+				A465C18E164C50C23C45AD75 /* heli-departure-present-position.mp3 */,
+				72B0F7318ED42C35542591EB /* heli-helipad-landing.mp3 */,
+				A9384BC0041FEB02497E748C /* heli-hover-taxi.mp3 */,
+				F7809CF5268B2CCD2FF8C0AE /* hold-short-critical.mp3 */,
+				9CDC41B3EF748FE662DF5A00 /* ifr-approach-clearance.mp3 */,
+				5EA1E9AF8C697107C738B9C4 /* ifr-cancel-airborne.mp3 */,
+				6CDF463E13A6E83B9123102B /* ifr-circling-approach.mp3 */,
+				D4D825C1DA0D20CA492A9CF9 /* ifr-clearance-craft-full.mp3 */,
+				678453679F3492387EBA0A87 /* ifr-clearance.mp3 */,
+				F4FDBD085DAE2A8E3F892B97 /* ifr-climb-via-sid.mp3 */,
+				DCCA78254E55284F7BCE8733 /* ifr-cruise-clearance.mp3 */,
+				ED064C3000589F256279E349 /* ifr-descend-via-star.mp3 */,
+				FACE976ECB3E39041D124094 /* ifr-efc-holding.mp3 */,
+				50A1E8778B2C8064E7CDEDFE /* ifr-full-clearance.mp3 */,
+				A7A99D4E63D5DA87CD712FBE /* ifr-hold-for-release.mp3 */,
+				53739AC7A034169B588640E3 /* ifr-holding-instructions.mp3 */,
+				DB01BC1C30F19E6293C59CA5 /* ifr-missed-approach.mp3 */,
+				E1A17013BB05F1C9B1E556F7 /* ifr-popup-clearance.mp3 */,
+				3F8E152A355C9E6DC18E346D /* ils-full-approach.mp3 */,
+				9EE17042F5D4986E5C356212 /* immediate-takeoff.mp3 */,
+				6EF270D7852B921D85B9EDC4 /* intersection-departure.mp3 */,
+				2D71CCA7B3DAE5B2B33B368F /* line-up-wait.mp3 */,
+				9AC22BC2990FF5364EC12787 /* lost-comms-transmit-blind.mp3 */,
+				5F0C5C3FF57D6F8D14984880 /* medical-emergency-divert.mp3 */,
+				BB836EC4B8624000C7C92407 /* missed-approach-amended.mp3 */,
+				1BE4F9513E4DC22083C8DC46 /* night-airport-in-sight.mp3 */,
+				6464CE3E16DE578F0F73B9A4 /* night-ctaf-landing.mp3 */,
+				C87F3A9F3CD5E322F0669CC6 /* pan-pan-urgency.mp3 */,
+				61CA131446B2DC8C81795B7A /* pattern-entry.mp3 */,
+				D21E6676D8452863E5FE1869 /* pirep-request.mp3 */,
+				9AA124CBD8C089632EB08E06 /* progressive-taxi.mp3 */,
+				D7E49BF6AE3501F4A5EA84F1 /* pushback-approved.mp3 */,
+				2849633386A9B18907B286B8 /* radar-vectors-final.mp3 */,
+				EAD90C4B915B8AA687FFC32B /* runway-crossing.mp3 */,
+				D085258E4BAAD77C32DB8308 /* runway-incursion-stop.mp3 */,
+				AA2D13DA0FACCAEE0E074563 /* sequence-traffic-in-sight.mp3 */,
+				CBAC829F9DFD92374F8105E5 /* short-approach-approved.mp3 */,
+				0549DB6784B9EEE3930C5C65 /* sidestep-clearance.mp3 */,
+				16333211D9D2A330ED4986BC /* special-vfr-request.mp3 */,
+				3A748C729AD1743D7CDAA2E6 /* star-with-restriction.mp3 */,
+				99244302F376E1857F30FEBB /* svfr-clearance.mp3 */,
+				58562909FF339BF999A7F10F /* svfr-departure.mp3 */,
+				4200CEF92C7B9591941A8263 /* three-sixty-for-spacing.mp3 */,
+				67602BF5A2ED8D554B713815 /* touch-and-go.mp3 */,
+				86C40C8A7F4280695EBCAC4E /* traffic-advisory-confirm.mp3 */,
+				EB6ECA3418E17B49253915B4 /* traffic-not-in-sight.mp3 */,
+				FAE034C6B3EA2E00B78916E5 /* vfr-flight-following-initial.mp3 */,
+				95BAA4CAB35D4A1FB20C4C9C /* vfr-squawk-departure.mp3 */,
+				7EB5F9FE99EFBDFB51E531BE /* void-time-clearance.mp3 */,
+				E61DD698564DD6A8F36E75A5 /* vor-holding-pattern.mp3 */,
+				8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */,
+				4C0AA00F1BA8566F05308409 /* weather-deviation-approved.mp3 */,
+				ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		63EADDE202A907B25CB4454F /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				FA0BD61FE4729043000EA0A3 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		744A7341D3CD5AD5E0255D3D /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				27738012D5F2AD5A7B9F25CB /* Foundation.framework */,
+			);
+			name = watchOS;
+			sourceTree = "<group>";
+		};
+		AC3C1D05F7CE662ACBF539D5 /* WilcoWidget */ = {
+			isa = PBXGroup;
+			children = (
+				69E5B9312C4EB723E6354CF6 /* Tips.swift */,
+				9963477149DEC5FC32E6D911 /* WilcoWidget.swift */,
+				01CBC7A3993E2B281E2F7C0A /* WilcoWidgetBundle.swift */,
+				BD92CFF2DE6F88F9DB57F9BC /* Info.plist */,
+				A27C715415FA43C00F150451 /* Assets.xcassets */,
+			);
+			path = WilcoWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2666B1B248DC7B1EBCDF5298 /* WilcoWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0D388EEAB25BD45BFB813A0F /* Build configuration list for PBXNativeTarget "WilcoWidget" */;
+			buildPhases = (
+				9C97D6D8F5DF79CB9FFD7853 /* Sources */,
+				EEAE04BE05220BC1E7686C78 /* Frameworks */,
+				6DBBEFA60A5F09A16B73E4AA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WilcoWidget;
+			productName = WilcoWidget;
+			productReference = BD44D2EEEAA5395816D6F711 /* WilcoWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		2A84E4623C1EF486FF360441 /* WilcoComplication */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3952D941CA08D7A23746BD60 /* Build configuration list for PBXNativeTarget "WilcoComplication" */;
+			buildPhases = (
+				ED196E164ABCB221CCDA473A /* Sources */,
+				E3F19387771AD546CEF2B365 /* Frameworks */,
+				410C2984FB95EE6B254A5FFD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WilcoComplication;
+			productName = WilcoComplication;
+			productReference = 385A32E4E6291D8FB82AA5DC /* WilcoComplication.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		504EC3031FED79650016851F /* Wilco */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "Wilco" */;
+			buildPhases = (
+				504EC3001FED79650016851F /* Sources */,
+				504EC3011FED79650016851F /* Frameworks */,
+				504EC3021FED79650016851F /* Resources */,
+				427E349A4911FD89EF947A2E /* Embed Foundation Extensions */,
+				A3C4C1984F7910AF506547D1 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				120A4FA64BBCE3EC059C1F0B /* PBXTargetDependency */,
+			);
+			name = Wilco;
+			productName = Wilco;
+			productReference = 504EC3041FED79650016851F /* Wilco.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A2E18DF9C92054FF2916FC2B /* WilcoWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE98B9C2968506BF2B7D7720 /* Build configuration list for PBXNativeTarget "WilcoWatch" */;
+			buildPhases = (
+				11498A59FA23EEAE99A5656B /* Sources */,
+				F8418A3910EA312C1B6A1462 /* Frameworks */,
+				022F7120BE63488B609E4C0D /* Resources */,
+				667166CC42389B2741B4906D /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B8A319CA756D96113788E1D2 /* PBXTargetDependency */,
+			);
+			name = WilcoWatch;
+			productName = WilcoWatch;
+			productReference = 1E6AD29541AA2485A85616AF /* WilcoWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		504EC2FC1FED79650016851F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					2666B1B248DC7B1EBCDF5298 = {
+						ProvisioningStyle = Automatic;
+					};
+					2A84E4623C1EF486FF360441 = {
+						ProvisioningStyle = Automatic;
+					};
+					504EC3031FED79650016851F = {
+						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1100;
+						ProvisioningStyle = Automatic;
+					};
+					A2E18DF9C92054FF2916FC2B = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 504EC2FF1FED79650016851F /* Build configuration list for PBXProject "App" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 504EC2FB1FED79650016851F;
+			productRefGroup = 504EC3051FED79650016851F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				504EC3031FED79650016851F /* Wilco */,
+				A2E18DF9C92054FF2916FC2B /* WilcoWatch */,
+				2666B1B248DC7B1EBCDF5298 /* WilcoWidget */,
+				2A84E4623C1EF486FF360441 /* WilcoComplication */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		022F7120BE63488B609E4C0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77E7A5EF030E71737A99475B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		410C2984FB95EE6B254A5FFD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8897048832E5632097566FF6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		504EC3021FED79650016851F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */,
+				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
+				0976FD2C0DC875B0806E4CE2 /* scenarios.json in Resources */,
+				9731777A5639D2EDAC28F987 /* phto.png in Resources */,
+				3931A4EB836403B29D9B9034 /* ksea.png in Resources */,
+				6220B3FF9B679389559C74D4 /* kpae.png in Resources */,
+				000AF5D903151EC263CFA2B5 /* listening.json in Resources */,
+				F09EF146CAE6733FBD8A113F /* oral.json in Resources */,
+				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
+				B5CF8AF7AC4A3660AAC40DA6 /* l1.mp3 in Resources */,
+				35D2431C71E40722F9A073FB /* l10.mp3 in Resources */,
+				3F8152BFD30BBB4EBB432054 /* l11.mp3 in Resources */,
+				DADCEE494C7165BDE05CA0DE /* l12.mp3 in Resources */,
+				1958596A15FBABC34DC4D250 /* l13.mp3 in Resources */,
+				877A069555D67D3D0D20F2DD /* l14.mp3 in Resources */,
+				D2400B1C47612518C176838A /* l15.mp3 in Resources */,
+				61649743A2A6D57DB19172F5 /* l16.mp3 in Resources */,
+				FB4961013CCB85FD3F197764 /* l2.mp3 in Resources */,
+				35844706B211D2AEE1D78973 /* l3.mp3 in Resources */,
+				B052FC0DC21B16BAC8ED3263 /* l4.mp3 in Resources */,
+				00E5358CEB04F5F566CCD541 /* l5.mp3 in Resources */,
+				5A2A28FF5E7D9399AAD81156 /* l6.mp3 in Resources */,
+				9A8534DD0F990F887A28044F /* l7.mp3 in Resources */,
+				6BE1CEF88974AF86A30D9DA4 /* l8.mp3 in Resources */,
+				4F95CAD7D7945E46482161D8 /* l9.mp3 in Resources */,
+				08B319B58515150AA9378C23 /* o-atis.mp3 in Resources */,
+				7FF9BBCA38B94E686B21E384 /* o-classb.mp3 in Resources */,
+				498EC7375E5149D679D0D7CC /* o-classc.mp3 in Resources */,
+				05162227BC32DB6E82F2F128 /* o-classd.mp3 in Resources */,
+				573EFDFC01E82472D4FA5E44 /* o-ctaf.mp3 in Resources */,
+				6E97FD121C214715BBBA6699 /* o-emergency.mp3 in Resources */,
+				55EE0233C8F75E0B6021071C /* o-frequency-change.mp3 in Resources */,
+				2335060A783308148076FB29 /* o-initial-call.mp3 in Resources */,
+				91499157C46ED63F0DB2BCA6 /* o-lightgun-ground.mp3 in Resources */,
+				047718BC9C246F842015948A /* o-lightgun-land.mp3 in Resources */,
+				7BF86CFC6C9FB4DDDF502F36 /* o-lineup-wait.mp3 in Resources */,
+				42B93238F8C0A3D988A62B6D /* o-lostcomms-squawk.mp3 in Resources */,
+				7349D1E579EF7D1D9D7D0527 /* o-readback.mp3 in Resources */,
+				334F22D1092DBABE94CA3CA1 /* o-roger-wilco.mp3 in Resources */,
+				C2BA88874E62B627297D2C9E /* o-svfr.mp3 in Resources */,
+				28170DD5E38BE80FB747F5D2 /* o-vfr-squawk.mp3 in Resources */,
+				4ADFE0E4AD63B76DA068D906 /* altitude-block-clearance.mp3 in Resources */,
+				2F80A56FD93E91E04D46CEA5 /* amended-taxi.mp3 in Resources */,
+				C597F4883C2BDF1890CCD8F5 /* atis-copy-and-report.mp3 in Resources */,
+				8B5703D6721BD32AFBAFBAEB /* atis-initial-call.mp3 in Resources */,
+				9F306A66EA35C5645FFEDDFD /* bravo-transition.mp3 in Resources */,
+				8A35877400B0C2864E6FE79D /* center-frequency-change.mp3 in Resources */,
+				7D527DFC2666C1E87F0DA1FF /* class-b-clearance.mp3 in Resources */,
+				1D2A8B6F5B4F292E19AD0495 /* class-c-entry.mp3 in Resources */,
+				9389DB91BF27D645B0CBEC0F /* class-d-takeoff.mp3 in Resources */,
+				944A0BE131DE61AC0BB4DA69 /* clearance-void-time.mp3 in Resources */,
+				F914C3A0C870B235767278E2 /* cleared-for-option.mp3 in Resources */,
+				35D6F76C3CEB320DE2A3829D /* climb-to-altitude.mp3 in Resources */,
+				262CEDF382055E1DA2ECEB12 /* ctaf-inbound-tenmiles.mp3 in Resources */,
+				F98DDF2774CE724FCC9CD043 /* ctaf-position-report.mp3 in Resources */,
+				AAB5DACC64BA6EE0D59D5DE5 /* curveball-amended-departure.mp3 in Resources */,
+				699E0ACECB477280A57E81D4 /* curveball-go-around.mp3 in Resources */,
+				544C8EF3858BAD18A322C62F /* curveball-runway-change.mp3 in Resources */,
+				D33D45D46952ABBDB99EE0C7 /* declare-mayday.mp3 in Resources */,
+				39A2887424D07C2431DDA41B /* departure-squawk-heading.mp3 in Resources */,
+				904B46A4F138FC1B1C54720E /* departure-turn-instruction.mp3 in Resources */,
+				3A0FB7336D29AC3181EAEB62 /* descent-and-maintain.mp3 in Resources */,
+				C6F9D172D3220C85986A03F9 /* emergency-mayday.mp3 in Resources */,
+				E1E115CE06E8D06A3972B77B /* emergency-squawk-ident.mp3 in Resources */,
+				0FB9FC9BC8936CABEF1B592F /* emergency-vectors-to-land.mp3 in Resources */,
+				E3B156E470C27001B081683E /* engine-runup-area.mp3 in Resources */,
+				435DA7D63583FC4CB945C623 /* extend-downwind.mp3 in Resources */,
+				4C3B0A968158D7897A701862 /* flight-following-squawk.mp3 in Resources */,
+				96B3690E5F144397338B0763 /* flight-following-terminated.mp3 in Resources */,
+				F49A2DB2147EF1D88CB8B21C /* frequency-change.mp3 in Resources */,
+				B0E5237314380A127A74657B /* go-around-wind-shear.mp3 in Resources */,
+				D555411AE093A57FDE9127E7 /* go-around.mp3 in Resources */,
+				261AA2510CC45F5F68B96986 /* ground-taxi-hold-short.mp3 in Resources */,
+				DB74FA7E7EBB0A78375AA68F /* heli-air-taxi.mp3 in Resources */,
+				9A35EEBD88B5FDE72D6E7115 /* heli-closed-traffic.mp3 in Resources */,
+				AC291F7C266D5E7F3F0225A3 /* heli-delta-transition.mp3 in Resources */,
+				D1837345091583C771ACC8F1 /* heli-departure-present-position.mp3 in Resources */,
+				D33F2C3200D1A5A8E918E780 /* heli-helipad-landing.mp3 in Resources */,
+				AE2DFC753990B08F1646B9E8 /* heli-hover-taxi.mp3 in Resources */,
+				7A00A0FBC6E65697461FCC6A /* hold-short-critical.mp3 in Resources */,
+				C371C332F6021678193AD0C6 /* ifr-approach-clearance.mp3 in Resources */,
+				00AEE07CDD43A10223D149A2 /* ifr-cancel-airborne.mp3 in Resources */,
+				0D0208E3092F59B35DCC1B0A /* ifr-circling-approach.mp3 in Resources */,
+				253D0CC440CF5F5A1F5FC832 /* ifr-clearance-craft-full.mp3 in Resources */,
+				56CB821D95507AD9B17AD39D /* ifr-clearance.mp3 in Resources */,
+				F6F23A0260141F36624F60A9 /* ifr-climb-via-sid.mp3 in Resources */,
+				A20FEC4051A18A6D113DCA63 /* ifr-cruise-clearance.mp3 in Resources */,
+				6606CF151590A088C05EC2D6 /* ifr-descend-via-star.mp3 in Resources */,
+				7266AAAE58A979FC56D09884 /* ifr-efc-holding.mp3 in Resources */,
+				BC836127C4192A38F99B0ED4 /* ifr-full-clearance.mp3 in Resources */,
+				1A5EF100980485DCEBEDC8B0 /* ifr-hold-for-release.mp3 in Resources */,
+				00A70172BF2E8E56F9B39577 /* ifr-holding-instructions.mp3 in Resources */,
+				994928299194D0B615742FB9 /* ifr-missed-approach.mp3 in Resources */,
+				5DA4925B742DC255276E4AA8 /* ifr-popup-clearance.mp3 in Resources */,
+				3FA666EF0CE4A86BD959E415 /* ils-full-approach.mp3 in Resources */,
+				C7C97F8A23481B660B25510F /* immediate-takeoff.mp3 in Resources */,
+				CE122A6F51B2B8244052B244 /* intersection-departure.mp3 in Resources */,
+				DF03962A132B3C39D2FE3E5B /* line-up-wait.mp3 in Resources */,
+				430488FC0318D96C3F06A5B4 /* lost-comms-transmit-blind.mp3 in Resources */,
+				5C165E2C2E4B04D4A57ACD56 /* medical-emergency-divert.mp3 in Resources */,
+				A927A81089E3E3E687DFA50B /* missed-approach-amended.mp3 in Resources */,
+				993AEB45CF972D73C570C164 /* night-airport-in-sight.mp3 in Resources */,
+				C5FBB05E747F8740A45814C8 /* night-ctaf-landing.mp3 in Resources */,
+				C8903DE234FF1AC4FB82B7D1 /* pan-pan-urgency.mp3 in Resources */,
+				3E74E2A5B4DA0B829C2B05E9 /* pattern-entry.mp3 in Resources */,
+				EE862BCEB73AB781A97CA55E /* pirep-request.mp3 in Resources */,
+				A9DE00F69071FEB7309DDAA2 /* progressive-taxi.mp3 in Resources */,
+				33186D38F25B615787B56AAE /* pushback-approved.mp3 in Resources */,
+				00B713BB8E6BC640DFDCEB9F /* radar-vectors-final.mp3 in Resources */,
+				C15EE9C5A1F4A9AF34D5EB68 /* runway-crossing.mp3 in Resources */,
+				B4E37B8A3A9790AF892D1625 /* runway-incursion-stop.mp3 in Resources */,
+				05F0986D18CC67D5CC0AF6CC /* sequence-traffic-in-sight.mp3 in Resources */,
+				E89A3C4E78AC7E2953CD589F /* short-approach-approved.mp3 in Resources */,
+				178C4A5A4C49102C40D81D75 /* sidestep-clearance.mp3 in Resources */,
+				912CA6CEC0C715279959B0FC /* special-vfr-request.mp3 in Resources */,
+				ABA85B1D9D0E878F09815535 /* star-with-restriction.mp3 in Resources */,
+				0E20B7879E6691B5D2D644F8 /* svfr-clearance.mp3 in Resources */,
+				51C411D99F937FBAFD75FEB9 /* svfr-departure.mp3 in Resources */,
+				E3AFA7C08145E6ADC2532F26 /* three-sixty-for-spacing.mp3 in Resources */,
+				FB310D2A0FBF58EED9439CBD /* touch-and-go.mp3 in Resources */,
+				656199533919AF6E6F5CBACE /* traffic-advisory-confirm.mp3 in Resources */,
+				932F081476693D0FB906003E /* traffic-not-in-sight.mp3 in Resources */,
+				4F317CE69DBD40E424A88E92 /* vfr-flight-following-initial.mp3 in Resources */,
+				FC0F936AB14A362E9B20387B /* vfr-squawk-departure.mp3 in Resources */,
+				BB2F8127C860F24CCC78B945 /* void-time-clearance.mp3 in Resources */,
+				C3C783A8E1378B0641EBC94F /* vor-holding-pattern.mp3 in Resources */,
+				48E38FD265D9CEC6A074B18B /* wake-turbulence.mp3 in Resources */,
+				8FE1F1F5F97E38B622D35863 /* weather-deviation-approved.mp3 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DBBEFA60A5F09A16B73E4AA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFEC6D73C895DABE5EEDBE69 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		11498A59FA23EEAE99A5656B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				027976C71C2450231EE7F1E7 /* WilcoWatchApp.swift in Sources */,
+				86B52B6B3D6E1FF69C9373DA /* Drills.swift in Sources */,
+				7918BB8C951DF0045E36CFC7 /* DrillViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		504EC3001FED79650016851F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				FEA5666F78AC5FB3A33391CF /* KeychainHelper.swift in Sources */,
+				7DAA6A99B65C3E4DB6CEFCBC /* NetworkClient.swift in Sources */,
+				2621BA36DE197A93F940FE27 /* Models.swift in Sources */,
+				CFF5ED543B684AE2D82F0A77 /* AuthManager.swift in Sources */,
+				C99E1808096F460D8085FF73 /* AppleSignInButton.swift in Sources */,
+				0845E558EA84438AA0C00192 /* ReminderSettingsView.swift in Sources */,
+				2B7F46FECA024BF3ABDA11B5 /* NotificationManager.swift in Sources */,
+				54D3E79447B9D9CABF3A9CFC /* UserStats.swift in Sources */,
+				4827D8A1E784269A582349A8 /* ProfileStatsViewModel.swift in Sources */,
+				E9096987370594188E35407F /* ProfileStatsView.swift in Sources */,
+				990154B04E3DF04FA2734F33 /* HomeFieldView.swift in Sources */,
+				E71E2DE0A66DC685253FECCB /* RadioPlayer.swift in Sources */,
+				8B188FF7B773A8DD252158AC /* PlanCard.swift in Sources */,
+				728D562EE9AE98BDCA676C23 /* AirportDiagramView.swift in Sources */,
+				F82912477E5502D490C7C7E6 /* WelcomeView.swift in Sources */,
+				50DEA06711B5498DE591AB61 /* PracticeData.swift in Sources */,
+				4DA415559B48FB54E9A81E26 /* ListenView.swift in Sources */,
+				2E388C2BCA0A6E5E2D0E0F74 /* OralView.swift in Sources */,
+				55A4F278DB4917EF63A9486B /* ChallengeView.swift in Sources */,
+				A47F2B89D2D8297657A8BE00 /* PracticeView.swift in Sources */,
+				9EEBF788BC22CD5159EF7439 /* ComingSoonView.swift in Sources */,
+				8BBA723BE63C86D12598FDF4 /* IAPManager.swift in Sources */,
+				7AA4756ADF80FA6936E3C4C7 /* PaywallView.swift in Sources */,
+				3FD86B0B69DB720DA6ECD0B1 /* TrainViewModel.swift in Sources */,
+				333E6C5CE9C4DC4ECE44051F /* TrainHubView.swift in Sources */,
+				532A353D7C20C5E99E701B2F /* ProfileView.swift in Sources */,
+				F2AC8F1609A2FC41FF2E21FB /* ScenarioViewModel.swift in Sources */,
+				3B95EE1FBB4F41320295EACA /* ScenarioDetailView.swift in Sources */,
+				7825F4B2F0D74413EA40F8E0 /* GradeResult.swift in Sources */,
+				4D5AC75865AE4EA857D946BA /* AudioManager.swift in Sources */,
+				76B7F2C7F6944F0CD5F1BA3B /* Scenario.swift in Sources */,
+				6434CBF4E90A29051E52FF18 /* ScenarioStore.swift in Sources */,
+				0CE63AC090C4C939E87DDFCB /* RadioCoachApp.swift in Sources */,
+				A4AF282ED43EC8277927C0A2 /* RootView.swift in Sources */,
+				8FAB84AA29A8219A566F6DB3 /* LoginView.swift in Sources */,
+				B2DF9219E3F71FA7259129C8 /* WilcoShortcuts.swift in Sources */,
+				6788F6CFACC0E4F192ABC158 /* SpeechFallbackPlayer.swift in Sources */,
+				DCF0E51D2E97F6F6E2558069 /* BundledAudio.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9C97D6D8F5DF79CB9FFD7853 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0B6BE74B9964F5D6509F6FB /* Tips.swift in Sources */,
+				365C727838026F639C0FE6D7 /* WilcoWidget.swift in Sources */,
+				D4B1287671A2B29EAF31EAE2 /* WilcoWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED196E164ABCB221CCDA473A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD6FEA0135B287894FDD2811 /* WilcoComplication.swift in Sources */,
+				5CF60752BD28731DDE62B4E9 /* WilcoComplicationBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		120A4FA64BBCE3EC059C1F0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WilcoWatch;
+			target = A2E18DF9C92054FF2916FC2B /* WilcoWatch */;
+			targetProxy = 03B3461633D176F4AF579D85 /* PBXContainerItemProxy */;
+		};
+		B8A319CA756D96113788E1D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WilcoComplication;
+			target = 2A84E4623C1EF486FF360441 /* WilcoComplication */;
+			targetProxy = 707E930874A5A127FF73A72C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		504EC30B1FED79650016851F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				504EC30C1FED79650016851F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		504EC3101FED79650016851F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				504EC3111FED79650016851F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3C778D9396C7AB011A8D1C38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "radiocoach widget AppStore";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		504EC3141FED79650016851F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		504EC3151FED79650016851F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		504EC3171FED79650016851F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		504EC3181FED79650016851F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CCSWC89S2V;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "radiocoach AppStore";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		98080E1D6A1BD972674E6B09 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoWatch/Info.plist;
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		9C0BE772692D201996A6BA4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ACC1D422F434559337F4C90C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoWatch/Info.plist;
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "radiocoach watchkitapp AppStore";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		C28563FBFC990FA78DD9ACC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoComplication/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.watchkitapp.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "radiocoach watch widget AppStore";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		FFDDD5779D0DF31D3C5C12FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 23;
+				DEVELOPMENT_TEAM = CCSWC89S2V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WilcoComplication/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.binnacleai.radiocoach.watchkitapp.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0D388EEAB25BD45BFB813A0F /* Build configuration list for PBXNativeTarget "WilcoWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C778D9396C7AB011A8D1C38 /* Release */,
+				9C0BE772692D201996A6BA4F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3952D941CA08D7A23746BD60 /* Build configuration list for PBXNativeTarget "WilcoComplication" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C28563FBFC990FA78DD9ACC7 /* Release */,
+				FFDDD5779D0DF31D3C5C12FE /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		504EC2FF1FED79650016851F /* Build configuration list for PBXProject "App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				504EC3141FED79650016851F /* Debug */,
+				504EC3151FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "Wilco" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				504EC3171FED79650016851F /* Debug */,
+				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EE98B9C2968506BF2B7D7720 /* Build configuration list for PBXNativeTarget "WilcoWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACC1D422F434559337F4C90C /* Release */,
+				98080E1D6A1BD972674E6B09 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 504EC2FC1FED79650016851F /* Project object */;
+}
