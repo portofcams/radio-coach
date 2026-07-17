@@ -27,6 +27,7 @@ interface User {
   home?: HomeProfile | null
   cfiOrgName?: string | null
   cfiLogoUrl?: string | null
+  cohortNamesVisible?: boolean
 }
 interface FieldSummary { icao: string; name: string; city: string; towered: boolean; freqs: Record<string, string>; runways: string[] }
 interface Coach { orgName: string | null; logoUrl: string | null; cfiEmail: string; endorsements: string[]; comments: Array<{ body: string; scenario_id?: string | null; created_at: string }> }
@@ -69,6 +70,9 @@ export default function ProfilePage() {
   const [deleting, setDeleting] = useState(false)
   const [badges, setBadges] = useState<Array<{ key: string; label: string; description: string; earned: boolean }>>([])
   const [badgeCopied, setBadgeCopied] = useState<string | null>(null)
+  const [cohort, setCohort] = useState<{ inCohort: boolean; namesVisible: boolean; members: Array<{ you: boolean; label: string; score: number; level: string }> } | null>(null)
+  const [cohortNamesVisible, setCohortNamesVisible] = useState(false)
+  const [savingCohortSettings, setSavingCohortSettings] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -78,20 +82,23 @@ export default function ProfilePage() {
       fetch('/api/user/readiness').then((r) => r.json()),
       fetch('/api/user/coach').then((r) => r.json()),
       fetch('/api/user/badges').then((r) => r.json()),
+      fetch('/api/user/cohort').then((r) => r.json()),
     ])
-      .then(([me, s, w, rd, co, bd]) => {
+      .then(([me, s, w, rd, co, bd, ch]) => {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
         if (me.user.home?.mode === 'real') setIdent(me.user.home.ident)
         else if (me.user.home?.mode === 'manual') { setManual({ ...me.user.home, towered: me.user.home.towered ?? true }); setShowManual(true) }
         setBranding({ orgName: me.user.cfiOrgName ?? '', logoUrl: me.user.cfiLogoUrl ?? '' })
+        setCohortNamesVisible(!!me.user.cohortNamesVisible)
         setEnt(me.entitlement ?? null)
         if (!s.error) setStats(s)
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
         if (rd && !rd.error && typeof rd.score === 'number') setReadiness(rd)
         if (co && co.coach) setCoach(co.coach)
         if (Array.isArray(bd.badges)) setBadges(bd.badges)
+        if (ch && ch.inCohort) setCohort(ch)
         fetch('/api/user/referral').then((r) => r.json()).then((rf) => { if (rf && rf.link) setReferral(rf) }).catch(() => {})
       })
       .finally(() => setLoading(false))
@@ -130,6 +137,17 @@ export default function ProfilePage() {
       setBranding({ orgName: data.cfiOrgName ?? '', logoUrl: data.cfiLogoUrl ?? '' })
       setUser((u) => u ? { ...u, cfiOrgName: data.cfiOrgName, cfiLogoUrl: data.cfiLogoUrl } : u)
     } finally { setSavingBranding(false) }
+  }
+
+  async function saveCohortSettings(namesVisible: boolean) {
+    setSavingCohortSettings(true)
+    try {
+      const res = await fetch('/api/user/cohort-settings', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ namesVisible }),
+      })
+      const data = await res.json()
+      setCohortNamesVisible(!!data.namesVisible)
+    } finally { setSavingCohortSettings(false) }
   }
 
   async function saveHome(body: object) {
@@ -320,6 +338,26 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Study cohort (student side) -- other students on the same CFI's
+            roster, anonymized as "Student A/B/C" unless the CFI has turned
+            names on for their roster. */}
+        {cohort?.inCohort && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Your study cohort</div>
+            <p className="text-xs text-gray-400 mb-3">
+              Readiness among students on your instructor's roster{cohort.namesVisible ? '.' : ' — shown anonymized unless your instructor turns names on.'}
+            </p>
+            <div className="space-y-1.5">
+              {cohort.members.map((m, i) => (
+                <div key={i} className={`flex items-center justify-between text-sm px-3 py-2 rounded-lg ${m.you ? 'bg-blue-50' : 'bg-gray-50'}`}>
+                  <span className={m.you ? 'font-semibold text-blue-900' : 'text-gray-700'}>{m.label}</span>
+                  <span className="font-mono text-xs text-gray-500">{m.score}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* School / co-branding (CFI side) */}
         {ent?.plan === 'cfi' && (
           <div className="border border-gray-200 rounded-xl p-5 mb-6">
@@ -334,6 +372,27 @@ export default function ProfilePage() {
             <button onClick={saveBranding} disabled={savingBranding} className="mt-3 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-40">
               {savingBranding ? 'Saving...' : 'Save branding'}
             </button>
+          </div>
+        )}
+
+        {/* Study cohort visibility (CFI side) -- #93. Anonymized by default;
+            this is the only way names turn on for the whole roster. */}
+        {ent?.plan === 'cfi' && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Study cohort visibility</div>
+            <p className="text-xs text-gray-400 mb-3">
+              Students on your roster can see each other&apos;s readiness scores as &ldquo;Student A / B / C&rdquo; by default. Turning this on shows their real callsigns instead, to everyone on your roster.
+            </p>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={cohortNamesVisible}
+                disabled={savingCohortSettings}
+                onChange={(e) => saveCohortSettings(e.target.checked)}
+                className="accent-gray-900"
+              />
+              Show real callsigns to the cohort
+            </label>
           </div>
         )}
 

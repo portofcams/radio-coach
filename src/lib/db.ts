@@ -239,6 +239,7 @@ export async function initDB(): Promise<void> {
     ALTER TABLE rc_users
       ADD COLUMN IF NOT EXISTS cfi_org_name TEXT,
       ADD COLUMN IF NOT EXISTS cfi_logo_url TEXT,
+      ADD COLUMN IF NOT EXISTS cohort_names_visible BOOLEAN NOT NULL DEFAULT false,
       ADD COLUMN IF NOT EXISTS referral_code TEXT,
       ADD COLUMN IF NOT EXISTS referred_by INTEGER,
       ADD COLUMN IF NOT EXISTS email_opt_out BOOLEAN NOT NULL DEFAULT false,

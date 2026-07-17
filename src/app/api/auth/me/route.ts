@@ -13,7 +13,7 @@ export async function GET() {
   if (!db) return NextResponse.json({ user: null })
 
   const result = await db.query(
-    'SELECT id, email, callsign, home_ident, home_name, home_tower, home_runway, home_towered, cfi_org_name, cfi_logo_url FROM rc_users WHERE id = $1',
+    'SELECT id, email, callsign, home_ident, home_name, home_tower, home_runway, home_towered, cfi_org_name, cfi_logo_url, cohort_names_visible FROM rc_users WHERE id = $1',
     [user.userId]
   )
   const row = result.rows[0]
@@ -33,6 +33,7 @@ export async function GET() {
     user: {
       id: row.id, email: row.email, callsign: row.callsign, home,
       cfiOrgName: row.cfi_org_name ?? null, cfiLogoUrl: row.cfi_logo_url ?? null,
+      cohortNamesVisible: !!row.cohort_names_visible,
     },
     entitlement,
   })
