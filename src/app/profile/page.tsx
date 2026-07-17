@@ -67,6 +67,8 @@ export default function ProfilePage() {
   const [refCopied, setRefCopied] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [badges, setBadges] = useState<Array<{ key: string; label: string; description: string; earned: boolean }>>([])
+  const [badgeCopied, setBadgeCopied] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -75,8 +77,9 @@ export default function ProfilePage() {
       fetch('/api/user/weakspots').then((r) => r.json()),
       fetch('/api/user/readiness').then((r) => r.json()),
       fetch('/api/user/coach').then((r) => r.json()),
+      fetch('/api/user/badges').then((r) => r.json()),
     ])
-      .then(([me, s, w, rd, co]) => {
+      .then(([me, s, w, rd, co, bd]) => {
         if (!me.user) { router.push('/login'); return }
         setUser(me.user)
         setCallsign(me.user.callsign ?? '')
@@ -88,6 +91,7 @@ export default function ProfilePage() {
         if (Array.isArray(w.weakspots)) setWeakspots(w.weakspots)
         if (rd && !rd.error && typeof rd.score === 'number') setReadiness(rd)
         if (co && co.coach) setCoach(co.coach)
+        if (Array.isArray(bd.badges)) setBadges(bd.badges)
         fetch('/api/user/referral').then((r) => r.json()).then((rf) => { if (rf && rf.link) setReferral(rf) }).catch(() => {})
       })
       .finally(() => setLoading(false))
@@ -417,6 +421,35 @@ export default function ProfilePage() {
               ))}
             </div>
             <p className="text-xs text-gray-400 mt-4">Ranked from your graded scenarios. Targeted drills are a Solo Pilot feature.</p>
+          </div>
+        )}
+
+        {/* Achievement badges -- computed from grade history, not a separate store */}
+        {badges.length > 0 && (
+          <div className="border border-gray-200 rounded-xl p-5 mb-6">
+            <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Badges</div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {badges.map((b) => (
+                <div key={b.key} className={`rounded-lg border p-3 ${b.earned ? 'border-amber-200 bg-amber-50' : 'border-gray-100 bg-gray-50 opacity-50'}`}>
+                  <div className="flex items-center justify-between gap-1">
+                    <div className={`text-sm font-semibold truncate ${b.earned ? 'text-amber-800' : 'text-gray-500'}`}>{b.earned ? '🏅 ' : '🔒 '}{b.label}</div>
+                  </div>
+                  <div className="text-[11px] text-gray-500 mt-0.5 leading-snug">{b.description}</div>
+                  {b.earned && (
+                    <button
+                      onClick={() => {
+                        const qs = new URLSearchParams({ badge: b.label, badgeDesc: b.description, cs: user?.callsign || '' })
+                        navigator.clipboard?.writeText(`${location.origin}/s?${qs.toString()}`)
+                        setBadgeCopied(b.key); setTimeout(() => setBadgeCopied((k) => (k === b.key ? null : k)), 1500)
+                      }}
+                      className="mt-1.5 text-[11px] text-amber-700 hover:underline"
+                    >
+                      {badgeCopied === b.key ? 'Copied' : 'Share'}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

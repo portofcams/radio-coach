@@ -18,8 +18,11 @@ export async function GET(req: Request) {
   const stat = (searchParams.get('stat') || '').slice(0, 20)
   const unit = (searchParams.get('unit') || '').slice(0, 30)
   const rankScope = (searchParams.get('scope') || 'Leaderboard').slice(0, 20)
+  const badge = (searchParams.get('badge') || '').slice(0, 30)
+  const badgeDesc = (searchParams.get('badgeDesc') || '').slice(0, 80)
   const personalized = !!score
   const isRank = !personalized && !!rank
+  const isBadge = !personalized && !isRank && !!badge
 
   return new ImageResponse(
     (
@@ -55,6 +58,15 @@ export async function GET(req: Request) {
               {stat ? <div style={{ display: 'flex', fontSize: 46, color: '#ffffff', marginLeft: 30, marginBottom: 28 }}>{stat + (unit ? ' ' + unit : '')}</div> : <div style={{ display: 'flex' }} />}
             </div>
             <div style={{ display: 'flex', fontSize: 30, color: '#aab3bf', marginTop: 10 }}>Ranked on Clearspar Radio Trainer</div>
+          </div>
+        ) : isBadge ? (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', fontSize: 26, letterSpacing: 4, color: '#36d6e6' }}>{(cs ? cs + ' · ' : '') + 'ACHIEVEMENT UNLOCKED'}</div>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: 22 }}>
+              <div style={{ display: 'flex', width: 130, height: 130, borderRadius: 65, background: '#f5a623', alignItems: 'center', justifyContent: 'center', fontSize: 60, marginRight: 34 }}>🏅</div>
+              <div style={{ display: 'flex', fontSize: 68, fontWeight: 800, color: '#ffffff', lineHeight: 1.05 }}>{badge}</div>
+            </div>
+            {badgeDesc ? <div style={{ display: 'flex', fontSize: 30, color: '#aab3bf', marginTop: 22 }}>{badgeDesc}</div> : <div style={{ display: 'flex' }} />}
           </div>
         ) : heading ? (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
