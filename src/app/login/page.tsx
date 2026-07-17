@@ -9,9 +9,10 @@ function LoginForm() {
   const params = useSearchParams()
   const redirect = params.get('redirect') ?? '/train'
   const ref = params.get('ref')
+  const aff = params.get('aff')
   const modeParam = params.get('mode')
 
-  const [mode, setMode] = useState<'login' | 'signup'>(ref || modeParam === 'signup' ? 'signup' : 'login')
+  const [mode, setMode] = useState<'login' | 'signup'>(ref || aff || modeParam === 'signup' ? 'signup' : 'login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -25,7 +26,11 @@ function LoginForm() {
       const res = await fetch(`/api/auth/${mode}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mode === 'signup' && ref ? { email, password, ref } : { email, password }),
+        body: JSON.stringify(
+          mode === 'signup' && ref ? { email, password, ref }
+          : mode === 'signup' && aff ? { email, password, aff }
+          : { email, password },
+        ),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -55,6 +60,11 @@ function LoginForm() {
           {ref && mode === 'signup' && (
             <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3">
               A friend invited you — sign up and your first month of Pro is on us.
+            </p>
+          )}
+          {!ref && aff && mode === 'signup' && (
+            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3">
+              Your flight school sent you here — sign up and your first month of Pro is on us.
             </p>
           )}
         </div>

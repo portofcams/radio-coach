@@ -222,6 +222,26 @@ export async function initDB(): Promise<void> {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `)
+
+  // #95: external flight-school AFFILIATE partners — deliberately separate
+  // from rc_schools above (that's the paid multi-CFI account tier; this is
+  // an outreach/marketing partner that need not ever hold a Clearspar
+  // account itself). revenue_share_pct is nullable ON PURPOSE: the actual
+  // percentage is a real business/pricing term, not something to default --
+  // this ships the tracking mechanism only, per an explicit "no percentage
+  // yet" call. No payout/invoicing logic exists here or anywhere else.
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS rc_affiliates (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      contact_email TEXT,
+      code TEXT NOT NULL UNIQUE,
+      revenue_share_pct NUMERIC(5,2),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `)
+  await db.query(`ALTER TABLE rc_users ADD COLUMN IF NOT EXISTS affiliate_id INTEGER REFERENCES rc_affiliates(id)`)
+
   await db.query(`
     CREATE TABLE IF NOT EXISTS rc_school_members (
       id SERIAL PRIMARY KEY,

@@ -16,11 +16,21 @@ interface Stats {
   }
 }
 
+interface AffiliateRow {
+  id: number; name: string; contactEmail: string | null; code: string; link: string
+  revenueSharePct: number | null; signups: number; converted: number
+}
+
 export default function AdminPage() {
   const [key, setKey] = useState('')
   const [data, setData] = useState<Stats | null>(null)
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
+  const [affiliates, setAffiliates] = useState<AffiliateRow[] | null>(null)
+  const [newAffName, setNewAffName] = useState('')
+  const [newAffEmail, setNewAffEmail] = useState('')
+  const [creatingAff, setCreatingAff] = useState(false)
+  const [copiedAff, setCopiedAff] = useState<number | null>(null)
 
   async function load(k: string) {
     setLoading(true); setErr('')
@@ -32,9 +42,29 @@ export default function AdminPage() {
     } catch { setErr('Could not load.') } finally { setLoading(false) }
   }
 
+  async function loadAffiliates(k: string) {
+    try {
+      const r = await fetch('/api/admin/affiliates?key=' + encodeURIComponent(k))
+      if (r.ok) setAffiliates((await r.json()).affiliates)
+    } catch { /* non-fatal -- the rest of the dashboard still works */ }
+  }
+
+  async function createAffiliate() {
+    if (!newAffName.trim()) return
+    setCreatingAff(true)
+    try {
+      await fetch('/api/admin/affiliates?key=' + encodeURIComponent(key), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newAffName.trim(), contactEmail: newAffEmail.trim() }),
+      })
+      setNewAffName(''); setNewAffEmail('')
+      await loadAffiliates(key)
+    } finally { setCreatingAff(false) }
+  }
+
   useEffect(() => {
     const k = new URLSearchParams(location.search).get('key') || (() => { try { return localStorage.getItem('rc_admin_key') || '' } catch { return '' } })()
-    if (k) { setKey(k); load(k) }
+    if (k) { setKey(k); load(k); loadAffiliates(k) }
   }, [])
 
   async function resolveAirportRequest(id: number, status: 'added' | 'declined') {
@@ -56,7 +86,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-2 mb-6">
             <input value={key} onChange={(e) => setKey(e.target.value)} placeholder="admin key"
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64" />
-            <button onClick={() => load(key)} disabled={loading || !key}
+            <button onClick={() => { load(key); loadAffiliates(key) }} disabled={loading || !key}
               className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50">
               {loading ? 'Loading…' : 'View'}
             </button>
@@ -138,6 +168,49 @@ export default function AdminPage() {
                     <div className="flex items-center gap-2 shrink-0">
                       <button onClick={() => resolveAirportRequest(r.id, 'added')} className="text-xs text-green-700 hover:underline">Mark added</button>
                       <button onClick={() => resolveAirportRequest(r.id, 'declined')} className="text-xs text-gray-400 hover:underline">Decline</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <h2 className="text-sm font-mono uppercase tracking-widest text-gray-400 mt-8 mb-3">
+              Flight-school affiliates <span className="normal-case text-gray-300">(#95 — mechanism only, no revenue-share % set yet)</span>
+            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <input value={newAffName} onChange={(e) => setNewAffName(e.target.value)} placeholder="School name"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-56" />
+              <input value={newAffEmail} onChange={(e) => setNewAffEmail(e.target.value)} placeholder="Contact email (optional)"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64" />
+              <button onClick={createAffiliate} disabled={creatingAff || !newAffName.trim()}
+                className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                {creatingAff ? 'Adding…' : 'Add school'}
+              </button>
+            </div>
+            {!affiliates || affiliates.length === 0 ? (
+              <p className="text-gray-400 text-sm mb-2">No affiliate partners yet — add one above to get a trackable signup link.</p>
+            ) : (
+              <div className="space-y-2 mb-2">
+                {affiliates.map((a) => (
+                  <div key={a.id} className="border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="font-semibold">{a.name}</span>
+                        {a.contactEmail && <span className="text-gray-400 ml-2 text-xs">{a.contactEmail}</span>}
+                      </div>
+                      <div className="shrink-0 text-xs text-gray-500">
+                        {a.signups} signup{a.signups === 1 ? '' : 's'} · {a.converted} paid
+                        {a.revenueSharePct != null ? ` · ${a.revenueSharePct}% share` : ' · % TBD'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <code className="text-xs font-mono text-gray-500 truncate">{a.link}</code>
+                      <button
+                        onClick={() => { navigator.clipboard?.writeText(a.link); setCopiedAff(a.id); setTimeout(() => setCopiedAff((v) => (v === a.id ? null : v)), 1500) }}
+                        className="text-xs text-blue-600 hover:underline shrink-0"
+                      >
+                        {copiedAff === a.id ? 'Copied' : 'Copy link'}
+                      </button>
                     </div>
                   </div>
                 ))}

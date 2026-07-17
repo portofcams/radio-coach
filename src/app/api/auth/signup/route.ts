@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPool } from '@/lib/db'
 import { hashPassword, setAuthCookie } from '@/lib/auth'
 import { applyReferralOnSignup } from '@/lib/referral'
+import { applyAffiliateOnSignup } from '@/lib/affiliate'
 
 export async function POST(req: NextRequest) {
   const db = getPool()
   if (!db) return NextResponse.json({ error: 'Auth not available' }, { status: 503 })
 
-  const { email, password, ref } = await req.json()
+  const { email, password, ref, aff } = await req.json()
 
   if (!email?.includes('@') || !password || password.length < 6) {
     return NextResponse.json({ error: 'Valid email and password (6+ chars) required' }, { status: 400 })
@@ -43,6 +44,13 @@ export async function POST(req: NextRequest) {
   // to paid (handled in the Stripe webhook). Best-effort.
   if (ref && typeof ref === 'string') {
     try { await applyReferralOnSignup(db, user.id, ref) } catch { /* referral best-effort */ }
+  }
+  // Affiliate (#95): a flight-school's tracking link grants the same
+  // signup-time comp month as a personal referral. Mutually exclusive with
+  // `ref` in practice (a signup link carries one or the other), and either
+  // way this is best-effort -- never fails account creation.
+  else if (aff && typeof aff === 'string') {
+    try { await applyAffiliateOnSignup(db, user.id, aff) } catch { /* affiliate best-effort */ }
   }
 
   const token = await setAuthCookie({ userId: user.id, email: user.email })
