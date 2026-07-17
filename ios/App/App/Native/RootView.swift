@@ -35,6 +35,13 @@ struct RootView: View {
             if ProcessInfo.processInfo.environment["RC_DEBUG_PAYWALL"] == "1" {
                 showDebugPaywall = true
             }
+            // Skip the Welcome screen so RC_DEBUG_ROUTE/RC_DEBUG_SCENARIO can
+            // actually reach TrainHubView — those hooks live inside the hub,
+            // which only renders once you're past guest/auth, so without this
+            // a screenshot run just lands on WelcomeView forever.
+            if ProcessInfo.processInfo.environment["RC_DEBUG_GUEST"] == "1" {
+                auth.isGuest = true
+            }
             #endif
             await auth.restoreSession()
             didRestore = true

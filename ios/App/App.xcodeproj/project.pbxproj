@@ -55,6 +55,7 @@
 		42B93238F8C0A3D988A62B6D /* o-lostcomms-squawk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8BDEBAC1E3CDBF82D6C638C1 /* o-lostcomms-squawk.mp3 */; };
 		430488FC0318D96C3F06A5B4 /* lost-comms-transmit-blind.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9AC22BC2990FF5364EC12787 /* lost-comms-transmit-blind.mp3 */; };
 		435DA7D63583FC4CB945C623 /* extend-downwind.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 37099F9658BB1B8C30D8CB3E /* extend-downwind.mp3 */; };
+		4452C2B5465A82F605DF6FE5 /* FlashcardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F62CD3F096AD2D7FF984F0 /* FlashcardsView.swift */; };
 		4827D8A1E784269A582349A8 /* ProfileStatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD59DFBDC20C5AC7094159E /* ProfileStatsViewModel.swift */; };
 		48E38FD265D9CEC6A074B18B /* wake-turbulence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */; };
 		498EC7375E5149D679D0D7CC /* o-classc.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F734D2A4BCE0097945649FFB /* o-classc.mp3 */; };
@@ -71,6 +72,7 @@
 		50DEA06711B5498DE591AB61 /* PracticeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725FC43F3E22643A986F2A6F /* PracticeData.swift */; };
 		51C411D99F937FBAFD75FEB9 /* svfr-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 58562909FF339BF999A7F10F /* svfr-departure.mp3 */; };
 		532A353D7C20C5E99E701B2F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17F6B3CF120CC46CC23C767 /* ProfileView.swift */; };
+		53914A2303C7634CCC0F3631 /* ReferralViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA086F6A7D22A1B9D50BD774 /* ReferralViewModel.swift */; };
 		544C8EF3858BAD18A322C62F /* curveball-runway-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 25B75B3D71019284F907252F /* curveball-runway-change.mp3 */; };
 		54D3E79447B9D9CABF3A9CFC /* UserStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BAD4DFBCF3B548405FEF6B /* UserStats.swift */; };
 		55A4F278DB4917EF63A9486B /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49616667BC4D82A5715D767F /* ChallengeView.swift */; };
@@ -93,6 +95,7 @@
 		6BE1CEF88974AF86A30D9DA4 /* l8.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A96301D4C067D8AC4648652D /* l8.mp3 */; };
 		6DED0A161F1DE7E207097243 /* WilcoComplication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 385A32E4E6291D8FB82AA5DC /* WilcoComplication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6E97FD121C214715BBBA6699 /* o-emergency.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4293B5C184FA6732960E169B /* o-emergency.mp3 */; };
+		715944E9AABDF4AE81EA7264 /* Referral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129A84C03DCD44158F601801 /* Referral.swift */; };
 		7266AAAE58A979FC56D09884 /* ifr-efc-holding.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FACE976ECB3E39041D124094 /* ifr-efc-holding.mp3 */; };
 		728D562EE9AE98BDCA676C23 /* AirportDiagramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7688A38399070DFC4549708 /* AirportDiagramView.swift */; };
 		7349D1E579EF7D1D9D7D0527 /* o-readback.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7F2F3D37F04EEB8911B1352F /* o-readback.mp3 */; };
@@ -110,12 +113,14 @@
 		877A069555D67D3D0D20F2DD /* l14.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 24033C8AED72195F07EBC677 /* l14.mp3 */; };
 		8897048832E5632097566FF6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38AC35F2EE8B474599B5C7CF /* Assets.xcassets */; };
 		8A35877400B0C2864E6FE79D /* center-frequency-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0A00CEECBD01983C25ECFE4 /* center-frequency-change.mp3 */; };
+		8A406ED91789CE0CFDEF0F3D /* AccessibilitySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294A6E9A35E4C6B4983E24C9 /* AccessibilitySettings.swift */; };
 		8B188FF7B773A8DD252158AC /* PlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33C32077D860F1EDD59F5FA /* PlanCard.swift */; };
 		8B5703D6721BD32AFBAFBAEB /* atis-initial-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AA680F9A3E8D7A88CA9EE5F4 /* atis-initial-call.mp3 */; };
 		8BBA723BE63C86D12598FDF4 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902F1F20198EF36A58F5543A /* IAPManager.swift */; };
 		8FAB84AA29A8219A566F6DB3 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C44EC25BEA830CACD9BF1 /* LoginView.swift */; };
 		8FE1F1F5F97E38B622D35863 /* weather-deviation-approved.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C0AA00F1BA8566F05308409 /* weather-deviation-approved.mp3 */; };
 		904B46A4F138FC1B1C54720E /* departure-turn-instruction.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4E33BAC3450EB69749351370 /* departure-turn-instruction.mp3 */; };
+		9120930A5492F1FE94F85CCD /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D445024EC1E32794C8525F1 /* ReferralView.swift */; };
 		912CA6CEC0C715279959B0FC /* special-vfr-request.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 16333211D9D2A330ED4986BC /* special-vfr-request.mp3 */; };
 		91499157C46ED63F0DB2BCA6 /* o-lightgun-ground.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 003BA500BEE5F5928A6F1C3C /* o-lightgun-ground.mp3 */; };
 		932F081476693D0FB906003E /* traffic-not-in-sight.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EB6ECA3418E17B49253915B4 /* traffic-not-in-sight.mp3 */; };
@@ -128,11 +133,13 @@
 		994928299194D0B615742FB9 /* ifr-missed-approach.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DB01BC1C30F19E6293C59CA5 /* ifr-missed-approach.mp3 */; };
 		9A35EEBD88B5FDE72D6E7115 /* heli-closed-traffic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7160266A1E426090684D7234 /* heli-closed-traffic.mp3 */; };
 		9A8534DD0F990F887A28044F /* l7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FADA70229CFA06D7252051A9 /* l7.mp3 */; };
+		9D419F33AA5F6692A5BB3BF6 /* ScenarioActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF29758E27D6421317BCE488 /* ScenarioActivityAttributes.swift */; };
 		9EEBF788BC22CD5159EF7439 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5083671624204720C88BAA8A /* ComingSoonView.swift */; };
 		9F306A66EA35C5645FFEDDFD /* bravo-transition.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3DEC6303C9FACB1CB4313806 /* bravo-transition.mp3 */; };
 		A20FEC4051A18A6D113DCA63 /* ifr-cruise-clearance.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCCA78254E55284F7BCE8733 /* ifr-cruise-clearance.mp3 */; };
 		A47F2B89D2D8297657A8BE00 /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24065945635D4019EECE5DB3 /* PracticeView.swift */; };
 		A4AF282ED43EC8277927C0A2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CDB2545352A7FC502B8ADA0 /* RootView.swift */; };
+		A7646A04E49B3702D1839790 /* ScenarioLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6B458FE9E7177F2BE9190E /* ScenarioLiveActivity.swift */; };
 		A927A81089E3E3E687DFA50B /* missed-approach-amended.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BB836EC4B8624000C7C92407 /* missed-approach-amended.mp3 */; };
 		A9DE00F69071FEB7309DDAA2 /* progressive-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9AA124CBD8C089632EB08E06 /* progressive-taxi.mp3 */; };
 		AAB5DACC64BA6EE0D59D5DE5 /* curveball-amended-departure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C882F7EBC36F10BD3C444658 /* curveball-amended-departure.mp3 */; };
@@ -170,6 +177,7 @@
 		DADCEE494C7165BDE05CA0DE /* l12.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6CFA808AB349440EEDEBBE3C /* l12.mp3 */; };
 		DB74FA7E7EBB0A78375AA68F /* heli-air-taxi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0C31FB21F7C1D4805B6BA8B6 /* heli-air-taxi.mp3 */; };
 		DCF0E51D2E97F6F6E2558069 /* BundledAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */; };
+		DD58FA8897835F590BBEF079 /* ScenarioActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D0CF07E4D1CFFBD08E431C /* ScenarioActivityAttributes.swift */; };
 		DF03962A132B3C39D2FE3E5B /* line-up-wait.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2D71CCA7B3DAE5B2B33B368F /* line-up-wait.mp3 */; };
 		E0B6BE74B9964F5D6509F6FB /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E5B9312C4EB723E6354CF6 /* Tips.swift */; };
 		E1E115CE06E8D06A3972B77B /* emergency-squawk-ident.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 73052EA474E27E4EE8F85CDE /* emergency-squawk-ident.mp3 */; };
@@ -179,6 +187,7 @@
 		E89A3C4E78AC7E2953CD589F /* short-approach-approved.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CBAC829F9DFD92374F8105E5 /* short-approach-approved.mp3 */; };
 		E9096987370594188E35407F /* ProfileStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5F64A1A4D54F96764AB2C5 /* ProfileStatsView.swift */; };
 		EE862BCEB73AB781A97CA55E /* pirep-request.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D21E6676D8452863E5FE1869 /* pirep-request.mp3 */; };
+		F07907FED15F176C123E0D65 /* ReferralLeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866DC03D78DDAB8EAF39C76B /* ReferralLeaderboardView.swift */; };
 		F09EF146CAE6733FBD8A113F /* oral.json in Resources */ = {isa = PBXBuildFile; fileRef = 163DCDF69FD244D4CFF27A9A /* oral.json */; };
 		F2AC8F1609A2FC41FF2E21FB /* ScenarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68EB5B9A6A8BAC3D1EDBD5B /* ScenarioViewModel.swift */; };
 		F49A2DB2147EF1D88CB8B21C /* frequency-change.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B247E7C1C69D675E5C09EE0D /* frequency-change.mp3 */; };
@@ -258,11 +267,13 @@
 		0C31FB21F7C1D4805B6BA8B6 /* heli-air-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-air-taxi.mp3"; path = "Native/Resources/audio/scenario/heli-air-taxi.mp3"; sourceTree = "<group>"; };
 		0C6BA71BF28C6FF51593D701 /* amended-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "amended-taxi.mp3"; path = "Native/Resources/audio/scenario/amended-taxi.mp3"; sourceTree = "<group>"; };
 		0CDB2545352A7FC502B8ADA0 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/RootView.swift; sourceTree = "<group>"; };
+		0D445024EC1E32794C8525F1 /* ReferralView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReferralView.swift; path = Native/Profile/ReferralView.swift; sourceTree = "<group>"; };
 		0F05E9CD721607E785255B76 /* o-lineup-wait.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lineup-wait.mp3"; path = "Native/Resources/audio/oral/o-lineup-wait.mp3"; sourceTree = "<group>"; };
 		0F8EE8D749DA9806D5D62CF4 /* Drills.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Drills.swift; sourceTree = "<group>"; };
 		0FA3D8D5B7B8DC851E93F977 /* l6.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l6.mp3; path = Native/Resources/audio/listen/l6.mp3; sourceTree = "<group>"; };
 		102C6F7D164C27A8797B054F /* l11.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l11.mp3; path = Native/Resources/audio/listen/l11.mp3; sourceTree = "<group>"; };
 		1166BA291ECEE679673BB267 /* WilcoWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WilcoWatchApp.swift; sourceTree = "<group>"; };
+		129A84C03DCD44158F601801 /* Referral.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Referral.swift; path = Native/Models/Referral.swift; sourceTree = "<group>"; };
 		157E2ACF1BBEAB9799022C7F /* o-initial-call.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-initial-call.mp3"; path = "Native/Resources/audio/oral/o-initial-call.mp3"; sourceTree = "<group>"; };
 		16333211D9D2A330ED4986BC /* special-vfr-request.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "special-vfr-request.mp3"; path = "Native/Resources/audio/scenario/special-vfr-request.mp3"; sourceTree = "<group>"; };
 		163DCDF69FD244D4CFF27A9A /* oral.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Native/Resources/oral.json; sourceTree = "<group>"; };
@@ -280,6 +291,7 @@
 		27738012D5F2AD5A7B9F25CB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		2849633386A9B18907B286B8 /* radar-vectors-final.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "radar-vectors-final.mp3"; path = "Native/Resources/audio/scenario/radar-vectors-final.mp3"; sourceTree = "<group>"; };
 		2911596BC7D7EE5E36F95769 /* ctaf-position-report.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ctaf-position-report.mp3"; path = "Native/Resources/audio/scenario/ctaf-position-report.mp3"; sourceTree = "<group>"; };
+		294A6E9A35E4C6B4983E24C9 /* AccessibilitySettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AccessibilitySettings.swift; path = Native/Profile/AccessibilitySettings.swift; sourceTree = "<group>"; };
 		2CB33117ACF7D04E6B0ED5B5 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Audio/AudioManager.swift; sourceTree = "<group>"; };
 		2D71CCA7B3DAE5B2B33B368F /* line-up-wait.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "line-up-wait.mp3"; path = "Native/Resources/audio/scenario/line-up-wait.mp3"; sourceTree = "<group>"; };
 		31FE988D6F242531A7474450 /* l10.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l10.mp3; path = Native/Resources/audio/listen/l10.mp3; sourceTree = "<group>"; };
@@ -348,6 +360,7 @@
 		8109F7467F86AD1D63A602A7 /* ScenarioStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Models/ScenarioStore.swift; sourceTree = "<group>"; };
 		825D296D3DA98F458F6AECD7 /* emergency-vectors-to-land.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "emergency-vectors-to-land.mp3"; path = "Native/Resources/audio/scenario/emergency-vectors-to-land.mp3"; sourceTree = "<group>"; };
 		82C1CBC28BA16CE911EA3EEA /* SpeechFallbackPlayer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SpeechFallbackPlayer.swift; path = Native/Audio/SpeechFallbackPlayer.swift; sourceTree = "<group>"; };
+		866DC03D78DDAB8EAF39C76B /* ReferralLeaderboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReferralLeaderboardView.swift; path = Native/Profile/ReferralLeaderboardView.swift; sourceTree = "<group>"; };
 		86C40C8A7F4280695EBCAC4E /* traffic-advisory-confirm.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "traffic-advisory-confirm.mp3"; path = "Native/Resources/audio/scenario/traffic-advisory-confirm.mp3"; sourceTree = "<group>"; };
 		8BDEBAC1E3CDBF82D6C638C1 /* o-lostcomms-squawk.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-lostcomms-squawk.mp3"; path = "Native/Resources/audio/oral/o-lostcomms-squawk.mp3"; sourceTree = "<group>"; };
 		8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "wake-turbulence.mp3"; path = "Native/Resources/audio/scenario/wake-turbulence.mp3"; sourceTree = "<group>"; };
@@ -373,8 +386,10 @@
 		A6AF01C90D26B77B43B8ABDD /* o-roger-wilco.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "o-roger-wilco.mp3"; path = "Native/Resources/audio/oral/o-roger-wilco.mp3"; sourceTree = "<group>"; };
 		A6F36D7554F356C2F6C55151 /* climb-to-altitude.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "climb-to-altitude.mp3"; path = "Native/Resources/audio/scenario/climb-to-altitude.mp3"; sourceTree = "<group>"; };
 		A7A99D4E63D5DA87CD712FBE /* ifr-hold-for-release.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-hold-for-release.mp3"; path = "Native/Resources/audio/scenario/ifr-hold-for-release.mp3"; sourceTree = "<group>"; };
+		A7D0CF07E4D1CFFBD08E431C /* ScenarioActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScenarioActivityAttributes.swift; path = Native/Scenario/ScenarioActivityAttributes.swift; sourceTree = "<group>"; };
 		A9384BC0041FEB02497E748C /* heli-hover-taxi.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-hover-taxi.mp3"; path = "Native/Resources/audio/scenario/heli-hover-taxi.mp3"; sourceTree = "<group>"; };
 		A96301D4C067D8AC4648652D /* l8.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = l8.mp3; path = Native/Resources/audio/listen/l8.mp3; sourceTree = "<group>"; };
+		AA086F6A7D22A1B9D50BD774 /* ReferralViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReferralViewModel.swift; path = Native/Profile/ReferralViewModel.swift; sourceTree = "<group>"; };
 		AA2D13DA0FACCAEE0E074563 /* sequence-traffic-in-sight.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "sequence-traffic-in-sight.mp3"; path = "Native/Resources/audio/scenario/sequence-traffic-in-sight.mp3"; sourceTree = "<group>"; };
 		AA680F9A3E8D7A88CA9EE5F4 /* atis-initial-call.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "atis-initial-call.mp3"; path = "Native/Resources/audio/scenario/atis-initial-call.mp3"; sourceTree = "<group>"; };
 		ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BundledAudio.swift; path = Native/Audio/BundledAudio.swift; sourceTree = "<group>"; };
@@ -398,10 +413,12 @@
 		C87F3A9F3CD5E322F0669CC6 /* pan-pan-urgency.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pan-pan-urgency.mp3"; path = "Native/Resources/audio/scenario/pan-pan-urgency.mp3"; sourceTree = "<group>"; };
 		C882F7EBC36F10BD3C444658 /* curveball-amended-departure.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "curveball-amended-departure.mp3"; path = "Native/Resources/audio/scenario/curveball-amended-departure.mp3"; sourceTree = "<group>"; };
 		CB202B3C48A2CE4B54EC1408 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB6B458FE9E7177F2BE9190E /* ScenarioLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScenarioLiveActivity.swift; sourceTree = "<group>"; };
 		CBAC829F9DFD92374F8105E5 /* short-approach-approved.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "short-approach-approved.mp3"; path = "Native/Resources/audio/scenario/short-approach-approved.mp3"; sourceTree = "<group>"; };
 		CC107B049570606AE28DD009 /* heli-delta-transition.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "heli-delta-transition.mp3"; path = "Native/Resources/audio/scenario/heli-delta-transition.mp3"; sourceTree = "<group>"; };
 		CC5F30A763FD853AD322BD12 /* departure-squawk-heading.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "departure-squawk-heading.mp3"; path = "Native/Resources/audio/scenario/departure-squawk-heading.mp3"; sourceTree = "<group>"; };
 		CCE27E6052BCC243121FE5C6 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/WelcomeView.swift; sourceTree = "<group>"; };
+		CF29758E27D6421317BCE488 /* ScenarioActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScenarioActivityAttributes.swift; sourceTree = "<group>"; };
 		D058D0231BC1452CB799D7CE /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
 		D085258E4BAAD77C32DB8308 /* runway-incursion-stop.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "runway-incursion-stop.mp3"; path = "Native/Resources/audio/scenario/runway-incursion-stop.mp3"; sourceTree = "<group>"; };
 		D21E6676D8452863E5FE1869 /* pirep-request.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "pirep-request.mp3"; path = "Native/Resources/audio/scenario/pirep-request.mp3"; sourceTree = "<group>"; };
@@ -416,6 +433,7 @@
 		DEE0E52FBB2624CDA9136D63 /* class-c-entry.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "class-c-entry.mp3"; path = "Native/Resources/audio/scenario/class-c-entry.mp3"; sourceTree = "<group>"; };
 		E17F6B3CF120CC46CC23C767 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native/Profile/ProfileView.swift; sourceTree = "<group>"; };
 		E1A17013BB05F1C9B1E556F7 /* ifr-popup-clearance.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "ifr-popup-clearance.mp3"; path = "Native/Resources/audio/scenario/ifr-popup-clearance.mp3"; sourceTree = "<group>"; };
+		E2F62CD3F096AD2D7FF984F0 /* FlashcardsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlashcardsView.swift; path = Native/Practice/FlashcardsView.swift; sourceTree = "<group>"; };
 		E61DD698564DD6A8F36E75A5 /* vor-holding-pattern.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "vor-holding-pattern.mp3"; path = "Native/Resources/audio/scenario/vor-holding-pattern.mp3"; sourceTree = "<group>"; };
 		E6635F9B2DBAFEC075D1AF5A /* declare-mayday.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "declare-mayday.mp3"; path = "Native/Resources/audio/scenario/declare-mayday.mp3"; sourceTree = "<group>"; };
 		EAD90C4B915B8AA687FFC32B /* runway-crossing.mp3 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.mp3; name = "runway-crossing.mp3"; path = "Native/Resources/audio/scenario/runway-crossing.mp3"; sourceTree = "<group>"; };
@@ -700,6 +718,13 @@
 				8D749B082AEA5097BC09DC22 /* wake-turbulence.mp3 */,
 				4C0AA00F1BA8566F05308409 /* weather-deviation-approved.mp3 */,
 				ACB733792E48A28E4E42D3E7 /* BundledAudio.swift */,
+				129A84C03DCD44158F601801 /* Referral.swift */,
+				AA086F6A7D22A1B9D50BD774 /* ReferralViewModel.swift */,
+				0D445024EC1E32794C8525F1 /* ReferralView.swift */,
+				866DC03D78DDAB8EAF39C76B /* ReferralLeaderboardView.swift */,
+				294A6E9A35E4C6B4983E24C9 /* AccessibilitySettings.swift */,
+				E2F62CD3F096AD2D7FF984F0 /* FlashcardsView.swift */,
+				A7D0CF07E4D1CFFBD08E431C /* ScenarioActivityAttributes.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -728,6 +753,8 @@
 				01CBC7A3993E2B281E2F7C0A /* WilcoWidgetBundle.swift */,
 				BD92CFF2DE6F88F9DB57F9BC /* Info.plist */,
 				A27C715415FA43C00F150451 /* Assets.xcassets */,
+				CF29758E27D6421317BCE488 /* ScenarioActivityAttributes.swift */,
+				CB6B458FE9E7177F2BE9190E /* ScenarioLiveActivity.swift */,
 			);
 			path = WilcoWidget;
 			sourceTree = "<group>";
@@ -1070,6 +1097,13 @@
 				B2DF9219E3F71FA7259129C8 /* WilcoShortcuts.swift in Sources */,
 				6788F6CFACC0E4F192ABC158 /* SpeechFallbackPlayer.swift in Sources */,
 				DCF0E51D2E97F6F6E2558069 /* BundledAudio.swift in Sources */,
+				715944E9AABDF4AE81EA7264 /* Referral.swift in Sources */,
+				53914A2303C7634CCC0F3631 /* ReferralViewModel.swift in Sources */,
+				9120930A5492F1FE94F85CCD /* ReferralView.swift in Sources */,
+				F07907FED15F176C123E0D65 /* ReferralLeaderboardView.swift in Sources */,
+				8A406ED91789CE0CFDEF0F3D /* AccessibilitySettings.swift in Sources */,
+				4452C2B5465A82F605DF6FE5 /* FlashcardsView.swift in Sources */,
+				DD58FA8897835F590BBEF079 /* ScenarioActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1080,6 +1114,8 @@
 				E0B6BE74B9964F5D6509F6FB /* Tips.swift in Sources */,
 				365C727838026F639C0FE6D7 /* WilcoWidget.swift in Sources */,
 				D4B1287671A2B29EAF31EAE2 /* WilcoWidgetBundle.swift in Sources */,
+				9D419F33AA5F6692A5BB3BF6 /* ScenarioActivityAttributes.swift in Sources */,
+				A7646A04E49B3702D1839790 /* ScenarioLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
